@@ -47,11 +47,11 @@ public class GameLogic : MonoBehaviour
     {
         Init_Board();
 
-        TileBottomLeftPosition = new Vector2Int(3, 3);
-        
-        CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
+        TEST_PresetBoard();
 
         Console_PrintBoard();
+
+        StartCoroutine(BeginPathfinding());
     }
 
     void Init_Board()
@@ -83,6 +83,22 @@ public class GameLogic : MonoBehaviour
         // Console_PrintBoard();
     }
 
+    void TEST_PresetBoard()
+    {
+        TileBottomLeftPosition = new Vector2Int(3, 3);
+
+        // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
+            {
+                SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
+            }
+        }
+
+        SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
+    }
+
     #region Gameplay Actions
     void RotateClockwise()
     {
@@ -108,12 +124,79 @@ public class GameLogic : MonoBehaviour
     #region Pathfinding Actions
     IEnumerator BeginPathfinding()
     {
+        bool alphaExists = true;
+        bool bravoExists = true;
+        BoardObject tempObject = BoardObject.Empty;
+
+        // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            if(alphaExists)
+            {
+                bool tempAlpha = false;
+
+                // Run vertically. If a static (or Sidewall) exists, continue
+                for (int y = 0; y < BoardHeight; y++)
+                {
+                    // If we haven't found a successful BoardObject yet, continue the check
+                    tempObject = GetBoardObjectAtPosition(x, y);
+
+                    // If on the far sides of the board, AND is a Sidewall, keep searching
+                    if (x == 0 || x == BoardWidth - 1)
+                    {
+                        if (tempObject == BoardObject.Sidewall || tempObject == BoardObject.Alpha_Static)
+                        {
+                            tempAlpha = true;
+
+                            // Force exit to next column to check
+                            y = BoardHeight;
+                        }
+                    }
+                    // All other normal board positions. Check accordingly.
+                    else
+                    {
+                        if (tempObject == BoardObject.Alpha_Static)
+                        {
+                            tempAlpha = true;
+
+                            // Force exit to next column to check
+                            y = BoardHeight;
+                        }
+                    }
+                }
+
+                // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
+                if (!tempAlpha)
+                {
+                    alphaExists = false;
+                }
+            }
+
+            if(bravoExists)
+            {
+                bool tempBravo = false;
+            }
+            
+        }
+
+        print(alphaExists);
+
         yield return true;
     }
 
     IEnumerator PathfindDirection(PathfindDirection _direction)
     {
         yield return true;
+    }
+
+    /// <summary>
+    /// Used to determine if every column has at least one valid piece
+    /// </summary>
+    /// <param name="_boardObject">The piece to compare against for validity</param>
+    /// <returns></returns>
+    bool VerticalPathfindCheck(BoardObject _boardObject)
+    {
+        return false;
     }
     #endregion
 
