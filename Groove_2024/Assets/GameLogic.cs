@@ -22,6 +22,13 @@ public enum TileType
     ThreeTall
 }
 
+public enum PathfindDirection
+{
+    LeftHalf,
+    RightHalf,
+    Center
+}
+
 public class GameLogic : MonoBehaviour
 {
     [SerializeField, Range(5, 20)]
@@ -95,6 +102,18 @@ public class GameLogic : MonoBehaviour
     void HardDrop()
     {
 
+    }
+    #endregion
+
+    #region Pathfinding Actions
+    IEnumerator BeginPathfinding()
+    {
+        yield return true;
+    }
+
+    IEnumerator PathfindDirection(PathfindDirection _direction)
+    {
+        yield return true;
     }
     #endregion
 
