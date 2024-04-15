@@ -128,58 +128,42 @@ public class GameLogic : MonoBehaviour
         bool bravoExists = true;
         BoardObject tempObject = BoardObject.Empty;
 
+        #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         for (int x = 0; x < BoardWidth; x++)
         {
             if(alphaExists)
             {
-                bool tempAlpha = false;
-
-                // Run vertically. If a static (or Sidewall) exists, continue
-                for (int y = 0; y < BoardHeight; y++)
-                {
-                    // If we haven't found a successful BoardObject yet, continue the check
-                    tempObject = GetBoardObjectAtPosition(x, y);
-
-                    // If on the far sides of the board, AND is a Sidewall, keep searching
-                    if (x == 0 || x == BoardWidth - 1)
-                    {
-                        if (tempObject == BoardObject.Sidewall || tempObject == BoardObject.Alpha_Static)
-                        {
-                            tempAlpha = true;
-
-                            // Force exit to next column to check
-                            y = BoardHeight;
-                        }
-                    }
-                    // All other normal board positions. Check accordingly.
-                    else
-                    {
-                        if (tempObject == BoardObject.Alpha_Static)
-                        {
-                            tempAlpha = true;
-
-                            // Force exit to next column to check
-                            y = BoardHeight;
-                        }
-                    }
-                }
+                // Run through the column looking for Alpha_Static
+                bool tempAlpha = VerticalPathfindCheck(x, BoardObject.Alpha_Static);
 
                 // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
                 if (!tempAlpha)
                 {
+                    // Sets to False without kicking out of loop to check for Bravo
                     alphaExists = false;
                 }
             }
 
             if(bravoExists)
             {
-                bool tempBravo = false;
-            }
-            
-        }
+                // Run through the column looking for Bravo_Static
+                bool tempBravo = VerticalPathfindCheck(x, BoardObject.Bravo_Static);
 
-        print(alphaExists);
+                if(!tempBravo)
+                {
+                    bravoExists = false;
+                }
+            }
+        }
+        #endregion
+
+        print("Alpha Vertical Test: " + alphaExists);
+        print("Bravo Vertical Test: " + bravoExists);
+
+        #region Horizontal Tests
+
+        #endregion
 
         yield return true;
     }
@@ -194,9 +178,44 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="_boardObject">The piece to compare against for validity</param>
     /// <returns></returns>
-    bool VerticalPathfindCheck(BoardObject _boardObject)
+    bool VerticalPathfindCheck(int _x, BoardObject _boardObject)
     {
-        return false;
+        BoardObject tempObject;
+        bool validColumn = false;
+
+        // Run vertically. If a static (or Sidewall) exists, continue
+        for (int y = 0; y < BoardHeight; y++)
+        {
+            // If we haven't found a successful BoardObject yet, continue the check
+            tempObject = GetBoardObjectAtPosition(_x, y);
+
+            // If on the far sides of the board, AND is a Sidewall, keep searching
+            if (_x == 0 || _x == BoardWidth - 1)
+            {
+                if (tempObject == BoardObject.Sidewall || tempObject == _boardObject)
+                {
+                    validColumn = true;
+
+                    // Force exit to next column to check
+                    y = BoardHeight;
+                }
+            }
+            // All other normal board positions. Check accordingly.
+            else
+            {
+                if (tempObject == _boardObject)
+                {
+                    validColumn = true;
+
+                    // Force exit to next column to check
+                    y = BoardHeight;
+                }
+            }
+
+            
+        }
+
+        return validColumn;
     }
     #endregion
 
