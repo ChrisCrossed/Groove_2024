@@ -7,12 +7,19 @@ using UnityEngine;
 public enum BoardObject
 {
     Empty, // Can become Alpha or Bravo
-    Alpha_Static,
-    Bravo_Static,
-    Alpha_Active,
-    Bravo_Active,
+    Alpha_Static = 1,
+    Bravo_Static = 2,
+    Alpha_Active = 3,
+    Bravo_Active = 4,
     Filled, // Forcibly-filled board piece. 'Cement'
     Sidewall // Edge of Boardwall. Resets at the end of each turn.
+}
+
+public enum TileType
+{
+    TwoByTwo,
+    ThreeWide,
+    ThreeTall
 }
 
 public class GameLogic : MonoBehaviour
@@ -24,6 +31,7 @@ public class GameLogic : MonoBehaviour
 
     int BoardWidth;
     int BoardHeight;
+    Vector2Int TileBottomLeftPosition;
 
     List<BoardObject> Board;
 
@@ -32,7 +40,11 @@ public class GameLogic : MonoBehaviour
     {
         Init_Board();
 
+        TileBottomLeftPosition = new Vector2Int(3, 3);
         
+        CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
+
+        Console_PrintBoard();
     }
 
     void Init_Board()
@@ -61,7 +73,7 @@ public class GameLogic : MonoBehaviour
             }
         }
 
-        Console_PrintBoard();
+        // Console_PrintBoard();
     }
 
     #region Gameplay Actions
@@ -93,6 +105,50 @@ public class GameLogic : MonoBehaviour
     }
 
     /// <summary>
+    /// Creates a new 'Active' block of random tiles, starting at the Bottom Left coordinate given.
+    /// </summary>
+    /// <param name="_type">Applies a block varying in height and width.</param>
+    /// <param name="_position">The bottom left coordinate for the block to spawn</param>
+    void CreateNewBlockOfType(TileType _type, Vector2Int _position)
+    {
+        Vector2Int boardPos = _position;
+        int blockHeight = 2;
+        int blockWidth = 2;
+        if (_type == TileType.ThreeWide)
+            blockWidth = 3;
+        else if (_type == TileType.ThreeTall)
+            blockHeight = 3;
+
+        for(int y = 0; y < blockHeight; y++)
+        {
+            for(int x = 0; x < blockWidth; x++)
+            {
+                BoardObject randomBlock = GetRandomBlock(true);
+                SetBoardObjectAtPosition(blockWidth + x, blockHeight + y, randomBlock);
+                print("[" + (blockWidth + x) + "," + (blockHeight + y) + "]: " + randomBlock);
+            }
+        }
+    }
+
+    BoardObject GetRandomBlock(bool isActive = true)
+    {
+        BoardObject boardObject = BoardObject.Alpha_Static;
+
+        if (Random.Range(0, 1f) > 0.5f)
+        {
+            boardObject = BoardObject.Bravo_Static;
+        }
+
+        if(isActive)
+        {
+            // Converts Static type to Active type
+            boardObject += 2;
+        }
+
+        return boardObject;
+    }
+
+    /// <summary>
     /// Overrides position in Board at [x,y] position with given BoardObject
     /// </summary>
     /// <param name="_x">X (Horizontal) Position. 0 = Left side of Row.</param>
@@ -107,6 +163,10 @@ public class GameLogic : MonoBehaviour
         Board[(BoardWidth * _y) + _x] = _boardObject;
 
         return oldBoardObject;
+    }
+    BoardObject SetBoardObjectAtPosition(Vector2Int _position, BoardObject _boardObject)
+    {
+        return SetBoardObjectAtPosition(_position.x, _position.y, _boardObject);
     }
 
     /// <summary>
@@ -136,7 +196,7 @@ public class GameLogic : MonoBehaviour
                 BoardObject currBoardObject = Board[(BoardWidth * y) + x];
 
                 if (currBoardObject == BoardObject.Empty)
-                    textLine += "[ ]";
+                    textLine += "[  ]";
                 else if (currBoardObject == BoardObject.Sidewall)
                     textLine += "[*]";
                 else if (currBoardObject == BoardObject.Alpha_Active || currBoardObject == BoardObject.Alpha_Static)
