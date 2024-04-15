@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+/Groove_2024/Library/Artifacts
+/Groove_2024/Library/Bee
+/Groove_2024/Library/PackageCache
+/Groove_2024/Library/ShaderCache
