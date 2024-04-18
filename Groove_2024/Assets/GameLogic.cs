@@ -170,6 +170,18 @@ public class GameLogic : MonoBehaviour
 
     IEnumerator PathfindDirection(PathfindDirection _direction)
     {
+        switch (_direction)
+        {
+            case global::PathfindDirection.LeftHalf:
+                break;
+            case global::PathfindDirection.RightHalf:
+                break;
+            case global::PathfindDirection.Center:
+                break;
+            default:
+                break;
+        }
+
         yield return true;
     }
 
@@ -251,6 +263,11 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Get a randomly-given Alpha or Bravo type block.
+    /// </summary>
+    /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
+    /// <returns></returns>
     BoardObject GetRandomBlock(bool isActive = true)
     {
         BoardObject boardObject = BoardObject.Alpha_Static;
