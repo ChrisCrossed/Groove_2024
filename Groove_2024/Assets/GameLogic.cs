@@ -24,9 +24,10 @@ public enum TileType
 
 public enum PathfindDirection
 {
-    LeftHalf,
-    RightHalf,
-    Center
+    Right,
+    Up,
+    Down,
+    Left
 }
 
 public class GameLogic : MonoBehaviour
@@ -128,6 +129,9 @@ public class GameLogic : MonoBehaviour
         bool bravoExists = true;
         BoardObject tempObject = BoardObject.Empty;
 
+        AlphaPathfindList = new List<BoardObject>();
+        BravoPathfindList = new List<BoardObject>();
+
         #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         for (int x = 0; x < BoardWidth; x++)
@@ -168,22 +172,15 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    IEnumerator PathfindDirection(PathfindDirection _direction)
+    List<BoardObject> AlphaPathfindList;
+    List<BoardObject> BravoPathfindList;
+    IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition, )
     {
-        switch (_direction)
-        {
-            case global::PathfindDirection.LeftHalf:
-                break;
-            case global::PathfindDirection.RightHalf:
-                break;
-            case global::PathfindDirection.Center:
-                break;
-            default:
-                break;
-        }
+        // Use the previously populated List as a starting point to pathfind toward the right side.
 
         yield return true;
     }
+
 
     /// <summary>
     /// Used to determine if every column has at least one valid piece
@@ -256,7 +253,7 @@ public class GameLogic : MonoBehaviour
         {
             for(int x = 0; x < blockWidth; x++)
             {
-                BoardObject randomBlock = GetRandomBlock(true);
+                BoardObject randomBlock = DetermineRandomBlock(true);
                 SetBoardObjectAtPosition(blockWidth + x, blockHeight + y, randomBlock);
                 print("[" + (blockWidth + x) + "," + (blockHeight + y) + "]: " + randomBlock);
             }
@@ -268,7 +265,7 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
     /// <returns></returns>
-    BoardObject GetRandomBlock(bool isActive = true)
+    BoardObject DetermineRandomBlock(bool isActive = true)
     {
         BoardObject boardObject = BoardObject.Alpha_Static;
 
