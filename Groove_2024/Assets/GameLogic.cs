@@ -80,8 +80,6 @@ public class GameLogic : MonoBehaviour
                 Board.Add(tempBoardObject);
             }
         }
-
-        // Console_PrintBoard();
     }
 
     void TEST_PresetBoard()
@@ -97,7 +95,9 @@ public class GameLogic : MonoBehaviour
             }
         }
 
-        SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
+        SetBoardObjectAtPosition(1, 7, BoardObject.Alpha_Static);
+
+        // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
     }
 
     #region Gameplay Actions
@@ -127,10 +127,12 @@ public class GameLogic : MonoBehaviour
     {
         bool alphaExists = true;
         bool bravoExists = true;
-        BoardObject tempObject = BoardObject.Empty;
 
-        AlphaPathfindList = new List<BoardObject>();
-        BravoPathfindList = new List<BoardObject>();
+        AlphaPathfindList = new List<Vector2Int>();
+        BravoPathfindList = new List<Vector2Int>();
+
+        Vector2Int tempAlphaLeftColumnPosition = new Vector2Int();
+        Vector2Int tempBravoLeftColumnPosition = new Vector2Int();
 
         #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
@@ -138,8 +140,12 @@ public class GameLogic : MonoBehaviour
         {
             if(alphaExists)
             {
+                // Idea: Grab each column '1' Alpha position and add to AlphaPathfindList?
+                // Reset if !tempAlpha?
+
                 // Run through the column looking for Alpha_Static
-                bool tempAlpha = VerticalPathfindCheck(x, BoardObject.Alpha_Static);
+                bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
+                
 
                 // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
                 if (!tempAlpha)
@@ -147,16 +153,35 @@ public class GameLogic : MonoBehaviour
                     // Sets to False without kicking out of loop to check for Bravo
                     alphaExists = false;
                 }
+                // Only want to apply the following data if in the left playable column, AND we found a tempAlpha
+                else if(x == 1)
+                {
+                    string test = "Alpha: ";
+                    for(int num = 0; num < tempVertXPositions.Count; num++)
+                    {
+                        test += tempVertXPositions[num].ToString() + ", ";
+                    }
+                    print(test);
+
+                    tempAlphaLeftColumnPosition = new Vector2Int();
+                }
             }
 
             if(bravoExists)
             {
+                // Idea: Grab each column '1' Bravo position and add to BravoPathfindList?
+                // Reset if !tempBravo?
+
                 // Run through the column looking for Bravo_Static
-                bool tempBravo = VerticalPathfindCheck(x, BoardObject.Bravo_Static);
+                bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
 
                 if(!tempBravo)
                 {
                     bravoExists = false;
+                }
+                else if( x == 0 )
+                {
+                    tempBravoLeftColumnPosition = new Vector2Int();
                 }
             }
         }
@@ -166,17 +191,22 @@ public class GameLogic : MonoBehaviour
         print("Bravo Vertical Test: " + bravoExists);
 
         #region Horizontal Tests
+        if(alphaExists)
+        {
+            // AlphaPathfindList.Add()
+        }
 
         #endregion
 
         yield return true;
     }
 
-    List<BoardObject> AlphaPathfindList;
-    List<BoardObject> BravoPathfindList;
-    IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition, )
+    List<Vector2Int> AlphaPathfindList;
+    List<Vector2Int> BravoPathfindList;
+    IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition)
     {
         // Use the previously populated List as a starting point to pathfind toward the right side.
+
 
         yield return true;
     }
@@ -187,10 +217,12 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="_boardObject">The piece to compare against for validity</param>
     /// <returns></returns>
-    bool VerticalPathfindCheck(int _x, BoardObject _boardObject)
+    List<int> tempVertXPositions;
+    bool VerticalValidationCheck(int _x, BoardObject _boardObject)
     {
         BoardObject tempObject;
         bool validColumn = false;
+        tempVertXPositions = new List<int>();
 
         // Run vertically. If a static (or Sidewall) exists, continue
         for (int y = 0; y < BoardHeight; y++)
@@ -216,12 +248,18 @@ public class GameLogic : MonoBehaviour
                 {
                     validColumn = true;
 
-                    // Force exit to next column to check
-                    y = BoardHeight;
+                    // If the 1st column, get all valid positions to populate into Pathfinding Check.
+                    if(_x != 1)
+                    {
+                        // Force exit to next column to check
+                        y = BoardHeight;
+                    }
+                    else
+                    {
+                        tempVertXPositions.Add(y);
+                    }
                 }
             }
-
-            
         }
 
         return validColumn;
