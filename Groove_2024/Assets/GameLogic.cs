@@ -131,9 +131,6 @@ public class GameLogic : MonoBehaviour
         AlphaPathfindList = new List<Vector2Int>();
         BravoPathfindList = new List<Vector2Int>();
 
-        Vector2Int tempAlphaLeftColumnPosition = new Vector2Int();
-        Vector2Int tempBravoLeftColumnPosition = new Vector2Int();
-
         #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         for (int x = 0; x < BoardWidth; x++)
@@ -146,7 +143,6 @@ public class GameLogic : MonoBehaviour
                 // Run through the column looking for Alpha_Static
                 bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
                 
-
                 // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
                 if (!tempAlpha)
                 {
@@ -160,10 +156,11 @@ public class GameLogic : MonoBehaviour
                     for(int num = 0; num < tempVertXPositions.Count; num++)
                     {
                         test += tempVertXPositions[num].ToString() + ", ";
+
+                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
+                        AlphaPathfindList.Add(new Vector2Int(x, tempVertXPositions[num]));
                     }
                     print(test);
-
-                    tempAlphaLeftColumnPosition = new Vector2Int();
                 }
             }
 
@@ -181,7 +178,15 @@ public class GameLogic : MonoBehaviour
                 }
                 else if( x == 0 )
                 {
-                    tempBravoLeftColumnPosition = new Vector2Int();
+                    string test = "Bravo: ";
+                    for(int num = 0; num < tempVertXPositions.Count; num++)
+                    {
+                        test += tempVertXPositions[num].ToString() + ", ";
+
+                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
+                        BravoPathfindList.Add(new Vector2Int(x, tempVertXPositions[num]));
+                    }
+                    print(test);
                 }
             }
         }
@@ -193,8 +198,20 @@ public class GameLogic : MonoBehaviour
         #region Horizontal Tests
         if(alphaExists)
         {
-            // AlphaPathfindList.Add()
+            for(int x = 0; x < AlphaPathfindList.Count; x++)
+            {
+                StartCoroutine( PathfindLogic(BoardObject.Alpha_Static, AlphaPathfindList[x]) );
+            }
         }
+
+        if(bravoExists)
+        {
+            for(int x = 0; x < BravoPathfindList.Count; x++)
+            {
+                StartCoroutine( PathfindLogic(BoardObject.Bravo_Static, BravoPathfindList[x]) );
+            }
+        }
+
 
         #endregion
 
@@ -206,7 +223,7 @@ public class GameLogic : MonoBehaviour
     IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition)
     {
         // Use the previously populated List as a starting point to pathfind toward the right side.
-
+        print("Starting Horiz Test using " + boardObjectType.ToString() + " at position " + startPosition.ToString());
 
         yield return true;
     }
