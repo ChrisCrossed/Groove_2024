@@ -93,9 +93,19 @@ public class GameLogic : MonoBehaviour
             {
                 SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
             }
+
+            if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
+            {
+                SetBoardObjectAtPosition(x, 4, BoardObject.Bravo_Static);
+            }
         }
 
+        SetBoardObjectAtPosition(1, 5, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(1, 3, BoardObject.Bravo_Static);
+
         SetBoardObjectAtPosition(1, 7, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(4, 7, BoardObject.Alpha_Static);
 
         // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
     }
@@ -171,12 +181,12 @@ public class GameLogic : MonoBehaviour
 
                 // Run through the column looking for Bravo_Static
                 bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
-
-                if(!tempBravo)
+                
+                if (!tempBravo)
                 {
                     bravoExists = false;
                 }
-                else if( x == 0 )
+                else if( x == 1 )
                 {
                     string test = "Bravo: ";
                     for(int num = 0; num < tempVertXPositions.Count; num++)
@@ -201,6 +211,7 @@ public class GameLogic : MonoBehaviour
             for(int x = 0; x < AlphaPathfindList.Count; x++)
             {
                 StartCoroutine( PathfindLogic(BoardObject.Alpha_Static, AlphaPathfindList[x]) );
+                
             }
         }
 
@@ -222,8 +233,20 @@ public class GameLogic : MonoBehaviour
     List<Vector2Int> BravoPathfindList;
     IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition)
     {
+        float waitLength = 150f;
+        if (boardObjectType == BoardObject.Bravo_Static)
+            waitLength = 30f;
+
+        print("Start Frame: " + Time.frameCount);
+        float timeTest = Time.frameCount;
         // Use the previously populated List as a starting point to pathfind toward the right side.
         print("Starting Horiz Test using " + boardObjectType.ToString() + " at position " + startPosition.ToString());
+        while(Time.frameCount < timeTest + waitLength)
+        {
+            yield return null;
+        }
+
+        print("End: " + Time.frameCount);
 
         yield return true;
     }
@@ -265,7 +288,6 @@ public class GameLogic : MonoBehaviour
                 {
                     validColumn = true;
 
-                    // If the 1st column, get all valid positions to populate into Pathfinding Check.
                     if(_x != 1)
                     {
                         // Force exit to next column to check
@@ -273,7 +295,13 @@ public class GameLogic : MonoBehaviour
                     }
                     else
                     {
+                        // If the 1st column, get all valid vertical positions (not just the first one) to populate into Pathfinding Check.
                         tempVertXPositions.Add(y);
+                        // NOTE: During pathfinding, compare blocks y+1 & y-1 in x == 1 coordinate when x+1 is NOT valid (Basically, check to see if L shape start happens, and remove the possibility)
+                        // 
+                        // [X] [_] [_] <- Remove from Pathfinding
+                        // [X] [X] [X]
+                        // [X] [_] [_] <- Remove from Pathfinding
                     }
                 }
             }
