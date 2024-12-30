@@ -257,7 +257,7 @@ public class GameLogic : MonoBehaviour
         bool checkDown = true;
 
         // Don't allow checking in the direction we came from
-        if      (previousDirection == PathfindDirection.Right)
+        if (previousDirection == PathfindDirection.Right)
             checkLeft = false;
         else if (previousDirection == PathfindDirection.Left)
             checkLeft = false;
@@ -289,6 +289,31 @@ public class GameLogic : MonoBehaviour
         print("Down: " + checkDown);
         print("Check Done");
 
+        Vector2Int nextPos = pathfindList[pathfindList.Count - 1];
+        BoardObject bo_BlockType;
+
+        // Right, Down, Up, Left
+        if (checkRight)
+        {
+            ++nextPos.x;
+
+            bo_BlockType = GetBoardObjectAtPosition(nextPos);
+
+            if(bo_BlockType == boardObjectType)
+            {
+
+            }
+        }
+            
+        else if (checkDown)
+            --nextPos.y;
+        else if (checkUp)
+            ++nextPos.y;
+        else if (checkLeft)
+            --nextPos.x;
+
+         
+
         /// 
         /// TIME TEST LOGIC
         /// 
@@ -311,6 +336,7 @@ public class GameLogic : MonoBehaviour
 
         yield return true;
     }
+
 
 
     /// <summary>
@@ -461,6 +487,11 @@ public class GameLogic : MonoBehaviour
         tempObject = Board[(BoardWidth * _y) + _x];
 
         return tempObject;
+    }
+
+    BoardObject GetBoardObjectAtPosition(Vector2Int v2_Position)
+    {
+        return GetBoardObjectAtPosition(v2_Position.x, v2_Position.y);
     }
 
     void Console_PrintBoard()
