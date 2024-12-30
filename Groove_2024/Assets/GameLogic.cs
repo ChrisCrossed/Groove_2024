@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum BoardObject
@@ -25,7 +26,8 @@ public enum PathfindDirection
     Right,
     Up,
     Down,
-    Left
+    Left,
+    None
 }
 
 public class GameLogic : MonoBehaviour
@@ -146,8 +148,10 @@ public class GameLogic : MonoBehaviour
         bool alphaExists = true;
         bool bravoExists = true;
 
-        AlphaPathfindList = new List<Vector2Int>();
-        BravoPathfindList = new List<Vector2Int>();
+        AlphaPathfindList = new List<PathBoardObject>();
+        BravoPathfindList = new List<PathBoardObject>();
+
+        print("--------------------");
 
         #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
@@ -175,8 +179,10 @@ public class GameLogic : MonoBehaviour
                     {
                         test += tempVertXPositions[num].ToString() + ", ";
 
+                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
+
                         // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        AlphaPathfindList.Add(new Vector2Int(x, tempVertXPositions[num]));
+                        AlphaPathfindList.Add(tempPathingBoardObject);
                     }
                     print(test);
                 }
@@ -201,8 +207,10 @@ public class GameLogic : MonoBehaviour
                     {
                         test += tempVertXPositions[num].ToString() + ", ";
 
+                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
+
                         // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        BravoPathfindList.Add(new Vector2Int(x, tempVertXPositions[num]));
+                        BravoPathfindList.Add(tempPathingBoardObject);
                     }
                     print(test);
                 }
@@ -212,9 +220,10 @@ public class GameLogic : MonoBehaviour
 
         print("Alpha Vertical Test: " + alphaExists);
         print("Bravo Vertical Test: " + bravoExists);
+        print("--------------------");
 
         #region Horizontal Tests
-        if(alphaExists)
+        if (alphaExists)
         {
             for(int x = 0; x < AlphaPathfindList.Count; x++)
             {
@@ -237,82 +246,193 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    List<Vector2Int> AlphaPathfindList;
-    List<Vector2Int> BravoPathfindList;
-    IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition)
+    List<PathBoardObject> AlphaPathfindList;
+    List<PathBoardObject> BravoPathfindList;
+    IEnumerator PathfindLogic(BoardObject boardObjectType, PathBoardObject startBlock)
     {
         // Using start position & boardObjectType, preload a new List and begin the loop process
-        List<Vector2Int> pathfindList = new List<Vector2Int>();
-        pathfindList.Add(startPosition);
+        List<PathBoardObject> pathfindList = new List<PathBoardObject>();
+        pathfindList.Add(startBlock);
 
         // Preset direction to evaluate against. Don't start moving left since we're against the left wall.
-        PathfindDirection previousDirection = PathfindDirection.Left;
+        PathfindDirection previousDirection = PathfindDirection.None;
 
-        // Run a 'While True' loop through the logic system. Break out when a successful path is found, OR no possible paths exist.
+        
 
-        // Evaluate legal directions to compare against
-        bool checkLeft = true;
-        bool checkRight = true;
-        bool checkUp = true;
-        bool checkDown = true;
+        ///
+        /// Run a 'While True' loop through the logic system. Break out when a successful path is found, OR no possible paths exist.
+        /// 
+
 
         // Don't allow checking in the direction we came from
         if (previousDirection == PathfindDirection.Right)
-            checkLeft = false;
+            startBlock.LeftValid = false;
         else if (previousDirection == PathfindDirection.Left)
-            checkLeft = false;
+            startBlock.RightValid = false;
         else if (previousDirection == PathfindDirection.Up)
-            checkDown = false;
+            startBlock.DownValid = false;
         else if (previousDirection == PathfindDirection.Down)
-            checkUp = false;
+            startBlock.UpValid = false;
 
         // If checking to the left && left position is Left Valid Column, don't check it.
-        if (previousDirection == PathfindDirection.Left && (pathfindList[pathfindList.Count - 1].x - 1) <= HORIZ_LEFT_WALL_XPos_Playable)
-            checkLeft = false;
+        if (previousDirection == PathfindDirection.Left && (pathfindList[pathfindList.Count - 1].Position.x - 1) <= HORIZ_LEFT_WALL_XPos_Playable)
+            startBlock.LeftValid = false;
 
-        if (previousDirection == PathfindDirection.Up && (pathfindList[pathfindList.Count - 1].y) >= BoardHeight)
-            checkUp = false;
+        if (previousDirection == PathfindDirection.Up && (pathfindList[pathfindList.Count - 1].Position.y) >= BoardHeight)
+            startBlock.DownValid = false;
 
-        if (previousDirection == PathfindDirection.Down && (pathfindList[pathfindList.Count - 1].y == 0))
-            checkDown = false;
+        if (previousDirection == PathfindDirection.Down && (pathfindList[pathfindList.Count - 1].Position.y == 0))
+            startBlock.DownValid = false;
 
-        if (pathfindList[pathfindList.Count - 1].x == HORIZ_LEFT_WALL_XPos_Playable)
+        if (pathfindList[pathfindList.Count - 1].Position.x == HORIZ_LEFT_WALL_XPos_Playable)
         {
-            checkDown = false;
-            checkUp = false;
+            startBlock.DownValid = false;
+            startBlock.UpValid = false;
         }
 
-        print(boardObjectType + " @ " + startPosition + ": ");
-        print("Left: " + checkLeft);
-        print("Right: " + checkRight);
-        print("Up: " + checkUp);
-        print("Down: " + checkDown);
+        /*
+        print(boardObjectType + " @ " + pathfindList[pathfindList.Count - 1].Position + ": ");
+        print("Left: " + startBlock.LeftValid);
+        print("Right: " + startBlock.RightValid);
+        print("Up: " + startBlock.UpValid);
+        print("Down: " + startBlock.DownValid);
         print("Check Done");
+        */
 
-        Vector2Int nextPos = pathfindList[pathfindList.Count - 1];
+        Vector2Int nextPos = pathfindList[pathfindList.Count - 1].Position;
         BoardObject bo_BlockType;
-
-        // Right, Down, Up, Left
-        if (checkRight)
+        
+        // Previous position list to check against
+        Vector2Int[] previousPositions = new Vector2Int[pathfindList.Count];
+        for(int i = 0; i < pathfindList.Count; i++)
         {
+            previousPositions[i] = pathfindList[i].Position;
+        }
+        int validPositions = 0;
+
+        ///
+        /// Right, Down, Up, Left
+        /// 
+        if (startBlock.RightValid)
+        {
+            // Evaluate based on the position to the right
             ++nextPos.x;
+            
+            bo_BlockType = GetBoardObjectAtPosition(nextPos);
+            
+            // Run check that the block being evaluated doesn't already exist in the list
+            if (previousPositions.Contains(nextPos))
+            {
+                startBlock.RightValid = false;
+            }
+
+            if (bo_BlockType != boardObjectType && startBlock.RightValid)
+            {
+                startBlock.RightValid = false;
+            }
+
+            if (startBlock.RightValid) validPositions++;
+        }
+
+        nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+        if (startBlock.DownValid)
+        {
+            // Evaluate based on the position below
+            --nextPos.y;
 
             bo_BlockType = GetBoardObjectAtPosition(nextPos);
 
-            if(bo_BlockType == boardObjectType)
+            // Run check that the block being evaluated doesn't already exist in the list
+            if (previousPositions.Contains(nextPos))
+            {
+                startBlock.DownValid = false;
+            }
+
+            // Run check if the next block is a valid comparison AND ensure we should keep running checks
+            if (bo_BlockType != boardObjectType && startBlock.DownValid)
+            {
+                startBlock.DownValid = false;
+            }
+
+            if (startBlock.DownValid) validPositions++;
+        }
+
+        nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+        if (startBlock.UpValid)
+        {
+            // Evaluate based on the position above
+            ++nextPos.y;
+
+            bo_BlockType = GetBoardObjectAtPosition(nextPos);
+
+            // Run check that the block being evaluated doesn't already exist in the list
+            if (previousPositions.Contains(nextPos))
+            {
+                startBlock.UpValid = false;
+            }
+
+            // Run check if the next block is a valid comparison AND ensure we should keep running checks
+            if (bo_BlockType != boardObjectType && startBlock.UpValid)
+            {
+                startBlock.UpValid = false;
+            }
+
+            if (startBlock.UpValid) validPositions++;
+        }
+
+        nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+        if (startBlock.LeftValid)
+        {
+            // Evaluate based on the position to the left
+            --nextPos.x;
+
+            bo_BlockType = GetBoardObjectAtPosition(nextPos);
+
+            // Run check that the block being evaluated doesn't already exist in the list
+            if (previousPositions.Contains(nextPos))
+            {
+                startBlock.LeftValid = false;
+            }
+
+            // Run check if the next block is a valid comparison AND ensure we should keep running checks
+            if (bo_BlockType != boardObjectType && startBlock.LeftValid)
+            {
+                startBlock.LeftValid = false;
+            }
+
+            if (startBlock.DownValid) validPositions++;
+        }
+
+        print("Valid Positions remaining: " + validPositions);
+
+        // If NO new valid positions exist, terminate this thread
+        if (validPositions == 0)
+        {
+            print("ENDING THREAD - " + boardObjectType + " starting at " + startBlock);
+            yield return false;
+        }
+        else
+        {
+            ///
+            /// Compare remaining valid positions.
+            /// If 2+ exist, Duplicate the pathfind list by 'Valid Positions - 1'
+            /// Add each valid position to each currently existing pathfind list.
+            /// Run new threads on any NEW pathfinding lists
+            /// 
+
+            if (validPositions > 1)
             {
 
             }
         }
-            
-        else if (checkDown)
-            --nextPos.y;
-        else if (checkUp)
-            ++nextPos.y;
-        else if (checkLeft)
-            --nextPos.x;
 
-         
+        
 
         /// 
         /// TIME TEST LOGIC

@@ -42,4 +42,10 @@ struct PathBoardObject
         get => _upValid;
         set => _upValid = value;
     }
+
+    internal Vector2Int Position
+    {
+        get => _thisPosition;
+        set => _thisPosition = value;
+    }
 }
