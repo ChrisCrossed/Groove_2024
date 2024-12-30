@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public enum BoardObject
@@ -37,6 +35,11 @@ public class GameLogic : MonoBehaviour
     [SerializeField, Range(5, 20)]
     int BoardHeight_Maximum;
 
+    const int HORIZ_LEFT_WALL_XPos_Playable = 1;
+    const int HORIZ_LEFT_WALL_XPos_Sidewall = 0;
+    int HORIZ_RIGHT_WALL_XPos_Playable;
+    int HORIZ_RIGHT_WALL_XPos_Sidewall;
+
     int BoardWidth;
     int BoardHeight;
     Vector2Int TileBottomLeftPosition;
@@ -60,6 +63,11 @@ public class GameLogic : MonoBehaviour
         // Extend width of board by 2 to include the Sidewalls
         BoardWidth = BoardWidth_Maximum + 2;
         BoardHeight = BoardHeight_Maximum;
+
+        // Ex: 10 width pre-defined turns into 12 width including Sidewalls.
+        // 10 width == 0 -> 11 for all spaces. 0 & 11 are Sidewall. 1 & 10 are Playable.
+        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth_Maximum;
+        HORIZ_RIGHT_WALL_XPos_Sidewall = HORIZ_RIGHT_WALL_XPos_Playable + 1;
 
         Board = new List<BoardObject>();
 
@@ -233,6 +241,58 @@ public class GameLogic : MonoBehaviour
     List<Vector2Int> BravoPathfindList;
     IEnumerator PathfindLogic(BoardObject boardObjectType, Vector2Int startPosition)
     {
+        // Using start position & boardObjectType, preload a new List and begin the loop process
+        List<Vector2Int> pathfindList = new List<Vector2Int>();
+        pathfindList.Add(startPosition);
+
+        // Preset direction to evaluate against. Don't start moving left since we're against the left wall.
+        PathfindDirection previousDirection = PathfindDirection.Left;
+
+        // Run a 'While True' loop through the logic system. Break out when a successful path is found, OR no possible paths exist.
+
+        // Evaluate legal directions to compare against
+        bool checkLeft = true;
+        bool checkRight = true;
+        bool checkUp = true;
+        bool checkDown = true;
+
+        // Don't allow checking in the direction we came from
+        if      (previousDirection == PathfindDirection.Right)
+            checkLeft = false;
+        else if (previousDirection == PathfindDirection.Left)
+            checkLeft = false;
+        else if (previousDirection == PathfindDirection.Up)
+            checkDown = false;
+        else if (previousDirection == PathfindDirection.Down)
+            checkUp = false;
+
+        // If checking to the left && left position is Left Valid Column, don't check it.
+        if (previousDirection == PathfindDirection.Left && (pathfindList[pathfindList.Count - 1].x - 1) <= HORIZ_LEFT_WALL_XPos_Playable)
+            checkLeft = false;
+
+        if (previousDirection == PathfindDirection.Up && (pathfindList[pathfindList.Count - 1].y) >= BoardHeight)
+            checkUp = false;
+
+        if (previousDirection == PathfindDirection.Down && (pathfindList[pathfindList.Count - 1].y == 0))
+            checkDown = false;
+
+        if (pathfindList[pathfindList.Count - 1].x == HORIZ_LEFT_WALL_XPos_Playable)
+        {
+            checkDown = false;
+            checkUp = false;
+        }
+
+        print(boardObjectType + " @ " + startPosition + ": ");
+        print("Left: " + checkLeft);
+        print("Right: " + checkRight);
+        print("Up: " + checkUp);
+        print("Down: " + checkDown);
+        print("Check Done");
+
+        /// 
+        /// TIME TEST LOGIC
+        /// 
+        /*
         float waitLength = 150f;
         if (boardObjectType == BoardObject.Bravo_Static)
             waitLength = 30f;
@@ -247,6 +307,7 @@ public class GameLogic : MonoBehaviour
         }
 
         print("End: " + Time.frameCount);
+        */
 
         yield return true;
     }
