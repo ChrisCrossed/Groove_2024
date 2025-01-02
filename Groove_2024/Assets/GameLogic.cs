@@ -121,6 +121,8 @@ public class GameLogic : MonoBehaviour
         SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Static);
         SetBoardObjectAtPosition(4, 7, BoardObject.Alpha_Static);
 
+        SetBoardObjectAtPosition(2, 3, BoardObject.Alpha_Static);
+
         // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
     }
 
@@ -294,17 +296,183 @@ public class GameLogic : MonoBehaviour
         print("Down: " + pathfindList[pathfindList.Count - 1].DownValid);
         print("Check Done\n-------------------------");
 
-
-        /*
-        print(boardObjectType + " @ " + pathfindList[pathfindList.Count - 1].Position + ": ");
-        print("Left: " + startBlock.LeftValid);
-        print("Right: " + startBlock.RightValid);
-        print("Up: " + startBlock.UpValid);
-        print("Down: " + startBlock.DownValid);
-        print("Check Done");
-        */
-
+        int counter = 0;
+        const int counter_MAX = 5;
         /// START WHILE TRUE
+        while(counter < counter_MAX)
+        {
+            List<PathBoardObject> validBoardObjects = new List<PathBoardObject>();
+
+            PathBoardObject tempBlock = pathfindList[pathfindList.Count - 1];
+            BoardObject evaluationBlock;
+            Vector2Int nextPos = tempBlock.Position;
+
+            // Create temporary positional list using pathfindList in order to compare through for already existing position
+            List<Vector2Int> arrayPositionsList = new List<Vector2Int>();
+            for(int i = 0; i < pathfindList.Count; i++)
+            {
+                arrayPositionsList.Add(pathfindList[i].Position);
+            }
+
+            ///
+            /// Begin comparing all four directions (where appropriate)
+            ///
+
+
+            if (tempBlock.RightValid)
+            {
+                // Evaluate based on the position to the right
+                ++nextPos.x;
+
+                evaluationBlock = GetBoardObjectAtPosition(nextPos);
+
+                // Compares this block to the one passed into the function
+                if (evaluationBlock != boardObjectType)
+                {
+                    tempBlock.RightValid = false;
+                }
+
+                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Right Valid' value wasn't changed above
+                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                if (arrayPositionsList.Contains(nextPos) && tempBlock.RightValid)
+                {
+                    tempBlock.RightValid = false;
+                }
+
+                if (tempBlock.RightValid)
+                {
+                    validBoardObjects.Add( new PathBoardObject(nextPos, false, true, true, true) );
+                }
+            }
+
+            // Resets comparison
+            nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+            if (tempBlock.DownValid)
+            {
+                // Evaluate based on the position below
+                --nextPos.y;
+
+                evaluationBlock = GetBoardObjectAtPosition(nextPos);
+
+                // Compares this block to the one passed into the function
+                if (evaluationBlock != boardObjectType)
+                {
+                    tempBlock.DownValid = false;
+                }
+
+                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Down Valid' value wasn't changed above
+                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                if (arrayPositionsList.Contains(nextPos) && tempBlock.DownValid)
+                {
+                    tempBlock.DownValid = false;
+                }
+
+                if (tempBlock.DownValid)
+                {
+                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                }
+            }
+
+            // Resets comparison
+            nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+            if (tempBlock.UpValid)
+            {
+                // Evaluate based on the position above
+                ++nextPos.y;
+
+                evaluationBlock = GetBoardObjectAtPosition(nextPos);
+
+                // Compares this block to the one passed into the function
+                if (evaluationBlock != boardObjectType)
+                {
+                    tempBlock.UpValid = false;
+                }
+
+                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Up Valid' value wasn't changed above
+                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                if (arrayPositionsList.Contains(nextPos) && tempBlock.UpValid)
+                {
+                    tempBlock.UpValid = false;
+                }
+
+                if (tempBlock.UpValid)
+                {
+                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, true, false));
+                }
+            }
+
+            // Resets comparison
+            nextPos = pathfindList[pathfindList.Count - 1].Position;
+
+
+            if (tempBlock.LeftValid)
+            {
+                // Evaluate based on the position to the left
+                --nextPos.x;
+
+                evaluationBlock = GetBoardObjectAtPosition(nextPos);
+
+                // Compares this block to the one passed into the function
+                if (evaluationBlock != boardObjectType)
+                {
+                    tempBlock.LeftValid = false;
+                }
+
+                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Left Valid' value wasn't changed above
+                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                if (arrayPositionsList.Contains(nextPos) && tempBlock.LeftValid)
+                {
+                    tempBlock.LeftValid = false;
+                }
+
+                if (tempBlock.DownValid)
+                {
+                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                }
+            }
+
+            print("Valid Positions remaining: " + validBoardObjects.Count);
+
+            if(validBoardObjects.Count != 0)
+            {
+                if(validBoardObjects.Count > 1)
+                {
+                    // Duplicate thread FIRST, add position[1] in list, and begin new thread
+                    print("Adding " + validBoardObjects[1].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+                    List<PathBoardObject> firstNewThread = new List<PathBoardObject>();
+                    firstNewThread = pathfindList;
+                    firstNewThread.Add(validBoardObjects[1]);
+                    StartCoroutine(PathfindLogic(boardObjectType, firstNewThread));
+
+                    if(validBoardObjects.Count == 3)
+                    {
+                        print("Adding " + validBoardObjects[2].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+                        List<PathBoardObject> secondNewThread = new List<PathBoardObject>();
+                        secondNewThread = pathfindList;
+                        secondNewThread.Add(validBoardObjects[2]);
+                        StartCoroutine(PathfindLogic(boardObjectType, secondNewThread));
+                    }
+                }
+
+                // Default for the first valid new block position
+                print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread.");
+                pathfindList.Add(validBoardObjects[0]);
+
+            }
+            else
+            {
+                // Ends thread. 
+                // TODO: Remove this
+                counter = counter_MAX;
+                yield return false;
+            }
+
+            counter++;
+        }
 
         /*
         #region While True Loop
@@ -448,219 +616,7 @@ public class GameLogic : MonoBehaviour
 
         yield return true;
     }
-    IEnumerator PathfindLogic(BoardObject boardObjectType, PathBoardObject startBlock)
-    {
-        // Using start position & boardObjectType, preload a new List and begin the loop process
-        List<PathBoardObject> pathfindList = new List<PathBoardObject>();
-        pathfindList.Add(startBlock);
-
-        // Preset direction to evaluate against. Don't start moving left since we're against the left wall.
-        PathfindDirection previousDirection = PathfindDirection.None;
-
-        
-
-        ///
-        /// Run a 'While True' loop through the logic system. Break out when a successful path is found, OR no possible paths exist.
-        /// 
-
-
-        // Don't allow checking in the direction we came from
-        if (previousDirection == PathfindDirection.Right)
-            startBlock.LeftValid = false;
-        else if (previousDirection == PathfindDirection.Left)
-            startBlock.RightValid = false;
-        else if (previousDirection == PathfindDirection.Up)
-            startBlock.DownValid = false;
-        else if (previousDirection == PathfindDirection.Down)
-            startBlock.UpValid = false;
-
-        // If checking to the left && left position is Left Valid Column, don't check it.
-        if (previousDirection == PathfindDirection.Left && (pathfindList[pathfindList.Count - 1].Position.x - 1) <= HORIZ_LEFT_WALL_XPos_Playable)
-            startBlock.LeftValid = false;
-
-        if (previousDirection == PathfindDirection.Up && (pathfindList[pathfindList.Count - 1].Position.y) >= BoardHeight)
-            startBlock.DownValid = false;
-
-        if (previousDirection == PathfindDirection.Down && (pathfindList[pathfindList.Count - 1].Position.y == 0))
-            startBlock.DownValid = false;
-
-        if (pathfindList[pathfindList.Count - 1].Position.x == HORIZ_LEFT_WALL_XPos_Playable)
-        {
-            startBlock.DownValid = false;
-            startBlock.UpValid = false;
-        }
-
-        /*
-        print(boardObjectType + " @ " + pathfindList[pathfindList.Count - 1].Position + ": ");
-        print("Left: " + startBlock.LeftValid);
-        print("Right: " + startBlock.RightValid);
-        print("Up: " + startBlock.UpValid);
-        print("Down: " + startBlock.DownValid);
-        print("Check Done");
-        */
-
-        /// START WHILE TRUE
-        
-        #region While True Loop
-        Vector2Int nextPos = pathfindList[pathfindList.Count - 1].Position;
-        BoardObject bo_BlockType;
-        
-        // Previous position list to check against
-        Vector2Int[] previousPositions = new Vector2Int[pathfindList.Count];
-        for(int i = 0; i < pathfindList.Count; i++)
-        {
-            previousPositions[i] = pathfindList[i].Position;
-        }
-        int validPositions = 0;
-
-        ///
-        /// Right, Down, Up, Left
-        /// 
-        if (startBlock.RightValid)
-        {
-            // Evaluate based on the position to the right
-            ++nextPos.x;
-            
-            bo_BlockType = GetBoardObjectAtPosition(nextPos);
-            
-            // Run check that the block being evaluated doesn't already exist in the list
-            if (previousPositions.Contains(nextPos))
-            {
-                startBlock.RightValid = false;
-            }
-
-            if (bo_BlockType != boardObjectType && startBlock.RightValid)
-            {
-                startBlock.RightValid = false;
-            }
-
-            if (startBlock.RightValid) validPositions++;
-        }
-
-        nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-
-        if (startBlock.DownValid)
-        {
-            // Evaluate based on the position below
-            --nextPos.y;
-
-            bo_BlockType = GetBoardObjectAtPosition(nextPos);
-
-            // Run check that the block being evaluated doesn't already exist in the list
-            if (previousPositions.Contains(nextPos))
-            {
-                startBlock.DownValid = false;
-            }
-
-            // Run check if the next block is a valid comparison AND ensure we should keep running checks
-            if (bo_BlockType != boardObjectType && startBlock.DownValid)
-            {
-                startBlock.DownValid = false;
-            }
-
-            if (startBlock.DownValid) validPositions++;
-        }
-
-        nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-
-        if (startBlock.UpValid)
-        {
-            // Evaluate based on the position above
-            ++nextPos.y;
-
-            bo_BlockType = GetBoardObjectAtPosition(nextPos);
-
-            // Run check that the block being evaluated doesn't already exist in the list
-            if (previousPositions.Contains(nextPos))
-            {
-                startBlock.UpValid = false;
-            }
-
-            // Run check if the next block is a valid comparison AND ensure we should keep running checks
-            if (bo_BlockType != boardObjectType && startBlock.UpValid)
-            {
-                startBlock.UpValid = false;
-            }
-
-            if (startBlock.UpValid) validPositions++;
-        }
-
-        nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-
-        if (startBlock.LeftValid)
-        {
-            // Evaluate based on the position to the left
-            --nextPos.x;
-
-            bo_BlockType = GetBoardObjectAtPosition(nextPos);
-
-            // Run check that the block being evaluated doesn't already exist in the list
-            if (previousPositions.Contains(nextPos))
-            {
-                startBlock.LeftValid = false;
-            }
-
-            // Run check if the next block is a valid comparison AND ensure we should keep running checks
-            if (bo_BlockType != boardObjectType && startBlock.LeftValid)
-            {
-                startBlock.LeftValid = false;
-            }
-
-            if (startBlock.DownValid) validPositions++;
-        }
-
-        print("Valid Positions remaining: " + validPositions);
-
-        // If NO new valid positions exist, terminate this thread
-        if (validPositions == 0)
-        {
-            print("ENDING THREAD - " + boardObjectType + " starting at " + startBlock);
-            yield return false;
-        }
-        else
-        {
-            ///
-            /// Compare remaining valid positions.
-            /// If 2+ exist, Duplicate the pathfind list by 'Valid Positions - 1'
-            /// Add each valid position to each currently existing pathfind list.
-            /// Run new threads on any NEW pathfinding lists
-            /// 
-
-            if (validPositions > 1)
-            {
-
-            }
-        }
-        #endregion
-        
-        /// END WHILE TRUE
-
-        /// 
-        /// TIME TEST LOGIC
-        /// 
-        /*
-        float waitLength = 150f;
-        if (boardObjectType == BoardObject.Bravo_Static)
-            waitLength = 30f;
-
-        print("Start Frame: " + Time.frameCount);
-        float timeTest = Time.frameCount;
-        // Use the previously populated List as a starting point to pathfind toward the right side.
-        print("Starting Horiz Test using " + boardObjectType.ToString() + " at position " + startPosition.ToString());
-        while(Time.frameCount < timeTest + waitLength)
-        {
-            yield return null;
-        }
-
-        print("End: " + Time.frameCount);
-        */
-
-        yield return true;
-    }
-
+    
 
 
     /// <summary>

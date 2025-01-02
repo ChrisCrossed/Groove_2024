@@ -19,6 +19,15 @@ struct PathBoardObject
         _downValid = downValid;
     }
 
+    public PathBoardObject(Vector2Int position)
+    {
+        _thisPosition = position;
+        _leftValid = false;
+        _rightValid = false;
+        _upValid = false;
+        _downValid = false;
+    }
+
     public bool LeftValid
     {
         get => _leftValid;
