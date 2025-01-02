@@ -123,6 +123,15 @@ public class GameLogic : MonoBehaviour
 
         SetBoardObjectAtPosition(2, 3, BoardObject.Alpha_Static);
 
+        SetBoardObjectAtPosition(5, 5, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(5, 6, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(5, 7, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(6, 7, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(7, 7, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(8, 7, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(8, 6, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(8, 5, BoardObject.Bravo_Static);
+
         // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
     }
 
@@ -296,10 +305,10 @@ public class GameLogic : MonoBehaviour
         print("Down: " + pathfindList[pathfindList.Count - 1].DownValid);
         print("Check Done\n-------------------------");
 
-        int counter = 0;
-        const int counter_MAX = 5;
+        bool shouldContinue = true;
+
         /// START WHILE TRUE
-        while(counter < counter_MAX)
+        while(shouldContinue)
         {
             List<PathBoardObject> validBoardObjects = new List<PathBoardObject>();
 
@@ -465,14 +474,12 @@ public class GameLogic : MonoBehaviour
             }
             else
             {
-                // Ends thread. 
-                // TODO: Remove this
-                counter = counter_MAX;
-                yield return false;
+                // Ends thread.
+                shouldContinue = false;
             }
-
-            counter++;
         }
+
+        yield return false;
 
         /*
         #region While True Loop
@@ -616,7 +623,6 @@ public class GameLogic : MonoBehaviour
 
         yield return true;
     }
-    
 
 
     /// <summary>
