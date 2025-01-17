@@ -315,6 +315,15 @@ public class GameLogic : MonoBehaviour
         /// START WHILE TRUE
         while(shouldContinue)
         {
+            // In case a shorter path has already been found, this path is not good enough. End.
+            if(pathfindList.Count > CheckBestPathfindList(boardObjectType))
+            {
+                print("Path isn't short enough. Closing it off.");
+                ThreadCounter(boardObjectType, false);
+                shouldContinue = false;
+                continue;
+            }
+
             List<PathBoardObject> validBoardObjects = new List<PathBoardObject>();
 
             PathBoardObject tempBlock = pathfindList[pathfindList.Count - 1];
@@ -356,6 +365,15 @@ public class GameLogic : MonoBehaviour
                 if (tempBlock.RightValid)
                 {
                     validBoardObjects.Add( new PathBoardObject(nextPos, false, true, true, true) );
+
+                    // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
+                    if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
+                    {
+                        SaveSuccessfulPathing(boardObjectType, validBoardObjects);
+                        ThreadCounter(boardObjectType, false);
+                        shouldContinue = false;
+                        continue;
+                    }
                 }
             }
 
@@ -453,7 +471,7 @@ public class GameLogic : MonoBehaviour
 
             if(validBoardObjects.Count != 0)
             {
-                if(validBoardObjects.Count > 1)
+                if (validBoardObjects.Count > 1)
                 {
                     ThreadCounter(boardObjectType, true);
 
@@ -477,7 +495,7 @@ public class GameLogic : MonoBehaviour
                 }
 
                 // Default for the first valid new block position
-                print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread.");
+                print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
                 pathfindList.Add(validBoardObjects[0]);
 
             }
@@ -556,6 +574,8 @@ public class GameLogic : MonoBehaviour
     List<PathBoardObject> SuccessfulPathfindList_Bravo;
     void SaveSuccessfulPathing(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
     {
+        print("Chris: " + pathfindList.Count);
+        print("Saving Successful Pathing: " + boardObjectType.ToString());
         if(boardObjectType == BoardObject.Alpha_Static)
         {
             if(pathfindList.Count < SuccessfulPathfindList_Alpha.Count || SuccessfulPathfindList_Alpha == new List<PathBoardObject>())
@@ -572,6 +592,12 @@ public class GameLogic : MonoBehaviour
                 CurrentBravo = SuccessfulPathfindList_Bravo.Count;
             }
         }
+        string output = "Saved: " + boardObjectType.ToString() + ": ";
+        for(int i = 0; i < pathfindList.Count; i++)
+        {
+            output += pathfindList[i].Position.ToString() + ", ";
+        }
+        print(output);
     }
 
     int CurrentAlpha = 99;
