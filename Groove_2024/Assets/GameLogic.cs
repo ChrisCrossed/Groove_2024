@@ -32,6 +32,9 @@ public enum PathfindDirection
 
 public class GameLogic : MonoBehaviour
 {
+    [SerializeField]
+    bool BugTestConsoleOutput = false;
+
     [SerializeField, Range(5, 20)]
     int BoardWidth_Maximum;
     [SerializeField, Range(5, 20)]
@@ -175,7 +178,7 @@ public class GameLogic : MonoBehaviour
         SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
         SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
 
-        print("--------------------");
+        
 
         #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
@@ -208,7 +211,9 @@ public class GameLogic : MonoBehaviour
                         // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
                         AlphaPathfindList.Add(tempPathingBoardObject);
                     }
-                    print(test);
+
+                    if (BugTestConsoleOutput)
+                        print(test);
                 }
             }
 
@@ -236,15 +241,22 @@ public class GameLogic : MonoBehaviour
                         // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
                         BravoPathfindList.Add(tempPathingBoardObject);
                     }
-                    print(test);
+
+                    if (BugTestConsoleOutput)
+                        print(test);
                 }
             }
         }
         #endregion
 
-        print("Alpha Vertical Test: " + alphaExists);
-        print("Bravo Vertical Test: " + bravoExists);
-        print("--------------------");
+        if(BugTestConsoleOutput)
+        {
+            print("--------------------");
+            print("Alpha Vertical Test: " + alphaExists);
+            print("Bravo Vertical Test: " + bravoExists);
+            print("--------------------");
+        }
+        
 
         // This *MUST* be run before moving to the PreloadPathfindBlock section
         if(alphaExists)
@@ -264,7 +276,6 @@ public class GameLogic : MonoBehaviour
         {
             for(int x = 0; x < AlphaPathfindList.Count; x++)
             {
-                // StartCoroutine( PathfindLogic(BoardObject.Alpha_Static, AlphaPathfindList[x]) );
                 PreloadPathfindBlock(BoardObject.Alpha_Static, AlphaPathfindList[x]);
             }
         }
@@ -273,7 +284,6 @@ public class GameLogic : MonoBehaviour
         {
             for(int x = 0; x < BravoPathfindList.Count; x++)
             {
-                // StartCoroutine( PathfindLogic(BoardObject.Bravo_Static, BravoPathfindList[x]) );
                 PreloadPathfindBlock(BoardObject.Bravo_Static, BravoPathfindList[x]);
             }
         }
@@ -328,7 +338,9 @@ public class GameLogic : MonoBehaviour
             // In case a shorter path has already been found, this path is not good enough. End.
             if(pathfindList.Count > CheckBestPathfindList(boardObjectType))
             {
-                print("Path isn't short enough. Closing it off.");
+                if (BugTestConsoleOutput)
+                    print("Path isn't short enough. Closing it off.");
+
                 ThreadCounter(boardObjectType, false);
                 shouldContinue = false;
                 continue;
@@ -456,7 +468,6 @@ public class GameLogic : MonoBehaviour
             {
                 // Evaluate based on the position to the left
                 --nextPos.x;
-                print("Left Check:" + GetBoardObjectAtPosition(nextPos));
 
                 evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
@@ -479,16 +490,13 @@ public class GameLogic : MonoBehaviour
                 }
             }
 
-            if (tempBlock.Position == new Vector2Int(8, 6))
+            if (BugTestConsoleOutput)
             {
-                print("Left: " + tempBlock.LeftValid);
-                print("Right: " + tempBlock.RightValid);
-                print("Up: " + tempBlock.UpValid);
-                print("Down: " + tempBlock.DownValid);
+                print("Valid Positions remaining: " + validBoardObjects.Count);
+                print("Valid Positions: ");
+                foreach (PathBoardObject boardObject in validBoardObjects) { print(boardObject.Position); }
             }
-
-            print("Valid Positions remaining: " + validBoardObjects.Count);
-
+            
             if(validBoardObjects.Count != 0)
             {
                 if (validBoardObjects.Count > 1)
@@ -496,31 +504,60 @@ public class GameLogic : MonoBehaviour
                     ThreadCounter(boardObjectType, true);
 
                     // Duplicate thread FIRST, add position[1] in list, and begin new thread
-                    print("Adding " + validBoardObjects[1].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+                    if (BugTestConsoleOutput)
+                        print("Adding " + validBoardObjects[1].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+                    
                     List<PathBoardObject> firstNewThread = new List<PathBoardObject>();
-                    firstNewThread = pathfindList;
+
+                    // This was necessary because the 'original' thread was still being accessed (with the direction change IT had), while ALSO adding the new direction.
+                    // This resolves that.
+                    for(int i = 0; i < pathfindList.Count; i++)
+                        firstNewThread.Add(pathfindList[i]);
+
                     firstNewThread.Add(validBoardObjects[1]);
-                    PrintAllPositionsInList(firstNewThread);
+
+                    if (BugTestConsoleOutput)
+                    {
+                        print("THREAD '1'");
+                        PrintAllPositionsInList(firstNewThread);
+                    }
+                    
                     StartCoroutine(PathfindLogic(boardObjectType, firstNewThread));
 
                     if(validBoardObjects.Count == 3)
                     {
                         ThreadCounter(boardObjectType, true);
 
-                        print("Adding " + validBoardObjects[2].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+                        if (BugTestConsoleOutput)
+                            print("Adding " + validBoardObjects[2].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
+
                         List<PathBoardObject> secondNewThread = new List<PathBoardObject>();
-                        secondNewThread = pathfindList;
+
+                        // This was necessary because the 'original' thread was still being accessed (with the direction change IT had), while ALSO adding the new direction.
+                        // This resolves that.
+                        for (int i = 0; i < pathfindList.Count; i++)
+                            secondNewThread.Add(pathfindList[i]);
+
                         secondNewThread.Add(validBoardObjects[2]);
-                        PrintAllPositionsInList(secondNewThread);
+
+                        if (BugTestConsoleOutput)
+                            PrintAllPositionsInList(secondNewThread);
+
                         StartCoroutine(PathfindLogic(boardObjectType, secondNewThread));
                     }
                 }
 
                 // Default for the first valid new block position
-                print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
-
+                if (BugTestConsoleOutput)
+                {
+                    print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
+                    print("THREAD '0'");
+                }
+                    
                 pathfindList.Add(validBoardObjects[0]);
-                PrintAllPositionsInList(pathfindList);
+
+                if (BugTestConsoleOutput)
+                    PrintAllPositionsInList(pathfindList);
 
             }
             else
@@ -611,8 +648,9 @@ public class GameLogic : MonoBehaviour
     List<PathBoardObject> SuccessfulPathfindList_Bravo;
     void SaveSuccessfulPathing(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
     {
-        print("Chris: " + pathfindList.Count);
-        print("Saving Successful Pathing: " + boardObjectType.ToString());
+        if (BugTestConsoleOutput)
+            print("Saving Successful Pathing: " + boardObjectType.ToString());
+
         if(boardObjectType == BoardObject.Alpha_Static)
         {
             if(pathfindList.Count < SuccessfulPathfindList_Alpha.Count || SuccessfulPathfindList_Alpha == new List<PathBoardObject>())
@@ -629,12 +667,16 @@ public class GameLogic : MonoBehaviour
                 CurrentBravo = SuccessfulPathfindList_Bravo.Count;
             }
         }
-        string output = "Saved: " + boardObjectType.ToString() + ": ";
-        for(int i = 0; i < pathfindList.Count; i++)
+
+        if (BugTestConsoleOutput)
         {
-            output += pathfindList[i].Position.ToString() + ", ";
+            string output = "Saved: " + boardObjectType.ToString() + ": ";
+            for (int i = 0; i < pathfindList.Count; i++)
+            {
+                output += pathfindList[i].Position.ToString() + ", ";
+            }
+            print(output);
         }
-        print(output);
     }
 
     int CurrentAlpha = 99;
@@ -669,11 +711,16 @@ public class GameLogic : MonoBehaviour
                 BravoThreads++;
             else BravoThreads--;
 
-            print("Thread Counter: " + boardObjectType.ToString() + " has " + BravoThreads + " remaining");
+            if (BugTestConsoleOutput)
+                print("Thread Counter: " + boardObjectType.ToString() + " has " + BravoThreads + " remaining");
         }
 
-        if (AlphaThreads == 0 && BravoThreads == 0)
-            print("--------" + "\nNO MORE THREADS" + "\n--------");
+        if (BugTestConsoleOutput)
+        {
+            if (AlphaThreads == 0 && BravoThreads == 0)
+                print("--------" + "\nNO MORE THREADS" + "\n--------");
+        }
+            
     }
 
     #endregion
