@@ -103,10 +103,12 @@ public class GameLogic : MonoBehaviour
         // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
         for (int x = 0; x < BoardWidth; x++)
         {
+            /*
             if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
             {
                 SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
             }
+            */
 
             if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
             {
@@ -244,10 +246,18 @@ public class GameLogic : MonoBehaviour
         print("Bravo Vertical Test: " + bravoExists);
         print("--------------------");
 
-        for(int i = 0; i < AlphaPathfindList.Count; i++)
-            ThreadCounter(BoardObject.Alpha_Static, true);
-        for(int j = 0; j < BravoPathfindList.Count; j++)
-            ThreadCounter(BoardObject.Bravo_Static, true);
+        // This *MUST* be run before moving to the PreloadPathfindBlock section
+        if(alphaExists)
+        {
+            for (int i = 0; i < AlphaPathfindList.Count; i++)
+                ThreadCounter(BoardObject.Alpha_Static, true);
+        }
+        if(bravoExists)
+        {
+            for (int j = 0; j < BravoPathfindList.Count; j++)
+                ThreadCounter(BoardObject.Bravo_Static, true);
+        }
+        
 
         #region Horizontal Tests
         if (alphaExists)
@@ -341,6 +351,7 @@ public class GameLogic : MonoBehaviour
             /// Begin comparing all four directions (where appropriate)
             ///
 
+            
 
             if (tempBlock.RightValid)
             {
@@ -445,6 +456,7 @@ public class GameLogic : MonoBehaviour
             {
                 // Evaluate based on the position to the left
                 --nextPos.x;
+                print("Left Check:" + GetBoardObjectAtPosition(nextPos));
 
                 evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
@@ -461,10 +473,18 @@ public class GameLogic : MonoBehaviour
                     tempBlock.LeftValid = false;
                 }
 
-                if (tempBlock.DownValid)
+                if (tempBlock.LeftValid)
                 {
                     validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
                 }
+            }
+
+            if (tempBlock.Position == new Vector2Int(8, 6))
+            {
+                print("Left: " + tempBlock.LeftValid);
+                print("Right: " + tempBlock.RightValid);
+                print("Up: " + tempBlock.UpValid);
+                print("Down: " + tempBlock.DownValid);
             }
 
             print("Valid Positions remaining: " + validBoardObjects.Count);
@@ -480,6 +500,7 @@ public class GameLogic : MonoBehaviour
                     List<PathBoardObject> firstNewThread = new List<PathBoardObject>();
                     firstNewThread = pathfindList;
                     firstNewThread.Add(validBoardObjects[1]);
+                    PrintAllPositionsInList(firstNewThread);
                     StartCoroutine(PathfindLogic(boardObjectType, firstNewThread));
 
                     if(validBoardObjects.Count == 3)
@@ -490,13 +511,16 @@ public class GameLogic : MonoBehaviour
                         List<PathBoardObject> secondNewThread = new List<PathBoardObject>();
                         secondNewThread = pathfindList;
                         secondNewThread.Add(validBoardObjects[2]);
+                        PrintAllPositionsInList(secondNewThread);
                         StartCoroutine(PathfindLogic(boardObjectType, secondNewThread));
                     }
                 }
 
                 // Default for the first valid new block position
                 print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
+
                 pathfindList.Add(validBoardObjects[0]);
+                PrintAllPositionsInList(pathfindList);
 
             }
             else
@@ -511,6 +535,19 @@ public class GameLogic : MonoBehaviour
         yield return false;
     }
 
+    void PrintAllPositionsInList(List<PathBoardObject> _pathfindList)
+    {
+        string output = "";
+        for (int i = 0; i < _pathfindList.Count; i++)
+        {
+            output += "[" + _pathfindList[i].Position + "]";
+            if(i < _pathfindList.Count - 1)
+            {
+                output += ", ";
+            }
+        }
+        print(output);
+    }
 
     /// <summary>
     /// Used to determine if every column has at least one valid piece
@@ -618,7 +655,7 @@ public class GameLogic : MonoBehaviour
     int BravoThreads = 0;
     void ThreadCounter(BoardObject boardObjectType, bool increment)
     {
-        if (boardObjectType == BoardObject.Alpha_Static)
+        if ( boardObjectType == BoardObject.Alpha_Static )
         {
             if (increment)
                 AlphaThreads++;
