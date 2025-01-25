@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public enum BoardObject
 {
@@ -30,6 +31,8 @@ public enum PathfindDirection
     None
 }
 
+
+
 public class GameLogic : MonoBehaviour
 {
     [SerializeField]
@@ -39,6 +42,10 @@ public class GameLogic : MonoBehaviour
     int BoardWidth_Maximum;
     [SerializeField, Range(5, 20)]
     int BoardHeight_Maximum;
+
+    [SerializeField]
+    bool ThreeSidedBlocksActive = true;
+    
 
     const int HORIZ_LEFT_WALL_XPos_Playable = 1;
     const int HORIZ_LEFT_WALL_XPos_Sidewall = 0;
@@ -54,6 +61,8 @@ public class GameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Init_Random();
+
         Init_Board();
 
         TEST_PresetBoard();
@@ -62,6 +71,13 @@ public class GameLogic : MonoBehaviour
 
         // StartCoroutine(BeginPathfinding());
         BeginPathfinding();
+    }
+
+    void Init_Random()
+    {
+        // Getting an initial seed with 6 digits. Could make 8 digits later if desired. Arbitrary.
+        PreviousRandomSeed = UnityEngine.Random.Range(100000, 999999);
+        UnityEngine.Random.InitState(PreviousRandomSeed);
     }
 
     void Init_Board()
@@ -141,6 +157,56 @@ public class GameLogic : MonoBehaviour
     }
 
     #region Gameplay Actions
+
+    int PreviousRandomSeed;
+    void ResetRandomSeed()
+    {
+        
+    }
+
+    void SetRandomSeed(string seed_)
+    {
+        seed_.ToUpper();
+
+        if(int.TryParse(seed_, out int newSeed_))
+        {
+            SetRandomSeed(newSeed_);
+        }
+    }
+
+    void SetRandomSeed(int seed_)
+    {
+        UnityEngine.Random.InitState(seed_);
+    }
+
+    /// <summary>
+    /// Get a randomly-given Alpha or Bravo type block.
+    /// </summary>
+    /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
+    /// <returns></returns>
+    BoardObject DetermineRandomBlock(bool isActive = true)
+    {
+        BoardObject boardObject = BoardObject.Alpha_Static;
+
+        if (UnityEngine.Random.Range(0, 1f) > 0.5f)
+        {
+            boardObject = BoardObject.Bravo_Static;
+        }
+
+        if (isActive)
+        {
+            // Converts Static type to Active type
+            boardObject += 2;
+        }
+
+        return boardObject;
+    }
+
+    void PlaceNewActiveBlocks()
+    {
+
+    }
+    
     void RotateClockwise()
     {
 
@@ -757,28 +823,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Get a randomly-given Alpha or Bravo type block.
-    /// </summary>
-    /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
-    /// <returns></returns>
-    BoardObject DetermineRandomBlock(bool isActive = true)
-    {
-        BoardObject boardObject = BoardObject.Alpha_Static;
-
-        if (Random.Range(0, 1f) > 0.5f)
-        {
-            boardObject = BoardObject.Bravo_Static;
-        }
-
-        if(isActive)
-        {
-            // Converts Static type to Active type
-            boardObject += 2;
-        }
-
-        return boardObject;
-    }
+    
 
     /// <summary>
     /// Overrides position in Board at [x,y] position with given BoardObject
