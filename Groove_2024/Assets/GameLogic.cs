@@ -279,6 +279,11 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    void NextFourBlocksList()
+    {
+
+    }
+
     void RotateClockwise()
     {
 
