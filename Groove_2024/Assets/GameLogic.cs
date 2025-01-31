@@ -15,7 +15,7 @@ public enum BoardObject
     Sidewall // Edge of Boardwall. Resets at the end of each turn.
 }
 
-public enum TileType
+public enum BlockSize
 {
     TwoByTwo,
     ThreeWide,
@@ -44,8 +44,12 @@ public class GameLogic : MonoBehaviour
     int BoardHeight_Maximum;
 
     [SerializeField]
-    bool ThreeSidedBlocksActive = true;
-    
+    bool BlockObject_Active_TwoByTwo;
+    [SerializeField]
+    bool BlockObject_Active_ThreeWide;
+    [SerializeField]
+    bool BlockObject_Active_ThreeTall;
+    Vector2Int TileBottomLeftPosition;
 
     const int HORIZ_LEFT_WALL_XPos_Playable = 1;
     const int HORIZ_LEFT_WALL_XPos_Sidewall = 0;
@@ -54,7 +58,6 @@ public class GameLogic : MonoBehaviour
 
     int BoardWidth;
     int BoardHeight;
-    Vector2Int TileBottomLeftPosition;
 
     List<BoardObject> Board;
 
@@ -67,21 +70,30 @@ public class GameLogic : MonoBehaviour
 
         TEST_PresetBoard();
 
+        SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
+
+        DetermineNextBlock();
+
         Console_PrintBoard();
 
         // StartCoroutine(BeginPathfinding());
         BeginPathfinding();
     }
 
+    int PreviousRandomSeed;
     void Init_Random()
     {
         // Getting an initial seed with 6 digits. Could make 8 digits later if desired. Arbitrary.
         PreviousRandomSeed = UnityEngine.Random.Range(100000, 999999);
-        UnityEngine.Random.InitState(PreviousRandomSeed);
+        SetRandomSeed(PreviousRandomSeed);
     }
 
     void Init_Board()
     {
+        // Sets whether 3 wide and 3 tall Active blocks are allowed.
+        // Technically calls it's own values, but is safe.
+        SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
+
         // Extend width of board by 2 to include the Sidewalls
         BoardWidth = BoardWidth_Maximum + 2;
         BoardHeight = BoardHeight_Maximum;
@@ -158,12 +170,6 @@ public class GameLogic : MonoBehaviour
 
     #region Gameplay Actions
 
-    int PreviousRandomSeed;
-    void ResetRandomSeed()
-    {
-        
-    }
-
     void SetRandomSeed(string seed_)
     {
         seed_.ToUpper();
@@ -184,7 +190,7 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
     /// <returns></returns>
-    BoardObject DetermineRandomBlock(bool isActive = true)
+    BoardObject DetermineRandomIndividualBlock(bool isActive = true)
     {
         BoardObject boardObject = BoardObject.Alpha_Static;
 
@@ -202,11 +208,77 @@ public class GameLogic : MonoBehaviour
         return boardObject;
     }
 
-    void PlaceNewActiveBlocks()
+    void DetermineNextBlock()
     {
+        List<BlockSize> _blockTypes = new List<BlockSize>();
 
+        if (BlockObject_Active_TwoByTwo)
+            _blockTypes.Add(BlockSize.TwoByTwo);
+
+        if (BlockObject_Active_ThreeWide)
+            _blockTypes.Add(BlockSize.ThreeWide);
+
+        if (BlockObject_Active_ThreeTall)
+            _blockTypes.Add(BlockSize.ThreeTall);
+
+        int randBlockSize = UnityEngine.Random.Range(0, _blockTypes.Count);
+
+        BlockSize nextBlockType = _blockTypes[randBlockSize];
+
+        Vector2Int blockPos = new Vector2Int();
+        blockPos.x = BoardWidth_Maximum / 2;
+        blockPos.y = BoardHeight_Maximum - 2;
+
+        if (nextBlockType == BlockSize.ThreeTall)
+            --blockPos.y;
+
+        CreateNewBlockOfType( nextBlockType, blockPos );
     }
-    
+
+    void SetValidActiveBlockTypes(bool threeWide_, bool threeTall, bool twoByTwo_ = true)
+    {
+        BlockObject_Active_TwoByTwo = twoByTwo_;
+        BlockObject_Active_ThreeWide = threeWide_;
+        BlockObject_Active_ThreeTall = threeTall;
+    }
+
+    /// <summary>
+    /// Creates a new 'Active' block of random tiles, starting at the Bottom Left coordinate given.
+    /// </summary>
+    /// <param name="_size">Applies a block varying in height and width.</param>
+    /// <param name="_position">The bottom left coordinate for the block to spawn</param>
+    void CreateNewBlockOfType(BlockSize _size, Vector2Int _position)
+    {
+        // Determine if all positions are empty and available
+        Vector2Int boardPos = _position;
+        int blockHeight = 2;
+        int blockWidth = 2;
+        if ( _size == BlockSize.ThreeWide )
+            blockWidth = 3;
+        else if ( _size == BlockSize.ThreeTall )
+            blockHeight = 3;
+
+        for( int y = _position.y; y < _position.y + blockHeight; y++ )
+        {
+            for( int x = _position.x; x < _position.x + blockWidth; x++ )
+            {
+                BoardObject tempBlock = GetBoardObjectAtPosition(x, y);
+
+                // Bot left, Bot right, Mid left, Mid right, Top left, Top right
+                if( tempBlock == BoardObject.Empty )
+                {
+                    BoardObject randomBlock = DetermineRandomIndividualBlock(true);
+                    SetBoardObjectAtPosition(x, y, randomBlock);
+                    print("[" + x + "," + y + "]: " + randomBlock);
+                }
+                else
+                {
+                    // TODO: END GAME - STARTING BLOCK POSITIONS ARE FULL
+                }
+            }
+        }
+    }
+
     void RotateClockwise()
     {
 
@@ -797,31 +869,7 @@ public class GameLogic : MonoBehaviour
         
     }
 
-    /// <summary>
-    /// Creates a new 'Active' block of random tiles, starting at the Bottom Left coordinate given.
-    /// </summary>
-    /// <param name="_type">Applies a block varying in height and width.</param>
-    /// <param name="_position">The bottom left coordinate for the block to spawn</param>
-    void CreateNewBlockOfType(TileType _type, Vector2Int _position)
-    {
-        Vector2Int boardPos = _position;
-        int blockHeight = 2;
-        int blockWidth = 2;
-        if (_type == TileType.ThreeWide)
-            blockWidth = 3;
-        else if (_type == TileType.ThreeTall)
-            blockHeight = 3;
-
-        for(int y = 0; y < blockHeight; y++)
-        {
-            for(int x = 0; x < blockWidth; x++)
-            {
-                BoardObject randomBlock = DetermineRandomBlock(true);
-                SetBoardObjectAtPosition(blockWidth + x, blockHeight + y, randomBlock);
-                print("[" + (blockWidth + x) + "," + (blockHeight + y) + "]: " + randomBlock);
-            }
-        }
-    }
+    
 
     
 
