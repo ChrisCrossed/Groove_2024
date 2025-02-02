@@ -50,6 +50,7 @@ public class GameLogic : MonoBehaviour
     [SerializeField]
     bool BlockObject_Active_ThreeTall;
     Vector2Int TileBottomLeftPosition;
+    BlockSize CurrBlockSize;
 
     const int HORIZ_LEFT_WALL_XPos_Playable = 1;
     const int HORIZ_LEFT_WALL_XPos_Sidewall = 0;
@@ -78,6 +79,8 @@ public class GameLogic : MonoBehaviour
 
         // StartCoroutine(BeginPathfinding());
         BeginPathfinding();
+
+        print(TileBottomLeftPosition);
     }
 
     int PreviousRandomSeed;
@@ -132,14 +135,13 @@ public class GameLogic : MonoBehaviour
         TileBottomLeftPosition = new Vector2Int(3, 3);
 
         // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
+        /*
         for (int x = 0; x < BoardWidth; x++)
         {
-            /*
             if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
             {
                 SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
             }
-            */
 
             if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
             {
@@ -164,6 +166,7 @@ public class GameLogic : MonoBehaviour
         SetBoardObjectAtPosition(8, 7, BoardObject.Bravo_Static);
         SetBoardObjectAtPosition(8, 6, BoardObject.Bravo_Static);
         SetBoardObjectAtPosition(8, 5, BoardObject.Bravo_Static);
+        */
 
         // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
     }
@@ -240,6 +243,11 @@ public class GameLogic : MonoBehaviour
         BlockObject_Active_TwoByTwo = twoByTwo_;
         BlockObject_Active_ThreeWide = threeWide_;
         BlockObject_Active_ThreeTall = threeTall;
+
+        if(!threeWide_ && !threeTall)
+        {
+            BlockObject_Active_TwoByTwo = true;
+        }
     }
 
     /// <summary>
@@ -269,7 +277,6 @@ public class GameLogic : MonoBehaviour
                 {
                     BoardObject randomBlock = DetermineRandomIndividualBlock(true);
                     SetBoardObjectAtPosition(x, y, randomBlock);
-                    print("[" + x + "," + y + "]: " + randomBlock);
                 }
                 else
                 {
@@ -277,6 +284,9 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
+
+        TileBottomLeftPosition = _position;
+        CurrBlockSize = _size;
     }
 
     void NextFourBlocksList()
@@ -286,7 +296,44 @@ public class GameLogic : MonoBehaviour
 
     void RotateClockwise()
     {
+        // Store bottom left of active block list
+        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if(CurrBlockSize == BlockSize.ThreeTall )
+        {
+            height = 3;
+        }
+
+        for(int x = 0; x < width - 1; x++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(x + TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y);
+            SetBoardObjectAtPosition(x + TileBottomLeftPosition.x, TileBottomLeftPosition.y, shiftBlock);
+        }
+
+        for (int y = 0; y < height - 1; y++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y + 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, shiftBlock);
+        }
+
+        for (int x = width - 1; x > 0; x--)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y + height - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
+        }
+
+        for (int y = height - 1; y > 0; y--)
+        {
+            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, prevBlock);
+        }
+
+        SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + 1, tempBlock);
     }
 
     void RotateCounterClockwise()
@@ -871,7 +918,14 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            RotateClockwise();
+            print("-----------");
+            print("-----------");
+            print("-----------");
+            Console_PrintBoard();
+        }
     }
 
     

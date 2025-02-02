@@ -152,8 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482e0c6099164c54484764ca117d82e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BugTestConsoleOutput: 0
   BoardWidth_Maximum: 10
   BoardHeight_Maximum: 10
+  BlockObject_Active_TwoByTwo: 0
+  BlockObject_Active_ThreeWide: 1
+  BlockObject_Active_ThreeTall: 0
 --- !u!4 &197332790
 Transform:
   m_ObjectHideFlags: 0
