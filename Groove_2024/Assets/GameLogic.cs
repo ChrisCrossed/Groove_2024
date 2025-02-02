@@ -338,7 +338,44 @@ public class GameLogic : MonoBehaviour
 
     void RotateCounterClockwise()
     {
+        // Store bottom left of active block list
+        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+        {
+            height = 3;
+        }
+
+        for (int y = 0; y < height - 1; y++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y + 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, shiftBlock);
+        }
+
+        for (int x = 0; x < width - 1; x++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + height - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
+        }
+
+        for (int y = height - 1; y > 0; y--)
+        {
+            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, prevBlock);
+        }
+
+        for (int x = width - 1; x > 0; x--)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y, shiftBlock);
+        }
+
+        SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
     }
 
     void SoftDrop()
@@ -920,7 +957,7 @@ public class GameLogic : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            RotateClockwise();
+            RotateCounterClockwise();
             print("-----------");
             print("-----------");
             print("-----------");
