@@ -80,7 +80,7 @@ public class GameLogic : MonoBehaviour
         Console_PrintBoard();
 
         // StartCoroutine(BeginPathfinding());
-        BeginPathfinding();
+        // BeginPathfinding();
 
         /*
         for(int i = 0; i < Board.Count; i++)
@@ -112,7 +112,7 @@ public class GameLogic : MonoBehaviour
 
         // Ex: 10 width pre-defined turns into 12 width including Sidewalls.
         // 10 width == 0 -> 11 for all spaces. 0 & 11 are Sidewall. 1 & 10 are Playable.
-        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth - 1;
+        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth - 2;
         HORIZ_RIGHT_WALL_XPos_Sidewall = HORIZ_RIGHT_WALL_XPos_Playable + 1;
 
         Board = new List<BoardObject>();
@@ -126,14 +126,14 @@ public class GameLogic : MonoBehaviour
                 // Otherwise, add as Empty
 
                 BoardObject tempBoardObject = BoardObject.Empty;
-                if (x == 0 || x == HORIZ_RIGHT_WALL_XPos_Sidewall - 1)
-                    tempBoardObject = BoardObject.Ghost;
 
-                
-
-                // print("[" + x + ", " + y + "]: " + tempBoardObject.ToString());
-
+                // Needs to be created into the Board before manipulated into being a Ghost Block (If applicable)
                 Board.Add(tempBoardObject);
+
+                if (x == HORIZ_LEFT_WALL_XPos_Sidewall || x == HORIZ_RIGHT_WALL_XPos_Sidewall)
+                {
+                    SetGhostBlock(x, y);
+                }
             }
         }
     }
@@ -143,44 +143,53 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
-        TileBottomLeftPosition = new Vector2Int(3, 3);
-
-        // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
         /*
         for (int x = 0; x < BoardWidth; x++)
         {
-            if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
+            if (GetBoardObjectAtPosition(x, 2) != BoardObject.Ghost)
             {
                 SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
             }
-
-            if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
-            {
-                SetBoardObjectAtPosition(x, 4, BoardObject.Bravo_Static);
-            }
         }
-
-        SetBoardObjectAtPosition(1, 5, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(1, 3, BoardObject.Bravo_Static);
-
-        SetBoardObjectAtPosition(1, 7, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(4, 7, BoardObject.Alpha_Static);
-
-        SetBoardObjectAtPosition(2, 3, BoardObject.Alpha_Static);
-
-        SetBoardObjectAtPosition(5, 5, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(5, 6, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(5, 7, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(6, 7, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(7, 7, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(8, 7, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(8, 6, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(8, 5, BoardObject.Bravo_Static);
         */
 
-        // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
-    }
+
+            // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
+            /*
+            for (int x = 0; x < BoardWidth; x++)
+            {
+                if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
+                {
+                    SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
+                }
+
+                if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
+                {
+                    SetBoardObjectAtPosition(x, 4, BoardObject.Bravo_Static);
+                }
+            }
+
+            SetBoardObjectAtPosition(1, 5, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(1, 3, BoardObject.Bravo_Static);
+
+            SetBoardObjectAtPosition(1, 7, BoardObject.Alpha_Static);
+            SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Static);
+            SetBoardObjectAtPosition(4, 7, BoardObject.Alpha_Static);
+
+            SetBoardObjectAtPosition(2, 3, BoardObject.Alpha_Static);
+
+            SetBoardObjectAtPosition(5, 5, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(5, 6, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(5, 7, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(6, 7, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(7, 7, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(8, 7, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(8, 6, BoardObject.Bravo_Static);
+            SetBoardObjectAtPosition(8, 5, BoardObject.Bravo_Static);
+            */
+
+            // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
+        }
 
     #region Gameplay Actions
 
@@ -216,7 +225,10 @@ public class GameLogic : MonoBehaviour
         if (isActive)
         {
             // Converts Static type to Active type
-            boardObject += 10;
+            if (boardObject == BoardObject.Alpha_Static)
+                boardObject = BoardObject.Alpha_Active;
+            else
+                boardObject = BoardObject.Bravo_Active;
         }
 
         return boardObject;
@@ -240,8 +252,8 @@ public class GameLogic : MonoBehaviour
         BlockSize nextBlockType = _blockTypes[randBlockSize];
 
         Vector2Int blockPos = new Vector2Int();
-        blockPos.x = BoardWidth_Maximum / 2;
-        blockPos.y = BoardHeight_Maximum - 2;
+        blockPos.x = (BoardWidth / 2) - 1;
+        blockPos.y = BoardHeight - 2;
 
         if (nextBlockType == BlockSize.ThreeTall)
             --blockPos.y;
@@ -399,9 +411,9 @@ public class GameLogic : MonoBehaviour
     void HardDrop()
     {
         // Go from left side to right, bottom to top
-        for(int x = 0; x < BoardWidth_Maximum; x++)
+        for(int x = 0; x < BoardWidth; x++)
         {
-            for(int y = 1; y < BoardHeight_Maximum; y++)
+            for(int y = 1; y < BoardHeight; y++)
             {
                 BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
 
@@ -409,19 +421,20 @@ public class GameLogic : MonoBehaviour
                 {
                     BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
 
-                    if(belowBlock == BoardObject.Empty)
+                    if(belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
                     {
                         SetBoardObjectAtPosition(x, y - 1, thisBlock);
+
+                        // If it was a ghost block, it gets reset to ghost at end of BeginPathfinding()
                         SetBoardObjectAtPosition(x, y, BoardObject.Empty);
-                    }
 
-                    if(belowBlock == BoardObject.Ghost)
-                    {
-
+                        y = 0;
                     }
                 }
             }
         }
+
+        BeginPathfinding();
 
         // If an 'active' block is found, search downward to find the first non-empty block.
         // Shift all blocks 'active' in order down above that point.
@@ -432,7 +445,10 @@ public class GameLogic : MonoBehaviour
 
     void ResetGhostBlocks()
     {
-
+        foreach(Vector2Int pos in GhostBlockList)
+        {
+            SetBoardObjectAtPosition(pos, BoardObject.Ghost);
+        }
     }
 
     List<Vector2Int> GhostBlockList;
@@ -578,7 +594,7 @@ public class GameLogic : MonoBehaviour
             }
         }
 
-
+        ResetGhostBlocks();
         #endregion
     }
 
@@ -1010,7 +1026,8 @@ public class GameLogic : MonoBehaviour
             if (AlphaThreads == 0 && BravoThreads == 0)
                 print("--------" + "\nNO MORE THREADS" + "\n--------");
         }
-            
+        
+        
     }
 
     #endregion
@@ -1020,7 +1037,8 @@ public class GameLogic : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            RotateCounterClockwise();
+            // RotateCounterClockwise();
+            HardDrop();
             print("-----------");
             print("-----------");
             print("-----------");
