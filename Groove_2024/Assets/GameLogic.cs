@@ -405,19 +405,61 @@ public class GameLogic : MonoBehaviour
     {
         // Starting from the active Bottom Left corner,
         // 
-        
+        print(TileBottomLeftPosition);
+
+        int tileHeight = 2;
+        if(CurrBlockSize == BlockSize.ThreeTall)
+            tileHeight = 3;
+
+        int tileWidth = 2;
+        if(CurrBlockSize == BlockSize.ThreeWide)
+            tileWidth = 3;
+
+        for(int x = TileBottomLeftPosition.x; x < TileBottomLeftPosition.x + tileWidth; x++ )
+        {
+            for(int y = TileBottomLeftPosition.y; y < TileBottomLeftPosition.y + tileHeight; y++ )
+            {
+                if(y - 1 > 0)
+                {
+                    BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
+                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
+
+                    if (belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
+                    {
+                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
+                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+                    }
+                    else
+                    {
+                        HardDrop();
+                        return;
+                    }
+                }
+                else
+                {
+                    HardDrop();
+                    return;
+                }
+            }
+        }
+
+        TileBottomLeftPosition.y -= 1;
     }
 
     void HardDrop()
     {
+        print("HARD DROP");
+
+        AllBlocksStatic();
+
         // Go from left side to right, bottom to top
-        for(int x = 0; x < BoardWidth; x++)
+        for (int x = 0; x < BoardWidth; x++)
         {
             for(int y = 1; y < BoardHeight; y++)
             {
                 BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
 
-                if(thisBlock == BoardObject.Alpha_Active || thisBlock == BoardObject.Bravo_Active)
+                if(thisBlock == BoardObject.Alpha_Static || thisBlock == BoardObject.Bravo_Static)
                 {
                     BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
 
@@ -435,11 +477,25 @@ public class GameLogic : MonoBehaviour
         }
 
         BeginPathfinding();
+    }
 
-        // If an 'active' block is found, search downward to find the first non-empty block.
-        // Shift all blocks 'active' in order down above that point.
+    void AllBlocksStatic()
+    {
+        // Go from left side to right, bottom to top
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            for (int y = 0; y < BoardHeight; y++)
+            {
+                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
 
-        // THEN convert to static.
+                if (thisBlock == BoardObject.Alpha_Active)
+                    thisBlock = BoardObject.Alpha_Static;
+                else if(thisBlock == BoardObject.Bravo_Active)
+                    thisBlock = BoardObject.Bravo_Static;
+
+                SetBoardObjectAtPosition(x, y, thisBlock);
+            }
+        }
     }
     #endregion
 
@@ -1038,7 +1094,7 @@ public class GameLogic : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             // RotateCounterClockwise();
-            HardDrop();
+            SoftDrop();
             print("-----------");
             print("-----------");
             print("-----------");
