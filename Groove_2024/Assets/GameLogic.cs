@@ -6,13 +6,15 @@ using System;
 
 public enum BoardObject
 {
-    Empty, // Can become Alpha or Bravo
+    Empty = 0, // Can become Alpha or Bravo
     Alpha_Static = 1,
     Bravo_Static = 2,
-    Alpha_Active = 3,
-    Bravo_Active = 4,
-    Filled, // Forcibly-filled board piece. 'Cement'
-    Sidewall // Edge of Boardwall. Resets at the end of each turn.
+    Alpha_Active = 11,
+    Bravo_Active = 12,
+    Filled = 20, // Forcibly-filled board piece. 'Cement'
+    Filled_Alpha = 21, // Forcibly kept as 'Alpha'
+    Filled_Bravo = 22, // Forcibly kept as 'Bravo'
+    Ghost = 30 // Edge of Boardwall. Resets at the end of each turn.
 }
 
 public enum BlockSize
@@ -80,7 +82,12 @@ public class GameLogic : MonoBehaviour
         // StartCoroutine(BeginPathfinding());
         BeginPathfinding();
 
-        print(TileBottomLeftPosition);
+        /*
+        for(int i = 0; i < Board.Count; i++)
+        {
+            print(Board[i]);
+        }
+        */
     }
 
     int PreviousRandomSeed;
@@ -93,6 +100,8 @@ public class GameLogic : MonoBehaviour
 
     void Init_Board()
     {
+        ClearGhostBlockList();
+
         // Sets whether 3 wide and 3 tall Active blocks are allowed.
         // Technically calls it's own values, but is safe.
         SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
@@ -103,24 +112,26 @@ public class GameLogic : MonoBehaviour
 
         // Ex: 10 width pre-defined turns into 12 width including Sidewalls.
         // 10 width == 0 -> 11 for all spaces. 0 & 11 are Sidewall. 1 & 10 are Playable.
-        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth_Maximum;
+        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth - 1;
         HORIZ_RIGHT_WALL_XPos_Sidewall = HORIZ_RIGHT_WALL_XPos_Playable + 1;
 
         Board = new List<BoardObject>();
 
-        // Vertical
-        for(int k = 0; k < BoardHeight; k++)
+        // Horizontal
+        for(int y = 0; y < BoardHeight; y++)
         {
-            for(int j = 0; j < BoardWidth; j++)
+            for(int x = 0; x < BoardWidth; x++)
             {
-                // If the J value is 0 (left side) or BoardWidth - 1 (right side), add as Sidewall
+                // If the K value is 0 (left side) or BoardWidth - 1 (right side), add as Sidewall
                 // Otherwise, add as Empty
 
                 BoardObject tempBoardObject = BoardObject.Empty;
-                if (j == 0 || j == BoardWidth - 1)
-                    tempBoardObject = BoardObject.Sidewall;
+                if (x == 0 || x == HORIZ_RIGHT_WALL_XPos_Sidewall - 1)
+                    tempBoardObject = BoardObject.Ghost;
 
-                // print("[" + j + ", " + k + "]: " + tempBoardObject.ToString());
+                
+
+                // print("[" + x + ", " + y + "]: " + tempBoardObject.ToString());
 
                 Board.Add(tempBoardObject);
             }
@@ -205,7 +216,7 @@ public class GameLogic : MonoBehaviour
         if (isActive)
         {
             // Converts Static type to Active type
-            boardObject += 2;
+            boardObject += 10;
         }
 
         return boardObject;
@@ -380,14 +391,66 @@ public class GameLogic : MonoBehaviour
 
     void SoftDrop()
     {
-
+        // Starting from the active Bottom Left corner,
+        // 
+        
     }
 
     void HardDrop()
     {
+        // Go from left side to right, bottom to top
+        for(int x = 0; x < BoardWidth_Maximum; x++)
+        {
+            for(int y = 1; y < BoardHeight_Maximum; y++)
+            {
+                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
 
+                if(thisBlock == BoardObject.Alpha_Active || thisBlock == BoardObject.Bravo_Active)
+                {
+                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
+
+                    if(belowBlock == BoardObject.Empty)
+                    {
+                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
+                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+                    }
+
+                    if(belowBlock == BoardObject.Ghost)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        // If an 'active' block is found, search downward to find the first non-empty block.
+        // Shift all blocks 'active' in order down above that point.
+
+        // THEN convert to static.
     }
     #endregion
+
+    void ResetGhostBlocks()
+    {
+
+    }
+
+    List<Vector2Int> GhostBlockList;
+    void SetGhostBlock(int x_, int y_)
+    {
+        SetGhostBlock(new Vector2Int(x_, y_));
+    }
+
+    void SetGhostBlock(Vector2Int pos_)
+    {
+        SetBoardObjectAtPosition(pos_.x, pos_.y, BoardObject.Ghost);
+        GhostBlockList.Add(pos_);
+    }
+
+    void ClearGhostBlockList()
+    {
+        GhostBlockList = new List<Vector2Int>();
+    }
 
     #region Pathfinding Actions
     void BeginPathfinding()
@@ -834,7 +897,7 @@ public class GameLogic : MonoBehaviour
             // If on the far sides of the board, AND is a Sidewall, keep searching
             if (_x == 0 || _x == BoardWidth - 1)
             {
-                if (tempObject == BoardObject.Sidewall || tempObject == _boardObject)
+                if (tempObject == BoardObject.Ghost || tempObject == _boardObject)
                 {
                     validColumn = true;
 
@@ -1012,18 +1075,19 @@ public class GameLogic : MonoBehaviour
 
     void Console_PrintBoard()
     {
-        for(int y = BoardHeight - 1; y >= 0; y--)
+        for (int y = BoardHeight - 1; y >= 0; y--)
         {
             string textLine = "" + y + ": ";
             for(int x = 0; x < BoardWidth; x++)
             {
                 // BoardWidth * k = vertical position
                 // j = horizontal position
-                BoardObject currBoardObject = Board[(BoardWidth * y) + x];
+                // BoardObject currBoardObject = Board[(BoardWidth * y) + x];
+                BoardObject currBoardObject = GetBoardObjectAtPosition(x, y);
 
                 if (currBoardObject == BoardObject.Empty)
                     textLine += "[  ]";
-                else if (currBoardObject == BoardObject.Sidewall)
+                else if (currBoardObject == BoardObject.Ghost)
                     textLine += "[*]";
                 else if (currBoardObject == BoardObject.Alpha_Active || currBoardObject == BoardObject.Alpha_Static)
                     textLine += "[X]";
@@ -1031,6 +1095,11 @@ public class GameLogic : MonoBehaviour
                     textLine += "[O]";
                 else if (currBoardObject == BoardObject.Filled)
                     textLine += "[=]";
+                else
+                {
+                    // ERROR
+                    print("ERROR: " + currBoardObject);
+                }
             }
             print(textLine);
         }
