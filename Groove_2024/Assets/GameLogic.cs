@@ -77,7 +77,9 @@ public class GameLogic : MonoBehaviour
 
         DetermineNextBlock();
 
-        Console_PrintBoard();
+        // Console_PrintBoard();
+
+        PopulateNextFourBlocksList();
 
         // StartCoroutine(BeginPathfinding());
         // BeginPathfinding();
@@ -101,6 +103,10 @@ public class GameLogic : MonoBehaviour
     void Init_Board()
     {
         ClearGhostBlockList();
+
+        NextBlockList = new List<List<BoardObject>>();
+
+        NextBlockListSize = new List<BlockSize>();
 
         // Sets whether 3 wide and 3 tall Active blocks are allowed.
         // Technically calls it's own values, but is safe.
@@ -312,9 +318,59 @@ public class GameLogic : MonoBehaviour
         CurrBlockSize = _size;
     }
 
-    void NextFourBlocksList()
+    List<List<BoardObject>> NextBlockList;
+    List<BlockSize> NextBlockListSize;
+    void PopulateNextFourBlocksList()
     {
+        for(int i = NextBlockListSize.Count; i < 4; i++)
+        {
+            // PUSH a new block size to the end of the Lists
+            List<BlockSize> _blockTypes = new List<BlockSize>();
 
+            if (BlockObject_Active_TwoByTwo)
+                _blockTypes.Add(BlockSize.TwoByTwo);
+
+            if (BlockObject_Active_ThreeWide)
+                _blockTypes.Add(BlockSize.ThreeWide);
+
+            if (BlockObject_Active_ThreeTall)
+                _blockTypes.Add(BlockSize.ThreeTall);
+
+            int randBlockSize = UnityEngine.Random.Range(0, _blockTypes.Count);
+
+            NextBlockListSize.Add(_blockTypes[randBlockSize]);
+
+            NextBlockList.Add(new List<BoardObject>());
+
+            // PUSH the new block type added to the List
+            int numBlocks = 4;
+            if (NextBlockListSize[NextBlockListSize.Count - 1] == BlockSize.ThreeWide || NextBlockListSize[NextBlockListSize.Count - 1] == BlockSize.ThreeTall)
+                numBlocks = 6;
+
+            for(int j = 0; j < numBlocks; j++)
+            {
+                BoardObject randomBlock = DetermineRandomIndividualBlock(true);
+
+                NextBlockList[NextBlockList.Count - 1].Add(randomBlock);
+            }
+        }
+
+        for(int count = 0; count < NextBlockListSize.Count; count++)
+        {
+            print("Size: " + NextBlockListSize[count]);
+            
+            string output = "";
+            for(int eachBlock = 0; eachBlock < NextBlockList[count].Count; eachBlock++)
+            {
+                output += NextBlockList[count][eachBlock].ToString();
+                if(eachBlock != NextBlockList[count].Count - 1)
+                {
+                    output += ",";
+                }
+            }
+            print(output);
+            print("-----");
+        }
     }
 
     void RotateClockwise()
