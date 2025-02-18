@@ -214,32 +214,8 @@ public class GameLogic : MonoBehaviour
         UnityEngine.Random.InitState(seed_);
     }
 
-    /// <summary>
-    /// Get a randomly-given Alpha or Bravo type block.
-    /// </summary>
-    /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
-    /// <returns></returns>
-    BoardObject DetermineRandomIndividualBlock(bool isActive = true)
-    {
-        BoardObject boardObject = BoardObject.Alpha_Static;
-
-        if (UnityEngine.Random.Range(0, 1f) > 0.5f)
-        {
-            boardObject = BoardObject.Bravo_Static;
-        }
-
-        if (isActive)
-        {
-            // Converts Static type to Active type
-            if (boardObject == BoardObject.Alpha_Static)
-                boardObject = BoardObject.Alpha_Active;
-            else
-                boardObject = BoardObject.Bravo_Active;
-        }
-
-        return boardObject;
-    }
-
+    
+    // DEPRECATED??
     void DetermineNextBlock()
     {
         List<BlockSize> _blockTypes = new List<BlockSize>();
@@ -357,7 +333,7 @@ public class GameLogic : MonoBehaviour
 
         for(int count = 0; count < NextBlockListSize.Count; count++)
         {
-            print("Size: " + NextBlockListSize[count]);
+            print("Block #: " + count + ", Size: " + NextBlockListSize[count]);
             
             string output = "";
             for(int eachBlock = 0; eachBlock < NextBlockList[count].Count; eachBlock++)
@@ -371,6 +347,32 @@ public class GameLogic : MonoBehaviour
             print(output);
             print("-----");
         }
+    }
+
+    /// <summary>
+    /// Get a randomly-given Alpha or Bravo type block.
+    /// </summary>
+    /// <param name="isActive">'True' returns the block as 'Active' state, rather than 'Static'</param>
+    /// <returns></returns>
+    BoardObject DetermineRandomIndividualBlock(bool isActive = true)
+    {
+        BoardObject boardObject = BoardObject.Alpha_Static;
+
+        if (UnityEngine.Random.Range(0, 1f) > 0.5f)
+        {
+            boardObject = BoardObject.Bravo_Static;
+        }
+
+        if (isActive)
+        {
+            // Converts Static type to Active type
+            if (boardObject == BoardObject.Alpha_Static)
+                boardObject = BoardObject.Alpha_Active;
+            else
+                boardObject = BoardObject.Bravo_Active;
+        }
+
+        return boardObject;
     }
 
     void RotateClockwise()
