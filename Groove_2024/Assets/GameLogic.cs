@@ -75,11 +75,16 @@ public class GameLogic : MonoBehaviour
 
         SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
 
-        DetermineNextBlock();
+        PopulateNextFourBlocksList();
 
         // Console_PrintBoard();
 
-        PopulateNextFourBlocksList();
+        for (int i = 0; i < 1; i++)
+        {
+            List<BoardObject> nextBlocks = GetNextBlock(true);
+            //PrintBlockList(nextBlocks);
+        }
+        
 
         // StartCoroutine(BeginPathfinding());
         // BeginPathfinding();
@@ -214,33 +219,32 @@ public class GameLogic : MonoBehaviour
         UnityEngine.Random.InitState(seed_);
     }
 
-    
-    // DEPRECATED??
-    void DetermineNextBlock()
+
+    List<BoardObject> GetNextBlock(bool RemoveFromList = false)
     {
-        List<BlockSize> _blockTypes = new List<BlockSize>();
+        // NextBlockList
+        // NextBlockListSize
 
-        if (BlockObject_Active_TwoByTwo)
-            _blockTypes.Add(BlockSize.TwoByTwo);
+        // get/store the series of blocks in position 0 of the list
+        // If 'RemoveFromList' is true, clear position 0 from BOTH Lists & run the function to populate the list
+        // Return the list 
 
-        if (BlockObject_Active_ThreeWide)
-            _blockTypes.Add(BlockSize.ThreeWide);
+        print("Next Block Size: " + NextBlockListSize[0].ToString());
+        List<BoardObject> nextBlocks = new List<BoardObject>();
+        for(int i = 0; i < NextBlockList[0].Count; i++)
+        {
+            nextBlocks.Add(NextBlockList[0][i]);
+            print("Block: " + NextBlockList[0][i].ToString());
+        }
 
-        if (BlockObject_Active_ThreeTall)
-            _blockTypes.Add(BlockSize.ThreeTall);
+        if(RemoveFromList)
+        {
+            NextBlockList.RemoveAt(0);
+            NextBlockListSize.RemoveAt(0);
+            PopulateNextFourBlocksList();
+        }
 
-        int randBlockSize = UnityEngine.Random.Range(0, _blockTypes.Count);
-
-        BlockSize nextBlockType = _blockTypes[randBlockSize];
-
-        Vector2Int blockPos = new Vector2Int();
-        blockPos.x = (BoardWidth / 2) - 1;
-        blockPos.y = BoardHeight - 2;
-
-        if (nextBlockType == BlockSize.ThreeTall)
-            --blockPos.y;
-
-        CreateNewBlockOfType( nextBlockType, blockPos );
+        return nextBlocks;
     }
 
     void SetValidActiveBlockTypes(bool threeWide_, bool threeTall, bool twoByTwo_ = true)
@@ -331,6 +335,7 @@ public class GameLogic : MonoBehaviour
             }
         }
 
+        /*
         for(int count = 0; count < NextBlockListSize.Count; count++)
         {
             print("Block #: " + count + ", Size: " + NextBlockListSize[count]);
@@ -340,6 +345,27 @@ public class GameLogic : MonoBehaviour
             {
                 output += NextBlockList[count][eachBlock].ToString();
                 if(eachBlock != NextBlockList[count].Count - 1)
+                {
+                    output += ",";
+                }
+            }
+            print(output);
+            print("-----");
+        }
+        */
+    }
+
+    void PrintBlockList(List<BoardObject> blockList)
+    {
+        for (int count = 0; count < blockList.Count; count++)
+        {
+            print("Block #: " + count);
+
+            string output = "";
+            for (int eachBlock = 0; eachBlock < blockList.Count; eachBlock++)
+            {
+                output += blockList[eachBlock].ToString();
+                if (eachBlock != blockList.Count - 1)
                 {
                     output += ",";
                 }
