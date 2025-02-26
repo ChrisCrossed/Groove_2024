@@ -77,24 +77,15 @@ public class GameLogic : MonoBehaviour
 
         PopulateNextFourBlocksList();
 
-        // Console_PrintBoard();
+        Console_PrintBoard();
 
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
             List<BoardObject> nextBlocks = GetNextBlock(true);
             //PrintBlockList(nextBlocks);
         }
         
-
-        // StartCoroutine(BeginPathfinding());
-        // BeginPathfinding();
-
-        /*
-        for(int i = 0; i < Board.Count; i++)
-        {
-            print(Board[i]);
-        }
-        */
+        BeginPathfinding();
     }
 
     int PreviousRandomSeed;
@@ -234,7 +225,12 @@ public class GameLogic : MonoBehaviour
         for(int i = 0; i < NextBlockList[0].Count; i++)
         {
             nextBlocks.Add(NextBlockList[0][i]);
-            print("Block: " + NextBlockList[0][i].ToString());
+            
+            if(BugTestConsoleOutput)
+            {
+                print("Block: " + NextBlockList[0][i].ToString());
+
+            }
         }
 
         if(RemoveFromList)
@@ -275,6 +271,9 @@ public class GameLogic : MonoBehaviour
         else if ( _size == BlockSize.ThreeTall )
             blockHeight = 3;
 
+        // TODO: Get the NextBlock and store/remove it from the list
+
+        // TODO: Convert logic to place the NextBlock
         for( int y = _position.y; y < _position.y + blockHeight; y++ )
         {
             for( int x = _position.x; x < _position.x + blockWidth; x++ )
