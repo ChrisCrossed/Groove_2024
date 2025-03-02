@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using UnityEngine.UIElements;
 
 public enum BoardObject
 {
@@ -64,6 +65,7 @@ public class GameLogic : MonoBehaviour
 
     List<BoardObject> Board;
 
+    #region Initialization
     // Start is called before the first frame update
     void Start()
     {
@@ -79,9 +81,10 @@ public class GameLogic : MonoBehaviour
 
         Console_PrintBoard();
 
+        // Test, remove
         for (int i = 0; i < 3; i++)
         {
-            List<BoardObject> nextBlocks = GetNextBlock(true);
+            // List<BoardObject> nextBlocks = GetNextBlock(true);
             //PrintBlockList(nextBlocks);
         }
         
@@ -193,7 +196,6 @@ public class GameLogic : MonoBehaviour
             // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
         }
 
-    #region Gameplay Actions
 
     void SetRandomSeed(string seed_)
     {
@@ -210,7 +212,9 @@ public class GameLogic : MonoBehaviour
         UnityEngine.Random.InitState(seed_);
     }
 
+    #endregion Initialization
 
+    #region Block Placement
     List<BoardObject> GetNextBlock(bool RemoveFromList = false)
     {
         // NextBlockList
@@ -220,7 +224,7 @@ public class GameLogic : MonoBehaviour
         // If 'RemoveFromList' is true, clear position 0 from BOTH Lists & run the function to populate the list
         // Return the list 
 
-        print("Next Block Size: " + NextBlockListSize[0].ToString());
+        // print("Next Block Size: " + NextBlockListSize[0].ToString());
         List<BoardObject> nextBlocks = new List<BoardObject>();
         for(int i = 0; i < NextBlockList[0].Count; i++)
         {
@@ -297,6 +301,51 @@ public class GameLogic : MonoBehaviour
         CurrBlockSize = _size;
     }
 
+    void PlaceNewBlockOfType(BlockSize _size, List<BoardObject> _blockArray)
+    {
+        // Find position to begin placing blocks
+        Vector2Int boardPos = new Vector2Int();
+        int blockHeight = 2;
+        int blockWidth = 2;
+        int blockCounter = 0;
+
+        boardPos.x = (int)(HORIZ_RIGHT_WALL_XPos_Sidewall / 2f);
+        boardPos.y = (int)(BoardHeight - 2f);
+
+        if (_size == BlockSize.ThreeWide)
+        {
+            boardPos.x--;
+            blockWidth = 3;
+        }
+        else if (_size == BlockSize.ThreeTall)
+        {
+            boardPos.y--;
+            blockHeight = 3;
+        }
+
+        // Left to right, bottom to top, place each block from the Block Array.
+        for( int y = boardPos.y; y < boardPos.y + blockHeight; y++ )
+        {
+            for( int x = boardPos.x; x < boardPos.x + blockWidth; x++ )
+            {
+                BoardObject tempBlock = GetBoardObjectAtPosition(x, y);
+
+                if (tempBlock == BoardObject.Empty)
+                {
+                    SetBoardObjectAtPosition( x, y, _blockArray[blockCounter] );
+
+                    blockCounter++;
+                }
+                else
+                {
+                    print("GAME OVER");
+                }
+            }
+        }
+
+        TileBottomLeftPosition = boardPos;
+    }
+
     List<List<BoardObject>> NextBlockList;
     List<BlockSize> NextBlockListSize;
     void PopulateNextFourBlocksList()
@@ -354,25 +403,6 @@ public class GameLogic : MonoBehaviour
         */
     }
 
-    void PrintBlockList(List<BoardObject> blockList)
-    {
-        for (int count = 0; count < blockList.Count; count++)
-        {
-            print("Block #: " + count);
-
-            string output = "";
-            for (int eachBlock = 0; eachBlock < blockList.Count; eachBlock++)
-            {
-                output += blockList[eachBlock].ToString();
-                if (eachBlock != blockList.Count - 1)
-                {
-                    output += ",";
-                }
-            }
-            print(output);
-            print("-----");
-        }
-    }
 
     /// <summary>
     /// Get a randomly-given Alpha or Bravo type block.
@@ -400,214 +430,11 @@ public class GameLogic : MonoBehaviour
         return boardObject;
     }
 
-    void RotateClockwise()
-    {
-        // Store bottom left of active block list
-        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
-        int width = 2;
-        if (CurrBlockSize == BlockSize.ThreeWide)
-            width = 3;
+    #endregion Block Placement
 
-        int height = 2;
-        if(CurrBlockSize == BlockSize.ThreeTall )
-        {
-            height = 3;
-        }
+    #region Pathfinding Logic
 
-        for(int x = 0; x < width - 1; x++)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(x + TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y);
-            SetBoardObjectAtPosition(x + TileBottomLeftPosition.x, TileBottomLeftPosition.y, shiftBlock);
-        }
-
-        for (int y = 0; y < height - 1; y++)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y + 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, shiftBlock);
-        }
-
-        for (int x = width - 1; x > 0; x--)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y + height - 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
-        }
-
-        for (int y = height - 1; y > 0; y--)
-        {
-            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y - 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, prevBlock);
-        }
-
-        SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + 1, tempBlock);
-    }
-
-    void RotateCounterClockwise()
-    {
-        // Store bottom left of active block list
-        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
-
-        int width = 2;
-        if (CurrBlockSize == BlockSize.ThreeWide)
-            width = 3;
-
-        int height = 2;
-        if (CurrBlockSize == BlockSize.ThreeTall)
-        {
-            height = 3;
-        }
-
-        for (int y = 0; y < height - 1; y++)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y + 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, shiftBlock);
-        }
-
-        for (int x = 0; x < width - 1; x++)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + height - 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
-        }
-
-        for (int y = height - 1; y > 0; y--)
-        {
-            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y - 1);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, prevBlock);
-        }
-
-        for (int x = width - 1; x > 0; x--)
-        {
-            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y);
-            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y, shiftBlock);
-        }
-
-        SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
-    }
-
-    void SoftDrop()
-    {
-        // Starting from the active Bottom Left corner,
-        // 
-        print(TileBottomLeftPosition);
-
-        int tileHeight = 2;
-        if(CurrBlockSize == BlockSize.ThreeTall)
-            tileHeight = 3;
-
-        int tileWidth = 2;
-        if(CurrBlockSize == BlockSize.ThreeWide)
-            tileWidth = 3;
-
-        for(int x = TileBottomLeftPosition.x; x < TileBottomLeftPosition.x + tileWidth; x++ )
-        {
-            for(int y = TileBottomLeftPosition.y; y < TileBottomLeftPosition.y + tileHeight; y++ )
-            {
-                if(y - 1 > 0)
-                {
-                    BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
-                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
-
-                    if (belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
-                    {
-                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
-                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
-                    }
-                    else
-                    {
-                        HardDrop();
-                        return;
-                    }
-                }
-                else
-                {
-                    HardDrop();
-                    return;
-                }
-            }
-        }
-
-        TileBottomLeftPosition.y -= 1;
-    }
-
-    void HardDrop()
-    {
-        print("HARD DROP");
-
-        AllBlocksStatic();
-
-        // Go from left side to right, bottom to top
-        for (int x = 0; x < BoardWidth; x++)
-        {
-            for(int y = 1; y < BoardHeight; y++)
-            {
-                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
-
-                if(thisBlock == BoardObject.Alpha_Static || thisBlock == BoardObject.Bravo_Static)
-                {
-                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
-
-                    if(belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
-                    {
-                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
-
-                        // If it was a ghost block, it gets reset to ghost at end of BeginPathfinding()
-                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
-
-                        y = 0;
-                    }
-                }
-            }
-        }
-
-        BeginPathfinding();
-    }
-
-    void AllBlocksStatic()
-    {
-        // Go from left side to right, bottom to top
-        for (int x = 0; x < BoardWidth; x++)
-        {
-            for (int y = 0; y < BoardHeight; y++)
-            {
-                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
-
-                if (thisBlock == BoardObject.Alpha_Active)
-                    thisBlock = BoardObject.Alpha_Static;
-                else if(thisBlock == BoardObject.Bravo_Active)
-                    thisBlock = BoardObject.Bravo_Static;
-
-                SetBoardObjectAtPosition(x, y, thisBlock);
-            }
-        }
-    }
-    #endregion
-
-    void ResetGhostBlocks()
-    {
-        foreach(Vector2Int pos in GhostBlockList)
-        {
-            SetBoardObjectAtPosition(pos, BoardObject.Ghost);
-        }
-    }
-
-    List<Vector2Int> GhostBlockList;
-    void SetGhostBlock(int x_, int y_)
-    {
-        SetGhostBlock(new Vector2Int(x_, y_));
-    }
-
-    void SetGhostBlock(Vector2Int pos_)
-    {
-        SetBoardObjectAtPosition(pos_.x, pos_.y, BoardObject.Ghost);
-        GhostBlockList.Add(pos_);
-    }
-
-    void ClearGhostBlockList()
-    {
-        GhostBlockList = new List<Vector2Int>();
-    }
-
-    #region Pathfinding Actions
     void BeginPathfinding()
     {
         bool alphaExists = true;
@@ -625,7 +452,6 @@ public class GameLogic : MonoBehaviour
 
         
 
-        #region Vertical Tests
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         for (int x = 0; x < BoardWidth; x++)
         {
@@ -692,7 +518,6 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
-        #endregion
 
         if(BugTestConsoleOutput)
         {
@@ -716,7 +541,6 @@ public class GameLogic : MonoBehaviour
         }
         
 
-        #region Horizontal Tests
         if (alphaExists)
         {
             for(int x = 0; x < AlphaPathfindList.Count; x++)
@@ -734,7 +558,6 @@ public class GameLogic : MonoBehaviour
         }
 
         ResetGhostBlocks();
-        #endregion
     }
 
     void PreloadPathfindBlock(BoardObject boardObjectType, PathBoardObject startBlock)
@@ -1169,15 +992,30 @@ public class GameLogic : MonoBehaviour
         
     }
 
-    #endregion
+    #endregion Pathfinding Logic
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RotateCounterClockwise();
+            Console_PrintBoard();
+        }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            RotateClockwise();
+            Console_PrintBoard();
+        }
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             // RotateCounterClockwise();
-            SoftDrop();
+            HardDrop();
+            BlockSize nextBlockSize = NextBlockListSize[0];
+            List<BoardObject> nextBlock = GetNextBlock(true);
+            PlaceNewBlockOfType(nextBlockSize, nextBlock);
             print("-----------");
             print("-----------");
             print("-----------");
@@ -1185,10 +1023,193 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    
+    #region Block Manipulation
 
-    
+    void RotateClockwise()
+    {
+        // Store bottom left of active block list
+        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+        {
+            height = 3;
+        }
+
+        for (int x = 0; x < width - 1; x++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(x + TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y);
+            SetBoardObjectAtPosition(x + TileBottomLeftPosition.x, TileBottomLeftPosition.y, shiftBlock);
+        }
+
+        for (int y = 0; y < height - 1; y++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y + 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, shiftBlock);
+        }
+
+        for (int x = width - 1; x > 0; x--)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y + height - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
+        }
+
+        for (int y = height - 1; y > 0; y--)
+        {
+            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, prevBlock);
+        }
+
+        SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + 1, tempBlock);
+    }
+
+    void RotateCounterClockwise()
+    {
+        // Store bottom left of active block list
+        BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
+
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+        {
+            height = 3;
+        }
+
+        for (int y = 0; y < height - 1; y++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y + 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, shiftBlock);
+        }
+
+        for (int x = 0; x < width - 1; x++)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + height - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
+        }
+
+        for (int y = height - 1; y > 0; y--)
+        {
+            BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y - 1);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, prevBlock);
+        }
+
+        for (int x = width - 1; x > 0; x--)
+        {
+            BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y);
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y, shiftBlock);
+        }
+
+        SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
+    }
+
+    void SoftDrop()
+    {
+        // Starting from the active Bottom Left corner,
+        // 
+        print(TileBottomLeftPosition);
+
+        int tileHeight = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+            tileHeight = 3;
+
+        int tileWidth = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            tileWidth = 3;
+
+        for (int x = TileBottomLeftPosition.x; x < TileBottomLeftPosition.x + tileWidth; x++)
+        {
+            for (int y = TileBottomLeftPosition.y; y < TileBottomLeftPosition.y + tileHeight; y++)
+            {
+                if (y - 1 > 0)
+                {
+                    BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
+                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
+
+                    if (belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
+                    {
+                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
+                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+                    }
+                    else
+                    {
+                        HardDrop();
+                        return;
+                    }
+                }
+                else
+                {
+                    HardDrop();
+                    return;
+                }
+            }
+        }
+
+        TileBottomLeftPosition.y -= 1;
+    }
+
+    void HardDrop()
+    {
+        print("HARD DROP");
+
+        AllBlocksStatic();
+
+        // Go from left side to right, bottom to top
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            for (int y = 1; y < BoardHeight; y++)
+            {
+                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
+
+                if (thisBlock == BoardObject.Alpha_Static || thisBlock == BoardObject.Bravo_Static)
+                {
+                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
+
+                    if (belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
+                    {
+                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
+
+                        // If it was a ghost block, it gets reset to ghost at end of BeginPathfinding()
+                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+
+                        y = 0;
+                    }
+                }
+            }
+        }
+
+        BeginPathfinding();
+    }
+
+    void AllBlocksStatic()
+    {
+        // Go from left side to right, bottom to top
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            for (int y = 0; y < BoardHeight; y++)
+            {
+                BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
+
+                if (thisBlock == BoardObject.Alpha_Active)
+                    thisBlock = BoardObject.Alpha_Static;
+                else if (thisBlock == BoardObject.Bravo_Active)
+                    thisBlock = BoardObject.Bravo_Static;
+
+                SetBoardObjectAtPosition(x, y, thisBlock);
+            }
+        }
+    }
+
+
+    #endregion Block Manipulation
+
+    #region Board Manipulation
     /// <summary>
     /// Overrides position in Board at [x,y] position with given BoardObject
     /// </summary>
@@ -1230,6 +1251,35 @@ public class GameLogic : MonoBehaviour
         return GetBoardObjectAtPosition(v2_Position.x, v2_Position.y);
     }
 
+
+    void ResetGhostBlocks()
+    {
+        foreach (Vector2Int pos in GhostBlockList)
+        {
+            SetBoardObjectAtPosition(pos, BoardObject.Ghost);
+        }
+    }
+
+    List<Vector2Int> GhostBlockList;
+    void SetGhostBlock(int x_, int y_)
+    {
+        SetGhostBlock(new Vector2Int(x_, y_));
+    }
+
+    void SetGhostBlock(Vector2Int pos_)
+    {
+        SetBoardObjectAtPosition(pos_.x, pos_.y, BoardObject.Ghost);
+        GhostBlockList.Add(pos_);
+    }
+
+    void ClearGhostBlockList()
+    {
+        GhostBlockList = new List<Vector2Int>();
+    }
+
+    #endregion Board Manipulation
+
+    #region Console Output
     void Console_PrintBoard()
     {
         for (int y = BoardHeight - 1; y >= 0; y--)
@@ -1261,4 +1311,26 @@ public class GameLogic : MonoBehaviour
             print(textLine);
         }
     }
+
+    void PrintBlockList(List<BoardObject> blockList)
+    {
+        for (int count = 0; count < blockList.Count; count++)
+        {
+            print("Block #: " + count);
+
+            string output = "";
+            for (int eachBlock = 0; eachBlock < blockList.Count; eachBlock++)
+            {
+                output += blockList[eachBlock].ToString();
+                if (eachBlock != blockList.Count - 1)
+                {
+                    output += ",";
+                }
+            }
+            print(output);
+            print("-----");
+        }
+    }
+
+    #endregion Console Output
 }
