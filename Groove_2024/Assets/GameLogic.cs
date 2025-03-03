@@ -1009,7 +1009,13 @@ public class GameLogic : MonoBehaviour
             Console_PrintBoard();
         }
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            ShiftLeft();
+            Console_PrintBoard();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             // RotateCounterClockwise();
             HardDrop();
@@ -1107,6 +1113,75 @@ public class GameLogic : MonoBehaviour
         }
 
         SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
+    }
+
+    void ShiftLeft()
+    {
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+        {
+            height = 3;
+        }
+
+        // Ensure left-bound positions are valid
+        if (! (TileBottomLeftPosition.x - 1 >= HORIZ_LEFT_WALL_XPos_Sidewall) )
+            return;
+
+        print(TileBottomLeftPosition);
+
+        // Check left bounds. If positions to its left are open, continue
+        for (int y = 0; y < height; y++)
+        {
+            BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x - 1, TileBottomLeftPosition.y + y);
+
+            if(blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost)
+                continue;
+        }
+
+        // Begin shifting blocks left
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
+                SetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y + y, blockToShift);
+            }
+        }
+
+        // Convert all right-side positions to Empty
+        for (int y = 0; y < height; y++)
+        {
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, BoardObject.Empty);
+        }
+
+        // Set new TileBottomLeftPosition
+        TileBottomLeftPosition = new Vector2Int(TileBottomLeftPosition.x - 1, TileBottomLeftPosition.y);
+
+        // BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y);
+        /*if (blockCheck == BoardObject.Empty)
+        {
+            BoardObject blockToMove = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width, TileBottomLeftPosition.y);
+            SetBoardObjectAtPosition
+            }
+        */
+    }
+
+    void ShiftRight()
+    {
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+        {
+            height = 3;
+        }
     }
 
     void SoftDrop()
