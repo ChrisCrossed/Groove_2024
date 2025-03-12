@@ -1015,6 +1015,12 @@ public class GameLogic : MonoBehaviour
             Console_PrintBoard();
         }
 
+        if( Input.GetKeyDown(KeyCode.D))
+        {
+            ShiftRight();
+            Console_PrintBoard();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // RotateCounterClockwise();
@@ -1123,15 +1129,11 @@ public class GameLogic : MonoBehaviour
 
         int height = 2;
         if (CurrBlockSize == BlockSize.ThreeTall)
-        {
             height = 3;
-        }
 
         // Ensure left-bound positions are valid
         if (! (TileBottomLeftPosition.x - 1 >= HORIZ_LEFT_WALL_XPos_Sidewall) )
             return;
-
-        print(TileBottomLeftPosition);
 
         // Check left bounds. If positions to its left are open, continue
         for (int y = 0; y < height; y++)
@@ -1179,9 +1181,40 @@ public class GameLogic : MonoBehaviour
 
         int height = 2;
         if (CurrBlockSize == BlockSize.ThreeTall)
-        {
             height = 3;
+
+        // Ensure right-bound positions are valid
+        if (!(TileBottomLeftPosition.x + width < HORIZ_RIGHT_WALL_XPos_Sidewall + 1))
+            return;
+
+        // Check right bounds. If positions to its right are open, continue
+        for (int y = 0; y < height; y++)
+        {
+            BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width, TileBottomLeftPosition.y + y);
+
+            if (blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost)
+                continue;
         }
+
+        // Begin shifting blocks right
+        for (int x = width - 1; x >= 0; x--)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
+                SetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + y, blockToShift);
+            }
+        }
+
+        // Convert all right-side positions to Empty
+        for (int y = 0; y < height; y++)
+        {
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, BoardObject.Empty);
+        }
+
+        // Set new TileBottomLeftPosition
+        TileBottomLeftPosition = new Vector2Int(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y);
     }
 
     void SoftDrop()
