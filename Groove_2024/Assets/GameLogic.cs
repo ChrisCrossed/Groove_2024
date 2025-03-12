@@ -997,41 +997,40 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown( KeyCode.Q ))
         {
             RotateCounterClockwise();
             Console_PrintBoard();
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
+        if(Input.GetKeyDown( KeyCode.E ))
         {
             RotateClockwise();
             Console_PrintBoard();
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown( KeyCode.A ))
         {
             ShiftLeft();
             Console_PrintBoard();
         }
 
-        if( Input.GetKeyDown(KeyCode.D))
+        if( Input.GetKeyDown( KeyCode.D ))
         {
             ShiftRight();
             Console_PrintBoard();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if( Input.GetKeyDown( KeyCode.S ))
+        {
+            SoftDrop();
+            Console_PrintBoard();
+        }
+
+        if ( Input.GetKeyDown( KeyCode.Space ))
         {
             // RotateCounterClockwise();
             HardDrop();
-            BlockSize nextBlockSize = NextBlockListSize[0];
-            List<BoardObject> nextBlock = GetNextBlock(true);
-            PlaceNewBlockOfType(nextBlockSize, nextBlock);
-            print("-----------");
-            print("-----------");
-            print("-----------");
-            Console_PrintBoard();
         }
     }
 
@@ -1163,14 +1162,6 @@ public class GameLogic : MonoBehaviour
 
         // Set new TileBottomLeftPosition
         TileBottomLeftPosition = new Vector2Int(TileBottomLeftPosition.x - 1, TileBottomLeftPosition.y);
-
-        // BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y);
-        /*if (blockCheck == BoardObject.Empty)
-        {
-            BoardObject blockToMove = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width, TileBottomLeftPosition.y);
-            SetBoardObjectAtPosition
-            }
-        */
     }
 
     void ShiftRight()
@@ -1221,42 +1212,45 @@ public class GameLogic : MonoBehaviour
     {
         // Starting from the active Bottom Left corner,
         // 
-        print(TileBottomLeftPosition);
-
-        int tileHeight = 2;
+        int height = 2;
         if (CurrBlockSize == BlockSize.ThreeTall)
-            tileHeight = 3;
+            height = 3;
 
-        int tileWidth = 2;
+        int width = 2;
         if (CurrBlockSize == BlockSize.ThreeWide)
-            tileWidth = 3;
+            width = 3;
 
-        for (int x = TileBottomLeftPosition.x; x < TileBottomLeftPosition.x + tileWidth; x++)
+        // We don't immediately go to HardDrop if y = 1 because we want to allow rotation on the bottom row before HardDrop
+        if( TileBottomLeftPosition.y == 0 )
         {
-            for (int y = TileBottomLeftPosition.y; y < TileBottomLeftPosition.y + tileHeight; y++)
-            {
-                if (y - 1 > 0)
-                {
-                    BoardObject thisBlock = GetBoardObjectAtPosition(x, y);
-                    BoardObject belowBlock = GetBoardObjectAtPosition(x, y - 1);
+            HardDrop();
+            return;
+        }
 
-                    if (belowBlock == BoardObject.Empty || belowBlock == BoardObject.Ghost)
-                    {
-                        SetBoardObjectAtPosition(x, y - 1, thisBlock);
-                        SetBoardObjectAtPosition(x, y, BoardObject.Empty);
-                    }
-                    else
-                    {
-                        HardDrop();
-                        return;
-                    }
-                }
-                else
-                {
-                    HardDrop();
-                    return;
-                }
+        for (int x = 0; x < width; x++)
+        {
+            BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y - 1);
+
+            if (! (blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost) )
+            {
+                HardDrop();
+                return;
             }
+        }
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
+                SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y - 1, blockToShift);
+            }
+        }
+
+        for( int x = 0; x < width; x++)
+        {
+            SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, BoardObject.Empty);
         }
 
         TileBottomLeftPosition.y -= 1;
@@ -1293,6 +1287,14 @@ public class GameLogic : MonoBehaviour
         }
 
         BeginPathfinding();
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewBlockOfType(nextBlockSize, nextBlock);
+        print("-----------");
+        print("-----------");
+        print("-----------");
+        Console_PrintBoard();
     }
 
     void AllBlocksStatic()
@@ -1418,6 +1420,7 @@ public class GameLogic : MonoBehaviour
             }
             print(textLine);
         }
+        print("-------------------------------------------------------------------------");
     }
 
     void PrintBlockList(List<BoardObject> blockList)
