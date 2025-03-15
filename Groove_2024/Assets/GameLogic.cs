@@ -73,11 +73,11 @@ public class GameLogic : MonoBehaviour
 
         Init_Board();
 
-        TEST_PresetBoard();
-
         SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
 
         PopulateNextFourBlocksList();
+
+        TEST_PresetBoard();
 
         Console_PrintBoard();
 
@@ -87,8 +87,9 @@ public class GameLogic : MonoBehaviour
             // List<BoardObject> nextBlocks = GetNextBlock(true);
             //PrintBlockList(nextBlocks);
         }
-        
-        BeginPathfinding();
+
+        HardDrop();
+        // BeginPathfinding();
     }
 
     int PreviousRandomSeed;
@@ -148,7 +149,6 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
-        /*
         for (int x = 0; x < BoardWidth; x++)
         {
             if (GetBoardObjectAtPosition(x, 2) != BoardObject.Ghost)
@@ -156,7 +156,40 @@ public class GameLogic : MonoBehaviour
                 SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
             }
         }
-        */
+
+        SetBoardObjectAtPosition(BoardWidth - 4, 3, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 3, 3, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 2, 3, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 4, 4, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 3, 4, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 2, 4, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 4, 5, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 3, 5, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 2, 5, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 4, 6, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 3, 6, BoardObject.Bravo_Static);
+        SetBoardObjectAtPosition(BoardWidth - 2, 6, BoardObject.Bravo_Static);
+
+        SetBoardObjectAtPosition(BoardWidth - 4, 7, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 3, 7, BoardObject.Alpha_Static);
+        SetBoardObjectAtPosition(BoardWidth - 2, 7, BoardObject.Alpha_Static);
+
+        // SetBoardObjectAtPosition(BoardWidth - 1, BoardHeight - 1, BoardObject.Alpha_Static);
+
+        for (int x = 0; x < BoardWidth; x++)
+        {
+            if (GetBoardObjectAtPosition(x, 1) != BoardObject.Ghost)
+            {
+                if(x % 2 == 0)
+                {
+                    SetBoardObjectAtPosition(x, 1, BoardObject.Alpha_Static);
+                }
+                else
+                {
+                    SetBoardObjectAtPosition(x, 1, BoardObject.Bravo_Static);
+                }
+            }
+        }    
 
 
             // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
@@ -635,37 +668,41 @@ public class GameLogic : MonoBehaviour
 
             if (tempBlock.RightValid)
             {
-                // Evaluate based on the position to the right
-                ++nextPos.x;
-
-                evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                // Compares this block to the one passed into the function
-                if (evaluationBlock != boardObjectType)
+                if(nextPos.x < BoardWidth_Maximum)
                 {
-                    tempBlock.RightValid = false;
-                }
+                    // Evaluate based on the position to the right
+                    ++nextPos.x;
 
-                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Right Valid' value wasn't changed above
-                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                if (arrayPositionsList.Contains(nextPos) && tempBlock.RightValid)
-                {
-                    tempBlock.RightValid = false;
-                }
+                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
-                if (tempBlock.RightValid)
-                {
-                    validBoardObjects.Add( new PathBoardObject(nextPos, false, true, true, true) );
-
-                    // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
-                    if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
+                    // Compares this block to the one passed into the function
+                    if (evaluationBlock != boardObjectType)
                     {
-                        SaveSuccessfulPathing(boardObjectType, validBoardObjects);
-                        ThreadCounter(boardObjectType, false);
-                        shouldContinue = false;
-                        continue;
+                        tempBlock.RightValid = false;
+                    }
+
+                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Right Valid' value wasn't changed above
+                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                    if (arrayPositionsList.Contains(nextPos) && tempBlock.RightValid)
+                    {
+                        tempBlock.RightValid = false;
+                    }
+
+                    if (tempBlock.RightValid)
+                    {
+                        validBoardObjects.Add(new PathBoardObject(nextPos, false, true, true, true));
+
+                        // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
+                        if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
+                        {
+                            SaveSuccessfulPathing(boardObjectType, validBoardObjects);
+                            ThreadCounter(boardObjectType, false);
+                            shouldContinue = false;
+                            continue;
+                        }
                     }
                 }
+                else tempBlock.RightValid = false;
             }
 
             // Resets comparison
@@ -674,28 +711,32 @@ public class GameLogic : MonoBehaviour
 
             if (tempBlock.DownValid)
             {
-                // Evaluate based on the position below
-                --nextPos.y;
-
-                evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                // Compares this block to the one passed into the function
-                if (evaluationBlock != boardObjectType)
+                if(nextPos.y > 0)
                 {
-                    tempBlock.DownValid = false;
-                }
+                    // Evaluate based on the position below
+                    --nextPos.y;
 
-                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Down Valid' value wasn't changed above
-                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                if (arrayPositionsList.Contains(nextPos) && tempBlock.DownValid)
-                {
-                    tempBlock.DownValid = false;
-                }
+                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
-                if (tempBlock.DownValid)
-                {
-                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                    // Compares this block to the one passed into the function
+                    if (evaluationBlock != boardObjectType)
+                    {
+                        tempBlock.DownValid = false;
+                    }
+
+                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Down Valid' value wasn't changed above
+                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                    if (arrayPositionsList.Contains(nextPos) && tempBlock.DownValid)
+                    {
+                        tempBlock.DownValid = false;
+                    }
+
+                    if (tempBlock.DownValid)
+                    {
+                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                    }
                 }
+                else tempBlock.DownValid = false;
             }
 
             // Resets comparison
@@ -704,28 +745,32 @@ public class GameLogic : MonoBehaviour
 
             if (tempBlock.UpValid)
             {
-                // Evaluate based on the position above
-                ++nextPos.y;
-
-                evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                // Compares this block to the one passed into the function
-                if (evaluationBlock != boardObjectType)
+                if(nextPos.y < BoardHeight_Maximum)
                 {
-                    tempBlock.UpValid = false;
-                }
+                    // Evaluate based on the position above
+                    ++nextPos.y;
 
-                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Up Valid' value wasn't changed above
-                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                if (arrayPositionsList.Contains(nextPos) && tempBlock.UpValid)
-                {
-                    tempBlock.UpValid = false;
-                }
+                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
-                if (tempBlock.UpValid)
-                {
-                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, true, false));
+                    // Compares this block to the one passed into the function
+                    if (evaluationBlock != boardObjectType)
+                    {
+                        tempBlock.UpValid = false;
+                    }
+
+                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Up Valid' value wasn't changed above
+                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                    if (arrayPositionsList.Contains(nextPos) && tempBlock.UpValid)
+                    {
+                        tempBlock.UpValid = false;
+                    }
+
+                    if (tempBlock.UpValid)
+                    {
+                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, true, false));
+                    }
                 }
+                else tempBlock.UpValid = false;
             }
 
             // Resets comparison
@@ -734,35 +779,43 @@ public class GameLogic : MonoBehaviour
 
             if (tempBlock.LeftValid)
             {
-                // Evaluate based on the position to the left
-                --nextPos.x;
-
-                evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                // Compares this block to the one passed into the function
-                if (evaluationBlock != boardObjectType)
+                if(nextPos.x > 0)
                 {
-                    tempBlock.LeftValid = false;
-                }
+                    // Evaluate based on the position to the left
+                    --nextPos.x;
 
-                // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Left Valid' value wasn't changed above
-                // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                if (arrayPositionsList.Contains(nextPos) && tempBlock.LeftValid)
-                {
-                    tempBlock.LeftValid = false;
-                }
+                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
 
-                if (tempBlock.LeftValid)
-                {
-                    validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                    // Compares this block to the one passed into the function
+                    if (evaluationBlock != boardObjectType)
+                    {
+                        tempBlock.LeftValid = false;
+                    }
+
+                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Left Valid' value wasn't changed above
+                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
+                    if (arrayPositionsList.Contains(nextPos) && tempBlock.LeftValid)
+                    {
+                        tempBlock.LeftValid = false;
+                    }
+
+                    if (tempBlock.LeftValid)
+                    {
+                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                    }
                 }
+                else tempBlock.LeftValid = false;
             }
 
             if (BugTestConsoleOutput)
             {
                 print("Valid Positions remaining: " + validBoardObjects.Count);
-                print("Valid Positions: ");
-                foreach (PathBoardObject boardObject in validBoardObjects) { print(boardObject.Position); }
+
+                if(validBoardObjects.Count > 0)
+                {
+                    print("Valid Positions: ");
+                    foreach (PathBoardObject boardObject in validBoardObjects) { print(boardObject.Position); }
+                }
             }
             
             if(validBoardObjects.Count != 0)
@@ -819,7 +872,6 @@ public class GameLogic : MonoBehaviour
                 if (BugTestConsoleOutput)
                 {
                     print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
-                    print("THREAD '0'");
                 }
                     
                 pathfindList.Add(validBoardObjects[0]);
@@ -842,6 +894,8 @@ public class GameLogic : MonoBehaviour
 
     void PrintAllPositionsInList(List<PathBoardObject> _pathfindList)
     {
+        print("Pathfind Count: " + _pathfindList.Count);
+
         string output = "";
         for (int i = 0; i < _pathfindList.Count; i++)
         {
