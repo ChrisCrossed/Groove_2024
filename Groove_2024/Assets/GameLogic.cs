@@ -77,6 +77,8 @@ public class GameLogic : MonoBehaviour
 
         PopulateNextFourBlocksList();
 
+        SetGamePlayingState(true);
+
         TEST_PresetBoard();
 
         Console_PrintBoard();
@@ -142,6 +144,10 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
+
+        // Set Default SoftDrop Timer Thread
+        SetSoftDropWaitTime(5.0f);
+        StartCoroutine(SoftDropTimer());
     }
 
     void TEST_PresetBoard()
@@ -149,6 +155,7 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
+        /*
         for (int x = 0; x < BoardWidth; x++)
         {
             if (GetBoardObjectAtPosition(x, 2) != BoardObject.Ghost)
@@ -190,7 +197,7 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }    
-
+        */
 
             // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
             /*
@@ -1047,45 +1054,74 @@ public class GameLogic : MonoBehaviour
     }
 
     #endregion Pathfinding Logic
-
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown( KeyCode.Q ))
+        if(IsGamePlaying)
         {
-            RotateCounterClockwise();
-            Console_PrintBoard();
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                RotateCounterClockwise();
+                Console_PrintBoard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                RotateClockwise();
+                Console_PrintBoard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                ShiftLeft();
+                Console_PrintBoard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                ShiftRight();
+                Console_PrintBoard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                SoftDrop();
+                Console_PrintBoard();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                HardDrop();
+            }
+        }
+    }
+
+    double SoftDropWaitTime;
+    public void SetSoftDropWaitTime(double _waitTime)
+    {
+        SoftDropWaitTime = _waitTime;
+    }
+
+    bool IsGamePlaying;
+    void SetGamePlayingState(bool _isGamePlaying)
+    {
+        IsGamePlaying = _isGamePlaying;
+    }
+
+    double LastSoftDropTimeActivated;
+    IEnumerator SoftDropTimer()
+    {
+        while(IsGamePlaying)
+        {
+            print( (SoftDropWaitTime + LastSoftDropTimeActivated) - Time.fixedTimeAsDouble );
+            if(Time.time > SoftDropWaitTime + LastSoftDropTimeActivated)
+            {
+                SoftDrop();
+            }
+            yield return new WaitForEndOfFrame();
         }
 
-        if(Input.GetKeyDown( KeyCode.E ))
-        {
-            RotateClockwise();
-            Console_PrintBoard();
-        }
-
-        if (Input.GetKeyDown( KeyCode.A ))
-        {
-            ShiftLeft();
-            Console_PrintBoard();
-        }
-
-        if( Input.GetKeyDown( KeyCode.D ))
-        {
-            ShiftRight();
-            Console_PrintBoard();
-        }
-
-        if( Input.GetKeyDown( KeyCode.S ))
-        {
-            SoftDrop();
-            Console_PrintBoard();
-        }
-
-        if ( Input.GetKeyDown( KeyCode.Space ))
-        {
-            // RotateCounterClockwise();
-            HardDrop();
-        }
+        yield return false;
     }
 
     #region Block Manipulation
@@ -1308,6 +1344,9 @@ public class GameLogic : MonoBehaviour
         }
 
         TileBottomLeftPosition.y -= 1;
+
+        LastSoftDropTimeActivated = Time.time;
+        Console_PrintBoard();
     }
 
     void HardDrop()
