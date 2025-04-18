@@ -1434,6 +1434,10 @@ public class GameLogic : MonoBehaviour
         return SetBoardObjectAtPosition(_position.x, _position.y, _boardObject);
     }
 
+    public Vector2Int GetBoardSize()
+    {
+        return new Vector2Int(BoardWidth_Maximum, BoardHeight_Maximum);
+    }
     /// <summary>
     /// Returns the Board object at [x,y] position
     /// </summary>

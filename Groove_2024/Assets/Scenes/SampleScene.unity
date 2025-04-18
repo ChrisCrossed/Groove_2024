@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.34117648, g: 0, b: 0, a: 1}
+  m_SubtractiveShadowColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 4b876b5421a451f4cae98cdf7b4e6f05, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -219,6 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SquirclePrefab: {fileID: 1291348948472564437, guid: 6d365cebee360e743845e604c040f4eb, type: 3}
   BackdropPrefab: {fileID: 3987517861236040984, guid: 8160060321e7f15458f276ad9aeed012, type: 3}
+  CameraObject: {fileID: 963194225}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +400,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
