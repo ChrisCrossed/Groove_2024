@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 4b876b5421a451f4cae98cdf7b4e6f05, type: 2}
+  m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.0949097, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -217,6 +217,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d357503e27b51948b8ca2b6af3c5df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Mat_AlphaBlock: {fileID: 2100000, guid: 1c7e2203e03937a40aea8848b4f3aad5, type: 2}
+  Mat_BravoBlock: {fileID: 2100000, guid: 64072d21210c3394ca8908421bf8d8c7, type: 2}
+  Mat_DefaultBlock: {fileID: 2100000, guid: 7f54498462ffaf448bfdfcda736e57d6, type: 2}
+  Mat_AlphaBackdrop: {fileID: 2100000, guid: 1c7e2203e03937a40aea8848b4f3aad5, type: 2}
+  Mat_BravoBackdrop: {fileID: 2100000, guid: 64072d21210c3394ca8908421bf8d8c7, type: 2}
+  Mat_DefaultBackdrop: {fileID: 2100000, guid: 7f54498462ffaf448bfdfcda736e57d6, type: 2}
   SquirclePrefab: {fileID: 1291348948472564437, guid: 6d365cebee360e743845e604c040f4eb, type: 3}
   BackdropPrefab: {fileID: 3987517861236040984, guid: 8160060321e7f15458f276ad9aeed012, type: 3}
   CameraObject: {fileID: 963194225}
@@ -326,7 +332,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Puzzle Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,7 +355,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
