@@ -7,6 +7,9 @@ public class c_BoardLogic : MonoBehaviour
     GameObject GameLogicObject;
     GameLogic GameLogic;
 
+    List<GameObject> BackdropArray;
+    List<GameObject> BlockArray;
+
     [SerializeField] private Material Mat_AlphaBlock;
     [SerializeField] private Material Mat_BravoBlock;
     [SerializeField] private Material Mat_EmptyBlock;
@@ -24,6 +27,9 @@ public class c_BoardLogic : MonoBehaviour
         UpdateBoardSize();
         InitializeBackdrop();
         TestBoard();
+
+        BackdropArray = new List<GameObject>();
+        BlockArray = new List<GameObject>();
     }
 
     void TestBoard()
@@ -59,12 +65,18 @@ public class c_BoardLogic : MonoBehaviour
                 backdropPos.y += (1.25f) * y;
                 tempBackdrop.transform.position = backdropPos;
 
-                
+                BackdropArray.Add(tempBackdrop);
 
                 tempBackdrop.transform.SetParent( GameObject.Find("BackdropArray").transform );
                 BackdropObjects.Add( tempBackdrop );
             }
         }
+    }
+    void ConstructBackdropArray()
+    {
+        List<GameObject> oldArray = new List<GameObject>();
+
+        // Determine if width of board decreased or increased
     }
 
     public void AddBlockToBoard(Vector2 _pos, BoardObject _boardObjectType)
