@@ -24,12 +24,12 @@ public class c_BoardLogic : MonoBehaviour
         GameLogicObject = GameObject.Find("GameLogic");
         GameLogic = GameLogicObject.GetComponent<GameLogic>();
 
+        BackdropArray = new List<GameObject>();
+        BlockArray = new List<GameObject>();
+
         UpdateBoardSize();
         InitializeBackdrop();
         TestBoard();
-
-        BackdropArray = new List<GameObject>();
-        BlockArray = new List<GameObject>();
     }
 
     void TestBoard()
@@ -49,21 +49,7 @@ public class c_BoardLogic : MonoBehaviour
         {
             for(int x = 0; x < BoardWidth; x++)
             {
-                GameObject tempBackdrop = GameObject.Instantiate(BackdropPrefab);
-                
-                // tempBackdrop.gameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
-                tempBackdrop.name = "Backdrop";
-                
-
-                
-
-                float leftPos = BoardWidth / 2f * -1f;
-                Vector3 backdropPos = new Vector3(leftPos, -1.25f, 0);
-                
-
-                backdropPos.x += (1.25f) * x;
-                backdropPos.y += (1.25f) * y;
-                tempBackdrop.transform.position = backdropPos;
+                GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x, y));
 
                 BackdropArray.Add(tempBackdrop);
 
@@ -72,11 +58,85 @@ public class c_BoardLogic : MonoBehaviour
             }
         }
     }
-    void ConstructBackdropArray()
+    void ReconstructBackdropArray()
     {
-        List<GameObject> oldArray = new List<GameObject>();
+        List<GameObject> newArray = new List<GameObject>();
 
         // Determine if width of board decreased or increased
+        int oldWidth = BoardWidth;
+        int oldHeight = BoardHeight;
+
+        // UpdateBoardSize();
+        // TESTING:
+        BoardWidth += 2;
+
+        int widthDiff = BoardWidth - oldWidth;
+
+        if(widthDiff == 0)
+        {
+            return;
+        }
+
+        if( Mathf.Sign(widthDiff) == 1 )
+        {
+            int blocksAddPerSide = widthDiff / 2;
+            float farLeftXPos = BackdropArray[0].transform.position.x;
+
+            for ( int y = 0; y < BoardHeight; y++ )
+            {
+                int currX;
+                int yPos = (y * oldWidth);
+
+                for ( int j = 0; j < blocksAddPerSide; j++ )
+                {
+                    print("Adding one block to left side");
+
+                    // Creating a new X Position to each left side of the previous backdrop
+                    currX = j - blocksAddPerSide;
+
+                    newArray.Add( CreateBackdropBlock( new Vector2Int(currX, y) ) );
+                }
+
+                for( int x = 0; x < oldWidth; x++ )
+                {
+                    newArray.Add( BackdropArray[y + x] );
+                }
+
+                for(int k = 0; k < blocksAddPerSide; k++ )
+                {
+                    print("Adding one block to right side");
+
+                    // Adding new backdrop blocks to the right half of the new list
+                    currX = oldWidth + blocksAddPerSide + k;
+
+                    newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
+                }
+            }
+        }
+        else
+        {
+
+        }
+
+        BackdropArray = newArray;
+    }
+
+    GameObject CreateBackdropBlock(Vector2Int _gridPos)
+    {
+        GameObject tempBackdrop = GameObject.Instantiate(BackdropPrefab);
+
+        // tempBackdrop.gameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
+        tempBackdrop.name = "Backdrop";
+
+        float leftPos = BoardWidth / 2f * -1f;
+        Vector3 backdropPos = new Vector3(leftPos, -1.25f, 0);
+
+
+        backdropPos.x += (1.25f) * _gridPos.x;
+        backdropPos.y += (1.25f) * _gridPos.y;
+        tempBackdrop.transform.position = backdropPos;
+
+        return tempBackdrop;
     }
 
     public void AddBlockToBoard(Vector2 _pos, BoardObject _boardObjectType)
@@ -114,7 +174,8 @@ public class c_BoardLogic : MonoBehaviour
         BoardWidth  = boardSize.x;
         BoardHeight = boardSize.y;
 
-        UpdateCameraPosition();
+        // Remember this is VR, don't move the camera. Move the game objects.
+        // UpdateCameraPosition();
     }
 
     public GameObject CameraObject;
@@ -195,6 +256,9 @@ public class c_BoardLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            ReconstructBackdropArray();
+        }
     }
 }
