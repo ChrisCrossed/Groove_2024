@@ -80,7 +80,6 @@ public class c_BoardLogic : MonoBehaviour
         if( Mathf.Sign(widthDiff) == 1 )
         {
             int blocksAddPerSide = widthDiff / 2;
-            float farLeftXPos = BackdropArray[0].transform.position.x;
 
             for ( int y = 0; y < BoardHeight; y++ )
             {
@@ -92,7 +91,7 @@ public class c_BoardLogic : MonoBehaviour
                     print("Adding one block to left side");
 
                     // Creating a new X Position to each left side of the previous backdrop
-                    currX = j - blocksAddPerSide;
+                    currX = j - blocksAddPerSide + 1;
 
                     newArray.Add( CreateBackdropBlock( new Vector2Int(currX, y) ) );
                 }
@@ -107,7 +106,7 @@ public class c_BoardLogic : MonoBehaviour
                     print("Adding one block to right side");
 
                     // Adding new backdrop blocks to the right half of the new list
-                    currX = oldWidth + blocksAddPerSide + k;
+                    currX = oldWidth + k;
 
                     newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
                 }
