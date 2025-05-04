@@ -42,6 +42,8 @@ public class c_BoardLogic : MonoBehaviour
     List<GameObject> BackdropObjects;
     void InitializeBackdrop()
     {
+        defaultLeftPos = BoardWidth / 2f * -1f;
+
         // Just a temporary test. Remember that you want Backdrop squares instead
         BackdropObjects = new List<GameObject>();
 
@@ -120,6 +122,7 @@ public class c_BoardLogic : MonoBehaviour
         BackdropArray = newArray;
     }
 
+    float defaultLeftPos;
     GameObject CreateBackdropBlock(Vector2Int _gridPos)
     {
         GameObject tempBackdrop = GameObject.Instantiate(BackdropPrefab);
@@ -127,8 +130,7 @@ public class c_BoardLogic : MonoBehaviour
         // tempBackdrop.gameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
         tempBackdrop.name = "Backdrop";
 
-        float leftPos = BoardWidth / 2f * -1f;
-        Vector3 backdropPos = new Vector3(leftPos, -1.25f, 0);
+        Vector3 backdropPos = new Vector3(defaultLeftPos, -1.25f, 0);
 
 
         backdropPos.x += (1.25f) * _gridPos.x;
