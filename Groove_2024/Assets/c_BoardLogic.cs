@@ -40,6 +40,8 @@ public class c_BoardLogic : MonoBehaviour
     public GameObject SquirclePrefab;
     public GameObject BackdropPrefab;
     List<GameObject> BackdropObjects;
+    int leftWidth;
+    int rightWidth;
     void InitializeBackdrop()
     {
         defaultLeftPos = BoardWidth / 2f * -1f;
@@ -47,6 +49,43 @@ public class c_BoardLogic : MonoBehaviour
         // Just a temporary test. Remember that you want Backdrop squares instead
         BackdropObjects = new List<GameObject>();
 
+        int widthToIncrease = BoardWidth / 2;
+        for(int y = 0; y < BoardHeight; y++)
+        {
+            // construct left half, and increase 'Left Width' counter for future work
+            List<GameObject> tempList = new List<GameObject>();
+            for (int x = widthToIncrease; x > 0; x--)
+            {
+                GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x, y));
+                leftWidth++;
+
+                tempBackdrop.gameObject.transform.name = "Backdrop_" + x + "_" + y;
+
+                tempList.Add(tempBackdrop);
+            }
+
+            // Reverse list before continuing
+            tempList.Reverse();
+
+            // Construct right half, and increase 'Right Width' counter for future work
+            for (int x = 0; x < widthToIncrease; x++)
+            {
+                GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x + widthToIncrease + 1, y));
+                rightWidth++;
+
+                tempBackdrop.gameObject.transform.name = "Backdrop_" + (x + widthToIncrease + 1) + "_" + y;
+
+                tempList.Add(tempBackdrop);
+            }
+
+            for (int i = 0; i < tempList.Count; i++)
+                BackdropArray.Add(tempList[i]);
+
+        }
+
+        
+
+        /*
         for(int y = 0; y < BoardHeight; y++)
         {
             for(int x = 0; x < BoardWidth; x++)
@@ -59,6 +98,7 @@ public class c_BoardLogic : MonoBehaviour
                 BackdropObjects.Add( tempBackdrop );
             }
         }
+        */
     }
     void ReconstructBackdropArray()
     {
