@@ -52,13 +52,20 @@ public class c_BoardLogic : MonoBehaviour
         int widthToIncrease = BoardWidth / 2;
         for(int y = 0; y < BoardHeight; y++)
         {
+            // Only increment counter for one row (to know true width)
+            if( y == 0 )
+            {
+                leftWidth++;
+                rightWidth++;
+                print(leftWidth);
+            }
+
             // construct left half, and increase 'Left Width' counter for future work
             List<GameObject> tempList = new List<GameObject>();
             for (int x = widthToIncrease; x > 0; x--)
             {
                 GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x, y));
-                leftWidth++;
-
+                
                 tempBackdrop.gameObject.transform.name = "Backdrop_" + x + "_" + y;
 
                 tempList.Add(tempBackdrop);
@@ -71,7 +78,7 @@ public class c_BoardLogic : MonoBehaviour
             for (int x = 0; x < widthToIncrease; x++)
             {
                 GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x + widthToIncrease + 1, y));
-                rightWidth++;
+                
 
                 tempBackdrop.gameObject.transform.name = "Backdrop_" + (x + widthToIncrease + 1) + "_" + y;
 
@@ -82,23 +89,6 @@ public class c_BoardLogic : MonoBehaviour
                 BackdropArray.Add(tempList[i]);
 
         }
-
-        
-
-        /*
-        for(int y = 0; y < BoardHeight; y++)
-        {
-            for(int x = 0; x < BoardWidth; x++)
-            {
-                GameObject tempBackdrop = CreateBackdropBlock(new Vector2Int(x, y));
-
-                BackdropArray.Add(tempBackdrop);
-
-                tempBackdrop.transform.SetParent( GameObject.Find("BackdropArray").transform );
-                BackdropObjects.Add( tempBackdrop );
-            }
-        }
-        */
     }
     void ReconstructBackdropArray()
     {
@@ -125,17 +115,15 @@ public class c_BoardLogic : MonoBehaviour
 
             for ( int y = 0; y < BoardHeight; y++ )
             {
-                int currX;
+                // int currX;
                 int yPos = (y * oldWidth);
+
+                print(rightWidth);
 
                 for ( int j = 0; j < blocksAddPerSide; j++ )
                 {
-                    print("Adding one block to left side");
-
-                    // Creating a new X Position to each left side of the previous backdrop
-                    currX = j - blocksAddPerSide + 1;
-
-                    newArray.Add( CreateBackdropBlock( new Vector2Int(currX, y) ) );
+                    // Grows column toward the left (-leftWidth) by one block
+                    newArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + 1, y)));
                 }
 
                 for( int x = 0; x < oldWidth; x++ )
@@ -145,12 +133,20 @@ public class c_BoardLogic : MonoBehaviour
 
                 for(int k = 0; k < blocksAddPerSide; k++ )
                 {
-                    print("Adding one block to right side");
+                    // Grows column toward the right (rightWidth) by one block
+                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + 1, y)));
 
                     // Adding new backdrop blocks to the right half of the new list
-                    currX = oldWidth + k;
+                    // currX = oldWidth + k;
 
-                    newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
+                    // newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
+                }
+
+                // At end of vertical column creation, increment Left & Right Width values for comparison
+                if (y == BoardHeight - 1)
+                {
+                    leftWidth++;
+                    rightWidth++;
                 }
             }
         }
