@@ -56,7 +56,6 @@ public class c_BoardLogic : MonoBehaviour
         {
             leftWidth++;
             rightWidth++;
-            print(leftWidth);
         }
 
         StartingHalfBoardWidth = leftWidth;
@@ -108,6 +107,7 @@ public class c_BoardLogic : MonoBehaviour
         BoardWidth += 2;
 
         int widthDiff = BoardWidth - oldWidth;
+        int blocksChangePerSide = widthDiff / 2;
 
         if(widthDiff == 0)
         {
@@ -116,44 +116,59 @@ public class c_BoardLogic : MonoBehaviour
 
         if( Mathf.Sign(widthDiff) == 1 )
         {
-            int blocksAddPerSide = widthDiff / 2;
 
+            #region Expansion Logic
             for ( int y = 0; y < BoardHeight; y++ )
             {
-                // int currX;
-                int yPos = (y * oldWidth);
-
-                print(leftWidth);
-
-                for ( int j = 0; j < blocksAddPerSide; j++ )
+                #region Left Side
+                List<GameObject> leftArray = new List<GameObject>();
+                for ( int j = 0; j < blocksChangePerSide; j++ )
                 {
                     // Grows column toward the left (-leftWidth) by one block
-                    newArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y)));
+                    leftArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y)));
                 }
 
-                for( int x = 0; x < oldWidth; x++ )
+                // Reverse and add to List
+                leftArray.Reverse();
+                foreach(GameObject obj in leftArray)
+                    newArray.Add(obj);
+                #endregion Left Side
+
+                #region Center Pre-Existing Region
+                for ( int x = 0; x < oldWidth; x++ )
                 {
-                    newArray.Add( BackdropArray[y + x] );
+                    newArray.Add( BackdropArray[(y * oldWidth) + x] );
                 }
+                #endregion Center Pre-Existing Region
 
-                for(int k = 0; k < blocksAddPerSide; k++ )
+                #region Right Region
+                for (int k = 0; k < blocksChangePerSide; k++ )
                 {
                     // Grows column toward the right (rightWidth) by one block
                     newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + StartingHalfBoardWidth + 1, y)));
-
-                    // Adding new backdrop blocks to the right half of the new list
-                    // currX = oldWidth + k;
-
-                    // newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
                 }
+                #endregion Right Region
             }
 
-            leftWidth += blocksAddPerSide;
-            rightWidth += blocksAddPerSide;
+            leftWidth += blocksChangePerSide;
+            rightWidth += blocksChangePerSide;
+            #endregion Expansion Logic
         }
         else
         {
+            #region Reduction Logic
+            for (int y = 0; y < BoardHeight; y++)
+            {
 
+                // Reduce Left Side
+                for (int j = 0; j < blocksChangePerSide; j++)
+                {
+                    // Reduces column toward the left (-leftWidth) by one block
+                    BackdropArray.RemoveAt(y * BoardWidth + j);
+                }
+
+            }
+            #endregion Reduction Logic
         }
 
         BackdropArray = newArray;
