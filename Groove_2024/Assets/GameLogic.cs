@@ -41,9 +41,9 @@ public class GameLogic : MonoBehaviour
     [SerializeField]
     bool BugTestConsoleOutput = false;
 
-    [SerializeField, Range(5, 20)]
+    [SerializeField, Range(6, 20)]
     int BoardWidth_Maximum;
-    [SerializeField, Range(5, 20)]
+    [SerializeField, Range(6, 20)]
     int BoardHeight_Maximum;
 
     [SerializeField]
@@ -115,6 +115,9 @@ public class GameLogic : MonoBehaviour
         SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
 
         // Extend width of board by 2 to include the Sidewalls
+        if (BoardWidth_Maximum % 2 == 1)
+            BoardWidth_Maximum += 1;
+
         BoardWidth = BoardWidth_Maximum + 2;
         BoardHeight = BoardHeight_Maximum;
 

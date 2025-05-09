@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BugTestConsoleOutput: 1
-  BoardWidth_Maximum: 10
+  BoardWidth_Maximum: 7
   BoardHeight_Maximum: 10
   BlockObject_Active_TwoByTwo: 1
   BlockObject_Active_ThreeWide: 0
@@ -219,10 +219,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Mat_AlphaBlock: {fileID: 2100000, guid: 1c7e2203e03937a40aea8848b4f3aad5, type: 2}
   Mat_BravoBlock: {fileID: 2100000, guid: 64072d21210c3394ca8908421bf8d8c7, type: 2}
-  Mat_DefaultBlock: {fileID: 2100000, guid: 7f54498462ffaf448bfdfcda736e57d6, type: 2}
+  Mat_EmptyBlock: {fileID: 0}
   Mat_AlphaBackdrop: {fileID: 2100000, guid: 1c7e2203e03937a40aea8848b4f3aad5, type: 2}
   Mat_BravoBackdrop: {fileID: 2100000, guid: 64072d21210c3394ca8908421bf8d8c7, type: 2}
-  Mat_DefaultBackdrop: {fileID: 2100000, guid: 7f54498462ffaf448bfdfcda736e57d6, type: 2}
+  Mat_EmptyBackdrop: {fileID: 0}
   SquirclePrefab: {fileID: 1291348948472564437, guid: 6d365cebee360e743845e604c040f4eb, type: 3}
   BackdropPrefab: {fileID: 3987517861236040984, guid: 8160060321e7f15458f276ad9aeed012, type: 3}
   CameraObject: {fileID: 963194225}

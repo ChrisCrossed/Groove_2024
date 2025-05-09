@@ -50,16 +50,19 @@ public class c_BoardLogic : MonoBehaviour
         BackdropObjects = new List<GameObject>();
 
         int widthToIncrease = BoardWidth / 2;
-        for(int y = 0; y < BoardHeight; y++)
-        {
-            // Only increment counter for one row (to know true width)
-            if( y == 0 )
-            {
-                leftWidth++;
-                rightWidth++;
-                print(leftWidth);
-            }
 
+        // Only increment counter for one row (to know true width)
+        for(int i = 0; i < widthToIncrease; i++)
+        {
+            leftWidth++;
+            rightWidth++;
+            print(leftWidth);
+        }
+
+        StartingHalfBoardWidth = leftWidth;
+
+        for (int y = 0; y < BoardHeight; y++)
+        {
             // construct left half, and increase 'Left Width' counter for future work
             List<GameObject> tempList = new List<GameObject>();
             for (int x = widthToIncrease; x > 0; x--)
@@ -90,6 +93,8 @@ public class c_BoardLogic : MonoBehaviour
 
         }
     }
+
+    int StartingHalfBoardWidth;
     void ReconstructBackdropArray()
     {
         List<GameObject> newArray = new List<GameObject>();
@@ -118,12 +123,12 @@ public class c_BoardLogic : MonoBehaviour
                 // int currX;
                 int yPos = (y * oldWidth);
 
-                print(rightWidth);
+                print(leftWidth);
 
                 for ( int j = 0; j < blocksAddPerSide; j++ )
                 {
                     // Grows column toward the left (-leftWidth) by one block
-                    newArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + 1, y)));
+                    newArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y)));
                 }
 
                 for( int x = 0; x < oldWidth; x++ )
@@ -134,21 +139,17 @@ public class c_BoardLogic : MonoBehaviour
                 for(int k = 0; k < blocksAddPerSide; k++ )
                 {
                     // Grows column toward the right (rightWidth) by one block
-                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + 1, y)));
+                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + StartingHalfBoardWidth + 1, y)));
 
                     // Adding new backdrop blocks to the right half of the new list
                     // currX = oldWidth + k;
 
                     // newArray.Add( CreateBackdropBlock( new Vector2Int( currX, y ) ) );
                 }
-
-                // At end of vertical column creation, increment Left & Right Width values for comparison
-                if (y == BoardHeight - 1)
-                {
-                    leftWidth++;
-                    rightWidth++;
-                }
             }
+
+            leftWidth += blocksAddPerSide;
+            rightWidth += blocksAddPerSide;
         }
         else
         {
