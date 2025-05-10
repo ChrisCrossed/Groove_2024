@@ -94,7 +94,7 @@ public class c_BoardLogic : MonoBehaviour
     }
 
     int StartingHalfBoardWidth;
-    void ReconstructBackdropArray()
+    void ReconstructBackdropArray(bool tempIncrement)
     {
         List<GameObject> newArray = new List<GameObject>();
 
@@ -103,8 +103,14 @@ public class c_BoardLogic : MonoBehaviour
         int oldHeight = BoardHeight;
 
         // UpdateBoardSize();
-        // TESTING:
-        BoardWidth += 2;
+        if (tempIncrement)
+        {
+            BoardWidth += 2;
+        }
+        else
+        {
+            BoardWidth -= 2;
+        }
 
         int widthDiff = BoardWidth - oldWidth;
         int blocksChangePerSide = widthDiff / 2;
@@ -156,18 +162,34 @@ public class c_BoardLogic : MonoBehaviour
         }
         else
         {
+            
             #region Reduction Logic
             for (int y = 0; y < BoardHeight; y++)
             {
+                int currYPos = y * BoardWidth;
 
-                // Reduce Left Side
-                for (int j = 0; j < blocksChangePerSide; j++)
+                // Reduce Left Side (TODO: Update this to fade blocks out from center-outward)
+                for (int i = 0; i < blocksChangePerSide; i++)
                 {
                     // Reduces column toward the left (-leftWidth) by one block
-                    BackdropArray.RemoveAt(y * BoardWidth + j);
+                    DestroyBackdropBlock(currYPos + i);
                 }
 
+                for(int j = blocksChangePerSide; j < BoardWidth - blocksChangePerSide; ++j)
+                {
+                    newArray.Add(BackdropArray[currYPos + j]);
+                }
+
+                for( int k = BoardWidth - blocksChangePerSide; k < BoardWidth; k++)
+                {
+                    // Reduces column toward the left (-leftWidth) by one block
+                    DestroyBackdropBlock(currYPos + k);
+                }
             }
+            
+            leftWidth -= blocksChangePerSide;
+            rightWidth -= blocksChangePerSide;
+
             #endregion Reduction Logic
         }
 
@@ -306,12 +328,28 @@ public class c_BoardLogic : MonoBehaviour
         return null;
     }
 
+    void DestroyBackdropBlock(int _BackdropArrayPos)
+    {
+        
+        GameObject blockRemove = BackdropArray[_BackdropArrayPos];
+        BackdropArray.RemoveAt(_BackdropArrayPos);
+        GameObject.Destroy(blockRemove);
+    }
+
+
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.L))
+        if(Input.GetKeyDown(KeyCode.K))
         {
-            ReconstructBackdropArray();
+            // TESTING:
+            ReconstructBackdropArray(true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            // TESTING:
+            ReconstructBackdropArray(false);
         }
     }
 }
