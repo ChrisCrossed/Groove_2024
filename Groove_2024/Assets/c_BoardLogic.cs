@@ -7,6 +7,8 @@ public class c_BoardLogic : MonoBehaviour
     GameObject GameLogicObject;
     GameLogic GameLogic;
 
+    GameObject BackdropGameObject;
+
     List<GameObject> BackdropArray;
     List<GameObject> BlockArray;
 
@@ -23,6 +25,8 @@ public class c_BoardLogic : MonoBehaviour
     {
         GameLogicObject = GameObject.Find("GameLogic");
         GameLogic = GameLogicObject.GetComponent<GameLogic>();
+
+        BackdropGameObject = GameObject.Find("BackdropArray");
 
         BackdropArray = new List<GameObject>();
         BlockArray = new List<GameObject>();
@@ -131,7 +135,10 @@ public class c_BoardLogic : MonoBehaviour
                 for ( int j = 0; j < blocksChangePerSide; j++ )
                 {
                     // Grows column toward the left (-leftWidth) by one block
-                    leftArray.Add(CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y)));
+                    GameObject tempBlock = CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y));
+                    
+
+                    leftArray.Add(tempBlock);
                 }
 
                 // Reverse and add to List
@@ -182,10 +189,10 @@ public class c_BoardLogic : MonoBehaviour
                     newArray.Add(BackdropArray[(currYPos + j)]);
                 }
 
-                for( int k = oldWidth - blocksChangePerSide - 1; k < oldWidth; k++)
+                for( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
                 {
                     // Reduces column toward the left (-leftWidth) by one block
-                    // DestroyBackdropBlock(currYPos + k);
+                    DestroyBackdropBlock(currYPos + k);
                 }
             }
             
@@ -212,6 +219,8 @@ public class c_BoardLogic : MonoBehaviour
         backdropPos.x += (1.25f) * _gridPos.x;
         backdropPos.y += (1.25f) * _gridPos.y;
         tempBackdrop.transform.position = backdropPos;
+
+        tempBackdrop.transform.SetParent(BackdropGameObject.transform);
 
         return tempBackdrop;
     }
@@ -335,11 +344,10 @@ public class c_BoardLogic : MonoBehaviour
         GameObject blockRemove = BackdropArray[_BackdropArrayPos];
         print(blockRemove.transform.name);
 
-        /*
-        GameObject blockRemove = BackdropArray[_BackdropArrayPos];
-        BackdropArray.RemoveAt(_BackdropArrayPos);
+        // Already removing old block during 'Reduction Logic' process
+        // BackdropArray.RemoveAt(_BackdropArrayPos);
+        
         GameObject.Destroy(blockRemove);
-        */
     }
 
 
