@@ -162,28 +162,30 @@ public class c_BoardLogic : MonoBehaviour
         }
         else
         {
-            
+            blocksChangePerSide = Mathf.Abs(blocksChangePerSide);
+
             #region Reduction Logic
             for (int y = 0; y < BoardHeight; y++)
             {
-                int currYPos = y * BoardWidth;
+                int currYPos = y * oldWidth;
 
                 // Reduce Left Side (TODO: Update this to fade blocks out from center-outward)
                 for (int i = 0; i < blocksChangePerSide; i++)
                 {
+                    print(currYPos + i);
                     // Reduces column toward the left (-leftWidth) by one block
                     DestroyBackdropBlock(currYPos + i);
                 }
 
-                for(int j = blocksChangePerSide; j < BoardWidth - blocksChangePerSide; ++j)
+                for(int j = blocksChangePerSide; j < oldWidth - blocksChangePerSide; ++j)
                 {
-                    newArray.Add(BackdropArray[currYPos + j]);
+                    newArray.Add(BackdropArray[(currYPos + j)]);
                 }
 
-                for( int k = BoardWidth - blocksChangePerSide; k < BoardWidth; k++)
+                for( int k = oldWidth - blocksChangePerSide - 1; k < oldWidth; k++)
                 {
                     // Reduces column toward the left (-leftWidth) by one block
-                    DestroyBackdropBlock(currYPos + k);
+                    // DestroyBackdropBlock(currYPos + k);
                 }
             }
             
@@ -330,10 +332,14 @@ public class c_BoardLogic : MonoBehaviour
 
     void DestroyBackdropBlock(int _BackdropArrayPos)
     {
-        
+        GameObject blockRemove = BackdropArray[_BackdropArrayPos];
+        print(blockRemove.transform.name);
+
+        /*
         GameObject blockRemove = BackdropArray[_BackdropArrayPos];
         BackdropArray.RemoveAt(_BackdropArrayPos);
         GameObject.Destroy(blockRemove);
+        */
     }
 
 
