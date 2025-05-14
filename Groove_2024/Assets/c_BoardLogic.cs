@@ -98,7 +98,7 @@ public class c_BoardLogic : MonoBehaviour
     }
 
     int StartingHalfBoardWidth;
-    void ReconstructBackdropArray(bool tempIncrement)
+    void ReconstructBackdropArray()
     {
         List<GameObject> newArray = new List<GameObject>();
 
@@ -106,15 +106,7 @@ public class c_BoardLogic : MonoBehaviour
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
-        // UpdateBoardSize();
-        if (tempIncrement)
-        {
-            BoardWidth += 2;
-        }
-        else
-        {
-            BoardWidth -= 2;
-        }
+        UpdateBoardSize();
 
         int widthDiff = BoardWidth - oldWidth;
         int blocksChangePerSide = widthDiff / 2;
@@ -225,13 +217,17 @@ public class c_BoardLogic : MonoBehaviour
         return tempBackdrop;
     }
 
-    public void AddBlockToBoard(Vector2 _pos, BoardObject _boardObjectType)
+    public void AddBlockToBoard(Vector2Int _pos, BoardObject _boardObjectType)
     {
         if(!(_boardObjectType == BoardObject.Alpha_Active || _boardObjectType == BoardObject.Bravo_Active))
         {
             print("WRONG BOARD OBJECT TYPE - 'AddBlockToBoard' (c_BoardLogic)");
             return;
         }
+
+        // Get Relative BackDrop Array Position
+        int index = ((_pos.y * BoardWidth) + _pos.x);
+        Vector3 worldPos = BackdropArray[index].gameObject.transform.position;
 
         GameObject tempSquircle = GameObject.Instantiate(SquirclePrefab);
         tempSquircle.name = "Alpha_Squircle";
@@ -240,15 +236,13 @@ public class c_BoardLogic : MonoBehaviour
             tempSquircle.name = "Bravo_Squircle";
         }
 
+        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType);
+
         tempSquircle.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
 
-        float leftPos = BoardWidth / 2f * -1f;
-        Vector3 squirclePos = new Vector3(leftPos, -1.25f, 0);
+        worldPos.z += -0.35f;
 
-        squirclePos.x = (1.25f) * _pos.x;
-        squirclePos.y = (1.25f) * _pos.y;
-        squirclePos.z += -0.35f;
-        tempSquircle.transform.position = squirclePos;
+        tempSquircle.transform.position = worldPos;
     }
 
     int BoardWidth;
@@ -357,13 +351,18 @@ public class c_BoardLogic : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.K))
         {
             // TESTING:
-            ReconstructBackdropArray(true);
+            ReconstructBackdropArray();
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             // TESTING:
-            ReconstructBackdropArray(false);
+            ReconstructBackdropArray();
+        }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            AddBlockToBoard(new Vector2Int( (BoardWidth / 2) - 1, BoardHeight - 1) , BoardObject.Bravo_Active);
         }
     }
 }
