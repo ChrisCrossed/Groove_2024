@@ -10,7 +10,8 @@ public class c_BoardLogic : MonoBehaviour
     GameObject BackdropGameObject;
 
     List<GameObject> BackdropArray;
-    List<GameObject> BlockArray;
+    List<GameObject> SquircleArray;
+    // Or do I want an array so spaces can be empty?
 
     [SerializeField] private Material Mat_AlphaBlock;
     [SerializeField] private Material Mat_BravoBlock;
@@ -29,7 +30,7 @@ public class c_BoardLogic : MonoBehaviour
         BackdropGameObject = GameObject.Find("BackdropArray");
 
         BackdropArray = new List<GameObject>();
-        BlockArray = new List<GameObject>();
+        SquircleArray = new List<GameObject>();
 
         UpdateBoardSize();
         InitializeBackdrop();
@@ -243,6 +244,8 @@ public class c_BoardLogic : MonoBehaviour
         worldPos.z += -0.35f;
 
         tempSquircle.transform.position = worldPos;
+
+        SquircleArray.Add(tempSquircle);
     }
 
     int BoardWidth;
@@ -363,6 +366,15 @@ public class c_BoardLogic : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.P))
         {
             AddBlockToBoard(new Vector2Int( (BoardWidth / 2) - 1, BoardHeight - 1) , BoardObject.Bravo_Active);
+        }
+
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            foreach(GameObject squircle in SquircleArray)
+            {
+                
+                // squircle.GetComponent<c_SquircleLogic>().GoToPosition()
+            }
         }
     }
 }

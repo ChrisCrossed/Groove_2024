@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BugTestConsoleOutput: 1
-  BoardWidth_Maximum: 7
+  BoardWidth_Maximum: 10
   BoardHeight_Maximum: 10
   BlockObject_Active_TwoByTwo: 1
   BlockObject_Active_ThreeWide: 0

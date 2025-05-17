@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class c_SquircleLogic : MonoBehaviour
 {
-    static float TransitionTimer_MAX = 0.15f;
-    float TransitionTimer;
+    // Transitions between colors
+    static float MoveTimer_MAX = 0.05f;
 
     public Material AlphaBackdropMaterial;
     public Material BravoBackdropMaterial;
@@ -45,9 +45,38 @@ public class c_SquircleLogic : MonoBehaviour
         }
     }
 
+    bool IsMoving = false;
+    float MoveTimer;
+    Vector3 OldPosition;
+    Vector3 NewPosition;
+    public void GoToPosition(Vector3 _newPosition)
+    {
+        IsMoving = true;
+        MoveTimer = 0f;
+        OldPosition = gameObject.transform.position;
+        NewPosition = _newPosition;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (IsMoving)
+        {
+            if(MoveTimer < MoveTimer_MAX)
+            {
+                MoveTimer += Time.deltaTime;
+
+                if(MoveTimer > MoveTimer_MAX)
+                {
+                    MoveTimer = MoveTimer_MAX;
+
+                    IsMoving = false;
+                }
+
+                float lerp = MoveTimer / MoveTimer_MAX;
+                Vector3 currPos = Vector3.Lerp(OldPosition, NewPosition, lerp);
+            }
+        }
+
     }
 }
