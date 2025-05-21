@@ -10,6 +10,8 @@ public class c_SquircleLogic : MonoBehaviour
     public Material AlphaBackdropMaterial;
     public Material BravoBackdropMaterial;
 
+    public Vector2Int GridCoords;
+
     GameObject Mdl_Alpha;
     GameObject Mdl_Bravo;
 
@@ -25,7 +27,7 @@ public class c_SquircleLogic : MonoBehaviour
         Mdl_Bravo.SetActive(false);
     }
 
-    public void InitializeSquircle(BoardObject _boardObjectType)
+    public void InitializeSquircle(BoardObject _boardObjectType, Vector2Int _gridCoords)
     {
         if(_boardObjectType == BoardObject.Alpha_Static || _boardObjectType == BoardObject.Alpha_Active)
         {
@@ -43,6 +45,8 @@ public class c_SquircleLogic : MonoBehaviour
 
             Mdl_Bravo.SetActive(true);
         }
+
+        GridCoords = _gridCoords;
     }
 
     bool IsMoving = false;
@@ -77,6 +81,5 @@ public class c_SquircleLogic : MonoBehaviour
                 Vector3 currPos = Vector3.Lerp(OldPosition, NewPosition, lerp);
             }
         }
-
     }
 }

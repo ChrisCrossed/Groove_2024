@@ -198,7 +198,7 @@ public class c_BoardLogic : MonoBehaviour
         BackdropArray = newArray;
     }
 
-    float defaultLeftPos;
+    
     GameObject CreateBackdropBlock(Vector2Int _gridPos)
     {
         GameObject tempBackdrop = GameObject.Instantiate(BackdropPrefab);
@@ -206,19 +206,14 @@ public class c_BoardLogic : MonoBehaviour
         // tempBackdrop.gameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
         tempBackdrop.name = "Backdrop";
 
-        Vector3 backdropPos = new Vector3(defaultLeftPos, -1.25f, 0);
-
-
-        backdropPos.x += (1.25f) * _gridPos.x;
-        backdropPos.y += (1.25f) * _gridPos.y;
-        tempBackdrop.transform.position = backdropPos;
+        tempBackdrop.transform.position = GetWorldPosition(_gridPos);
 
         tempBackdrop.transform.SetParent(BackdropGameObject.transform);
 
         return tempBackdrop;
     }
 
-    public void AddBlockToBoard(Vector2Int _pos, BoardObject _boardObjectType)
+    public void AddBlockToBoard(Vector2Int _gridPos, BoardObject _boardObjectType)
     {
         if(!(_boardObjectType == BoardObject.Alpha_Active || _boardObjectType == BoardObject.Bravo_Active))
         {
@@ -227,8 +222,11 @@ public class c_BoardLogic : MonoBehaviour
         }
 
         // Get Relative BackDrop Array Position
+        /*
         int index = ((_pos.y * BoardWidth) + _pos.x);
         Vector3 worldPos = BackdropArray[index].gameObject.transform.position;
+        */
+        Vector3 worldPos = GetWorldPosition(_gridPos);
 
         GameObject tempSquircle = GameObject.Instantiate(SquirclePrefab);
         tempSquircle.name = "Alpha_Squircle";
@@ -237,7 +235,7 @@ public class c_BoardLogic : MonoBehaviour
             tempSquircle.name = "Bravo_Squircle";
         }
 
-        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType);
+        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos);
 
         tempSquircle.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
 
@@ -376,5 +374,16 @@ public class c_BoardLogic : MonoBehaviour
                 // squircle.GetComponent<c_SquircleLogic>().GoToPosition()
             }
         }
+    }
+
+    float defaultLeftPos;
+    Vector3 GetWorldPosition(Vector2 _gridCoords)
+    {
+        Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
+
+        tempPos.x += (1.25f) * _gridCoords.x;
+        tempPos.y += (1.25f) * _gridCoords.y;
+
+        return tempPos;
     }
 }
