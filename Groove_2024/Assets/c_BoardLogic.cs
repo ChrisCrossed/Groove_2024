@@ -10,7 +10,8 @@ public class c_BoardLogic : MonoBehaviour
     GameObject BackdropGameObject;
 
     List<GameObject> BackdropArray;
-    List<GameObject> SquircleArray;
+    GameObject[] SquircleArray;
+    //List<GameObject> SquircleArray;
     // Or do I want an array so spaces can be empty?
 
     [SerializeField] private Material Mat_AlphaBlock;
@@ -30,7 +31,7 @@ public class c_BoardLogic : MonoBehaviour
         BackdropGameObject = GameObject.Find("BackdropArray");
 
         BackdropArray = new List<GameObject>();
-        SquircleArray = new List<GameObject>();
+        
 
         UpdateBoardSize();
         InitializeBackdrop();
@@ -49,14 +50,18 @@ public class c_BoardLogic : MonoBehaviour
     int rightWidth;
     void InitializeBackdrop()
     {
+        // Reset Squircle Array
+        SquircleArray = new GameObject[BoardWidth * BoardHeight];
+
         defaultLeftPos = BoardWidth / 2f * -1f;
 
-        // Just a temporary test. Remember that you want Backdrop squares instead
+        // Reset backdrop objects list
         BackdropObjects = new List<GameObject>();
 
         int widthToIncrease = BoardWidth / 2;
 
         // Only increment counter for one row (to know true width)
+        // In other words, evaluates expansion from center outward
         for(int i = 0; i < widthToIncrease; i++)
         {
             leftWidth++;
@@ -102,6 +107,7 @@ public class c_BoardLogic : MonoBehaviour
     void ReconstructBackdropArray()
     {
         List<GameObject> newArray = new List<GameObject>();
+        GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
 
         // Determine if width of board decreased or increased
         int oldWidth = BoardWidth;
@@ -144,6 +150,9 @@ public class c_BoardLogic : MonoBehaviour
                 for ( int x = 0; x < oldWidth; x++ )
                 {
                     newArray.Add( BackdropArray[(y * oldWidth) + x] );
+
+                    // Get previous grid coordinate and set tempSquircleArray to refer to that board object
+                    tempSquircleArray[(y * BoardWidth) + (blocksChangePerSide + x)] = SquircleArray[(y * BoardWidth) + x];
                 }
                 #endregion Center Pre-Existing Region
 
@@ -175,17 +184,24 @@ public class c_BoardLogic : MonoBehaviour
                     print(currYPos + i);
                     // Reduces column toward the left (-leftWidth) by one block
                     DestroyBackdropBlock(currYPos + i);
+
+                    // TODO: If there *was* a Squircle Object at this position, tell it to delete itself
                 }
 
                 for(int j = blocksChangePerSide; j < oldWidth - blocksChangePerSide; ++j)
                 {
                     newArray.Add(BackdropArray[(currYPos + j)]);
+
+                    // tempSquircleArray[(y * BoardWidth) + (blocksChangePerSide + x)] = SquircleArray[(y * BoardWidth) + x];
+                    tempSquircleArray[(y * BoardWidth) + (j - blocksChangePerSide)] = SquircleArray[(y * oldWidth) + j];
                 }
 
-                for( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
+                for ( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
                 {
                     // Reduces column toward the left (-leftWidth) by one block
                     DestroyBackdropBlock(currYPos + k);
+
+                    // TODO: If there *was* a Squircle Object at this position, tell it to delete itself
                 }
             }
             
@@ -249,6 +265,7 @@ public class c_BoardLogic : MonoBehaviour
     int BoardWidth;
     int BoardHeight;
     float BlockScale = 0.85f;
+    GameObject[] BoardArray;
     void UpdateBoardSize()
     {
         Vector2Int boardSize = GameLogic.GetBoardSize();
