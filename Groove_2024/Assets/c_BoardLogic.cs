@@ -104,7 +104,7 @@ public class c_BoardLogic : MonoBehaviour
     }
 
     int StartingHalfBoardWidth;
-    void ReconstructBackdropArray()
+    public void ReconstructBackdropArray()
     {
         List<GameObject> newArray = new List<GameObject>();
         GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
@@ -114,6 +114,10 @@ public class c_BoardLogic : MonoBehaviour
         int oldHeight = BoardHeight;
 
         UpdateBoardSize();
+
+        print(BoardWidth);
+
+
 
         int widthDiff = BoardWidth - oldWidth;
         int blocksChangePerSide = widthDiff / 2;
@@ -152,7 +156,9 @@ public class c_BoardLogic : MonoBehaviour
                     newArray.Add( BackdropArray[(y * oldWidth) + x] );
 
                     // Get previous grid coordinate and set tempSquircleArray to refer to that board object
-                    tempSquircleArray[(y * BoardWidth) + (blocksChangePerSide + x)] = SquircleArray[(y * BoardWidth) + x];
+                    int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
+                    tempSquircleArray[newPos] = SquircleArray[(y * BoardWidth) + x];
+                    tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
                 }
                 #endregion Center Pre-Existing Region
 
@@ -193,7 +199,10 @@ public class c_BoardLogic : MonoBehaviour
                     newArray.Add(BackdropArray[(currYPos + j)]);
 
                     // tempSquircleArray[(y * BoardWidth) + (blocksChangePerSide + x)] = SquircleArray[(y * BoardWidth) + x];
-                    tempSquircleArray[(y * BoardWidth) + (j - blocksChangePerSide)] = SquircleArray[(y * oldWidth) + j];
+                    int newPos = (y * BoardWidth) + (j - blocksChangePerSide);
+                    tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + j];
+
+                    tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(j, y);
                 }
 
                 for ( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
@@ -212,6 +221,7 @@ public class c_BoardLogic : MonoBehaviour
         }
 
         BackdropArray = newArray;
+        SquircleArray = tempSquircleArray;
     }
 
     
@@ -259,7 +269,8 @@ public class c_BoardLogic : MonoBehaviour
 
         tempSquircle.transform.position = worldPos;
 
-        SquircleArray.Add(tempSquircle);
+        // SquircleArray.Add(tempSquircle);
+        SquircleArray[(BoardWidth * _gridPos.y) + _gridPos.x] = tempSquircle;
     }
 
     int BoardWidth;
@@ -366,18 +377,6 @@ public class c_BoardLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.K))
-        {
-            // TESTING:
-            ReconstructBackdropArray();
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            // TESTING:
-            ReconstructBackdropArray();
-        }
-
         if(Input.GetKeyDown(KeyCode.P))
         {
             AddBlockToBoard(new Vector2Int( (BoardWidth / 2) - 1, BoardHeight - 1) , BoardObject.Bravo_Active);
@@ -387,8 +386,18 @@ public class c_BoardLogic : MonoBehaviour
         {
             foreach(GameObject squircle in SquircleArray)
             {
-                
-                // squircle.GetComponent<c_SquircleLogic>().GoToPosition()
+                if(squircle != null)
+                {
+                    Vector2Int gridCoords = squircle.GetComponent<c_SquircleLogic>().GridCoords;
+                    print(gridCoords);
+                    if(gridCoords.y > 0)
+                    {
+                        gridCoords.y--;
+                    }
+
+                    squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
+                    squircle.GetComponent<c_SquircleLogic>().GoToPosition(GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y)));
+                }
             }
         }
     }

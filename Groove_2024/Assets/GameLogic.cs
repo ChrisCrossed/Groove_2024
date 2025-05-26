@@ -65,6 +65,9 @@ public class GameLogic : MonoBehaviour
 
     List<BoardObject> Board;
 
+    GameObject GO_BoardArray;
+    c_BoardLogic BoardLogicScript;
+
     #region Initialization
     // Start is called before the first frame update
     void Start()
@@ -104,6 +107,9 @@ public class GameLogic : MonoBehaviour
 
     void Init_Board()
     {
+        GO_BoardArray = GameObject.Find("BoardArray").gameObject;
+        BoardLogicScript = GO_BoardArray.GetComponent<c_BoardLogic>();
+
         ClearGhostBlockList();
 
         NextBlockList = new List<List<BoardObject>>();
@@ -1095,6 +1101,24 @@ public class GameLogic : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 HardDrop();
+            }
+
+            /// 
+            /// TESTING
+            ///
+
+            if(Input.GetKeyDown(KeyCode.K))
+            {
+                BoardWidth += 2;
+                print(BoardWidth);
+                BoardLogicScript.ReconstructBackdropArray();
+            }
+
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                BoardWidth -= 2;
+                print(BoardWidth);
+                BoardLogicScript.ReconstructBackdropArray();
             }
         }
     }
