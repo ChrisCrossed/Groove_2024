@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class c_SquircleLogic : MonoBehaviour
@@ -10,6 +11,7 @@ public class c_SquircleLogic : MonoBehaviour
     public Material AlphaBackdropMaterial;
     public Material BravoBackdropMaterial;
 
+    [ReadOnly(true)]
     public Vector2Int GridCoords;
 
     GameObject Mdl_Alpha;
@@ -79,6 +81,7 @@ public class c_SquircleLogic : MonoBehaviour
 
                 float lerp = MoveTimer / MoveTimer_MAX;
                 Vector3 currPos = Vector3.Lerp(OldPosition, NewPosition, lerp);
+                gameObject.transform.position = currPos;
             }
         }
     }

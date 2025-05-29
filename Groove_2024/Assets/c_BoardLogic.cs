@@ -396,7 +396,7 @@ public class c_BoardLogic : MonoBehaviour
                     }
 
                     squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
-                    squircle.GetComponent<c_SquircleLogic>().GoToPosition(GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y)));
+                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y) ));
                 }
             }
         }
@@ -405,10 +405,12 @@ public class c_BoardLogic : MonoBehaviour
     float defaultLeftPos;
     Vector3 GetWorldPosition(Vector2 _gridCoords)
     {
-        Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
+        // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
+        Vector3 tempPos = new Vector3();
 
-        tempPos.x += (1.25f) * _gridCoords.x;
-        tempPos.y += (1.25f) * _gridCoords.y;
+        tempPos.x = (1.25f) * _gridCoords.x;
+        tempPos.y = (1.25f) * _gridCoords.y;
+        tempPos.z = -3.05f;
 
         return tempPos;
     }
