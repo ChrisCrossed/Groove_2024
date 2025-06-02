@@ -303,8 +303,8 @@ public class c_BoardLogic : MonoBehaviour
         bool isDone = false;
         float fTimer = 0f;
 
-        GameObject blockObj    = GetObjAtPosition(new Vector2(1, 1), true);
-        GameObject backdropObj = GetObjAtPosition(new Vector2(1, 1), false);
+        GameObject blockObj    = GetObjAtPosition(new Vector2Int(1, 1), true);
+        GameObject backdropObj = GetObjAtPosition(new Vector2Int(1, 1), false);
 
         Material oldBlockMat = null;
         Material oldBackdropMat = null;
@@ -355,10 +355,29 @@ public class c_BoardLogic : MonoBehaviour
     /// Returns the GameObject at the board position given
     /// </summary>
     /// <param name="_pos"></param> Position on the board
-    /// <param name="_isBlock"></param> True = Block Object, False = Backdrop Object
+    /// <param name="_isSquircle"></param> True = Squircle Object, False = Backdrop Object
     /// <returns></returns>
-    GameObject GetObjAtPosition(Vector2 _pos, bool _isBlock)
+    GameObject GetObjAtPosition(Vector2Int _pos, bool _isSquircle)
     {
+        if (_isSquircle)
+        {
+            GameObject tempObj = SquircleArray[(_pos.y * BoardWidth) + _pos.x].gameObject;
+            if(tempObj != null)
+            {
+                print("Not Null");
+
+                if(tempObj.GetComponent<c_SquircleLogic>().GridCoords == _pos)
+                {
+                    print("Same Coords");
+                }
+            }
+            return null;
+        }
+        else
+        {
+            return BackdropArray[(_pos.y * BoardWidth) + _pos.x].gameObject;
+        }
+
         return null;
     }
 
@@ -395,23 +414,33 @@ public class c_BoardLogic : MonoBehaviour
                         gridCoords.y--;
                     }
 
+                    
+
                     squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
-                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y) ));
+                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2Int(gridCoords.x, gridCoords.y) ));
                 }
             }
         }
     }
 
     float defaultLeftPos;
-    Vector3 GetWorldPosition(Vector2 _gridCoords)
+    Vector3 GetWorldPosition(Vector2Int _gridCoords)
     {
-        // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
-        Vector3 tempPos = new Vector3();
+        // Used during Backdrop Array construction AND reference to Squircle Array
 
-        tempPos.x = (1.25f) * _gridCoords.x;
+        // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
+
+        /*
+        GameObject backdropObj = GetObjAtPosition(_gridCoords, false);
+        print("Backdrop Pos: " + backdropObj.transform.name + ", " + backdropObj.transform.position);
+        Vector3 tempPos = backdropObj.transform.position;
+
+        tempPos.x *= (1.25f) * _gridCoords.x;
         tempPos.y = (1.25f) * _gridCoords.y;
         tempPos.z = -3.05f;
+        */
 
-        return tempPos;
+        // return tempPos;
+        return new Vector3();
     }
 }
