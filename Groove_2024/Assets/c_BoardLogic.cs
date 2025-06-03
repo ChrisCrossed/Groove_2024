@@ -303,8 +303,8 @@ public class c_BoardLogic : MonoBehaviour
         bool isDone = false;
         float fTimer = 0f;
 
-        GameObject blockObj    = GetObjAtPosition(new Vector2(1, 1), true);
-        GameObject backdropObj = GetObjAtPosition(new Vector2(1, 1), false);
+        GameObject blockObj    = GetObjAtPosition(new Vector2Int(1, 1), true);
+        GameObject backdropObj = GetObjAtPosition(new Vector2Int(1, 1), false);
 
         Material oldBlockMat = null;
         Material oldBackdropMat = null;
@@ -355,10 +355,26 @@ public class c_BoardLogic : MonoBehaviour
     /// Returns the GameObject at the board position given
     /// </summary>
     /// <param name="_pos"></param> Position on the board
-    /// <param name="_isBlock"></param> True = Block Object, False = Backdrop Object
+    /// <param name="_isSquircle"></param> True = Squircle Object, False = Backdrop Object
     /// <returns></returns>
-    GameObject GetObjAtPosition(Vector2 _pos, bool _isBlock)
+    GameObject GetObjAtPosition(Vector2Int _gridPos, bool _isSquircle)
     {
+        GameObject obj = null;
+
+        if ( _isSquircle )
+        {
+            obj = SquircleArray[(_gridPos.y * BoardWidth) + _gridPos.x];
+        }
+        else
+        {
+            obj = BackdropArray[(_gridPos.y * BoardWidth) + _gridPos.x];
+        }
+
+        if (obj != null)
+        {
+            return obj;
+        }
+
         return null;
     }
 
@@ -396,22 +412,25 @@ public class c_BoardLogic : MonoBehaviour
                     }
 
                     squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
-                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y) ));
+                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y), true ));
                 }
             }
         }
     }
 
     float defaultLeftPos;
-    Vector3 GetWorldPosition(Vector2 _gridCoords)
+    Vector3 GetWorldPosition(Vector2 _gridCoords, bool _isSquircle = false)
     {
         // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
         Vector3 tempPos = new Vector3();
 
         tempPos.x = (1.25f) * _gridCoords.x;
         tempPos.y = (1.25f) * _gridCoords.y;
-        tempPos.z = -3.05f;
 
+        // tempPos.z = -3.05f;
+        if (_isSquircle)
+            tempPos.z += -0.35f;
+        
         return tempPos;
     }
 }

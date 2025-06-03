@@ -6,7 +6,7 @@ using UnityEngine;
 public class c_SquircleLogic : MonoBehaviour
 {
     // Transitions between colors
-    static float MoveTimer_MAX = 0.05f;
+    static float MoveTimer_MAX = 0.03f;
 
     public Material AlphaBackdropMaterial;
     public Material BravoBackdropMaterial;
