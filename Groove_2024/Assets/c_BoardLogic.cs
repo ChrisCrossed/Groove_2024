@@ -156,7 +156,11 @@ public class c_BoardLogic : MonoBehaviour
 
                     if( SquircleArray[ oldArrayPosition ] != null )
                     {
-                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
+                        Vector2Int newGridCoords = SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords;
+                        newGridCoords.x += blocksChangePerSide;
+
+                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = newGridCoords;
+
                         tempSquircleArray[ newArrayPosition ] = SquircleArray[ oldArrayPosition ];
 
                         print("New Coords: " + tempSquircleArray[ newArrayPosition ].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
