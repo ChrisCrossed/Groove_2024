@@ -107,13 +107,14 @@ public class c_BoardLogic : MonoBehaviour
     public void ReconstructBackdropArray()
     {
         List<GameObject> newArray = new List<GameObject>();
-        GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
 
         // Determine if width of board decreased or increased
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
         UpdateBoardSize();
+        // Need to get the *new* board size first to resize the Squircle Array
+        GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
 
         print(BoardWidth);
 
@@ -129,7 +130,6 @@ public class c_BoardLogic : MonoBehaviour
 
         if( Mathf.Sign(widthDiff) == 1 )
         {
-
             #region Expansion Logic
             for ( int y = 0; y < BoardHeight; y++ )
             {
@@ -155,10 +155,16 @@ public class c_BoardLogic : MonoBehaviour
                 {
                     newArray.Add( BackdropArray[(y * oldWidth) + x] );
 
-                    // Get previous grid coordinate and set tempSquircleArray to refer to that board object
-                    int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
-                    tempSquircleArray[newPos] = SquircleArray[(y * BoardWidth) + x];
-                    tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
+                    if( SquircleArray[(y * oldWidth) + x] != null )
+                    {
+                        // Get new grid coordinate and set tempSquircleArray to refer to that board object
+                        int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
+
+                        tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + x];
+
+                        tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
+                        print(tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
+                    }
                 }
                 #endregion Center Pre-Existing Region
 
@@ -187,7 +193,6 @@ public class c_BoardLogic : MonoBehaviour
                 // Reduce Left Side (TODO: Update this to fade blocks out from center-outward)
                 for (int i = 0; i < blocksChangePerSide; i++)
                 {
-                    print(currYPos + i);
                     // Reduces column toward the left (-leftWidth) by one block
                     DestroyBackdropBlock(currYPos + i);
 
@@ -198,11 +203,31 @@ public class c_BoardLogic : MonoBehaviour
                 {
                     newArray.Add(BackdropArray[(currYPos + j)]);
 
-                    // tempSquircleArray[(y * BoardWidth) + (blocksChangePerSide + x)] = SquircleArray[(y * BoardWidth) + x];
-                    int newPos = (y * BoardWidth) + (j - blocksChangePerSide);
-                    tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + j];
+                    if (SquircleArray[(y * oldWidth) + j] != null)
+                    {
+                        print("Success:");
+                        // Get new grid coordinate and set tempSquircleArray to refer to that board object
+                        int newPos = (y * BoardWidth) + (j - blocksChangePerSide);
+                        print("X: " + (j - blocksChangePerSide) + ", Y: " + y);
 
-                    tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(j, y);
+                        tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + j];
+
+                        tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(j, y);
+                        print(tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
+                    }
+                    
+
+                    /*
+                        if( SquircleArray[(y * oldWidth) + x] != null )
+                        {
+                            // Get new grid coordinate and set tempSquircleArray to refer to that board object
+                            int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
+
+                            tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + x];
+
+                            tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
+                        }
+                    */
                 }
 
                 for ( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
@@ -381,7 +406,6 @@ public class c_BoardLogic : MonoBehaviour
     void DestroyBackdropBlock(int _BackdropArrayPos)
     {
         GameObject blockRemove = BackdropArray[_BackdropArrayPos];
-        print(blockRemove.transform.name);
 
         // Already removing old block during 'Reduction Logic' process
         // BackdropArray.RemoveAt(_BackdropArrayPos);
@@ -411,15 +435,14 @@ public class c_BoardLogic : MonoBehaviour
                         gridCoords.y--;
                     }
 
-                    squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
-                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2(gridCoords.x, gridCoords.y), true ));
+                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2Int(gridCoords.x, gridCoords.y), true ));
                 }
             }
         }
     }
 
     float defaultLeftPos;
-    Vector3 GetWorldPosition(Vector2 _gridCoords, bool _isSquircle = false)
+    Vector3 GetWorldPosition(Vector2Int _gridCoords, bool _isSquircle = false)
     {
         // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
         Vector3 tempPos = new Vector3();
@@ -429,7 +452,10 @@ public class c_BoardLogic : MonoBehaviour
 
         // tempPos.z = -3.05f;
         if (_isSquircle)
+        {
+            tempPos = BackdropArray[(BoardWidth * _gridCoords.y) + _gridCoords.x].gameObject.transform.position;
             tempPos.z += -0.35f;
+        }
         
         return tempPos;
     }
