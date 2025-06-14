@@ -116,10 +116,6 @@ public class c_BoardLogic : MonoBehaviour
         // Need to get the *new* board size first to resize the Squircle Array
         GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
 
-        print(BoardWidth);
-
-
-
         int widthDiff = BoardWidth - oldWidth;
         int blocksChangePerSide = widthDiff / 2;
 
@@ -153,17 +149,17 @@ public class c_BoardLogic : MonoBehaviour
                 #region Center Pre-Existing Region
                 for ( int x = 0; x < oldWidth; x++ )
                 {
-                    newArray.Add( BackdropArray[(y * oldWidth) + x] );
+                    int oldArrayPosition = (y * oldWidth) + x;
+                    int newArrayPosition = (y * BoardWidth) + (blocksChangePerSide + x);
 
-                    if( SquircleArray[(y * oldWidth) + x] != null )
+                    newArray.Add( BackdropArray[ oldArrayPosition ]);
+
+                    if( SquircleArray[ oldArrayPosition ] != null )
                     {
-                        // Get new grid coordinate and set tempSquircleArray to refer to that board object
-                        int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
+                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
+                        tempSquircleArray[ newArrayPosition ] = SquircleArray[ oldArrayPosition ];
 
-                        tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + x];
-
-                        tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
-                        print(tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
+                        print("New Coords: " + tempSquircleArray[ newArrayPosition ].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
                     }
                 }
                 #endregion Center Pre-Existing Region
@@ -277,7 +273,7 @@ public class c_BoardLogic : MonoBehaviour
         int index = ((_pos.y * BoardWidth) + _pos.x);
         Vector3 worldPos = BackdropArray[index].gameObject.transform.position;
         */
-        Vector3 worldPos = GetWorldPosition(_gridPos);
+        Vector3 worldPos = GetWorldPosition(_gridPos, true);
 
         GameObject tempSquircle = GameObject.Instantiate(SquirclePrefab);
         tempSquircle.name = "Alpha_Squircle";
@@ -289,8 +285,6 @@ public class c_BoardLogic : MonoBehaviour
         tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos);
 
         tempSquircle.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
-
-        worldPos.z += -0.35f;
 
         tempSquircle.transform.position = worldPos;
 
@@ -429,11 +423,16 @@ public class c_BoardLogic : MonoBehaviour
                 if(squircle != null)
                 {
                     Vector2Int gridCoords = squircle.GetComponent<c_SquircleLogic>().GridCoords;
-                    print(gridCoords);
+                    print("Old: " + gridCoords);
                     if(gridCoords.y > 0)
                     {
                         gridCoords.y--;
                     }
+
+                    // Assign new location to Squircle
+                    squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
+                    
+                    print("New: " + gridCoords);
 
                     squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2Int(gridCoords.x, gridCoords.y), true ));
                 }
@@ -453,7 +452,7 @@ public class c_BoardLogic : MonoBehaviour
         // tempPos.z = -3.05f;
         if (_isSquircle)
         {
-            tempPos = BackdropArray[(BoardWidth * _gridCoords.y) + _gridCoords.x].gameObject.transform.position;
+            tempPos = GetObjAtPosition(_gridCoords, false).gameObject.transform.position;
             tempPos.z += -0.35f;
         }
         
