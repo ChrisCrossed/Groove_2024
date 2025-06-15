@@ -86,15 +86,6 @@ public class GameLogic : MonoBehaviour
 
         Console_PrintBoard();
 
-        // Test, remove
-        for (int i = 0; i < 3; i++)
-        {
-            // List<BoardObject> nextBlocks = GetNextBlock(true);
-            //PrintBlockList(nextBlocks);
-        }
-
-        HardDrop();
-        // BeginPathfinding();
     }
 
     int PreviousRandomSeed;
@@ -350,7 +341,7 @@ public class GameLogic : MonoBehaviour
         CurrBlockSize = _size;
     }
 
-    void PlaceNewBlockOfType(BlockSize _size, List<BoardObject> _blockArray)
+    void PlaceNewSquircleGroupOfType(BlockSize _size, List<BoardObject> _blockArray)
     {
         // Find position to begin placing blocks
         Vector2Int boardPos = new Vector2Int();
@@ -382,6 +373,9 @@ public class GameLogic : MonoBehaviour
                 if (tempBlock == BoardObject.Empty)
                 {
                     SetBoardObjectAtPosition( x, y, _blockArray[blockCounter] );
+
+                    print("Placing " + _blockArray[blockCounter] + " at position: " + x + ", " + y);
+                    BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, y), _blockArray[blockCounter]);
 
                     blockCounter++;
                 }
@@ -1107,6 +1101,11 @@ public class GameLogic : MonoBehaviour
             /// TESTING
             ///
 
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                BoardLogicScript.AddSquircleToBoard(new Vector2Int(5, 8), BoardObject.Alpha_Active);
+            }
+
             if(Input.GetKeyDown(KeyCode.K))
             {
                 BoardWidth += 2;
@@ -1410,7 +1409,7 @@ public class GameLogic : MonoBehaviour
 
         BlockSize nextBlockSize = NextBlockListSize[0];
         List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewBlockOfType(nextBlockSize, nextBlock);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
         print("-----------");
         print("-----------");
         print("-----------");

@@ -257,20 +257,21 @@ public class c_BoardLogic : MonoBehaviour
         return tempBackdrop;
     }
 
-    public void AddBlockToBoard(Vector2Int _gridPos, BoardObject _boardObjectType)
+    public void AddSquircleToBoard(Vector2Int _gridPos, BoardObject _boardObjectType)
     {
         if(!(_boardObjectType == BoardObject.Alpha_Active || _boardObjectType == BoardObject.Bravo_Active))
         {
-            print("WRONG BOARD OBJECT TYPE - 'AddBlockToBoard' (c_BoardLogic)");
+            print("WRONG BOARD OBJECT TYPE - 'AddSquircleToBoard' (c_BoardLogic)");
             return;
         }
 
         // Get Relative BackDrop Array Position
         /*
-        int index = ((_pos.y * BoardWidth) + _pos.x);
+        int index = ((_gridPos.y * BoardWidth) + _gridPos.x);
         Vector3 worldPos = BackdropArray[index].gameObject.transform.position;
         */
         Vector3 worldPos = GetWorldPosition(_gridPos, true);
+
 
         GameObject tempSquircle = GameObject.Instantiate(SquirclePrefab);
         tempSquircle.name = "Alpha_Squircle";
@@ -383,6 +384,7 @@ public class c_BoardLogic : MonoBehaviour
         }
         else
         {
+            print("Backdrop Array has: " + BackdropArray.Count);
             obj = BackdropArray[(_gridPos.y * BoardWidth) + _gridPos.x];
         }
 
@@ -391,6 +393,7 @@ public class c_BoardLogic : MonoBehaviour
             return obj;
         }
 
+        
         return null;
     }
 
@@ -408,6 +411,7 @@ public class c_BoardLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if(Input.GetKeyDown(KeyCode.P))
         {
             AddBlockToBoard(new Vector2Int( (BoardWidth / 2) - 1, BoardHeight - 1) , BoardObject.Bravo_Active);
@@ -435,6 +439,7 @@ public class c_BoardLogic : MonoBehaviour
                 }
             }
         }
+        */
     }
 
     float defaultLeftPos;
@@ -449,7 +454,7 @@ public class c_BoardLogic : MonoBehaviour
         // tempPos.z = -3.05f;
         if (_isSquircle)
         {
-            tempPos = GetObjAtPosition(_gridCoords, false).gameObject.transform.position;
+            tempPos = GetObjAtPosition(_gridCoords, false).transform.position;
             tempPos.z += -0.35f;
         }
         
