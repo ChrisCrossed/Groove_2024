@@ -201,33 +201,26 @@ public class c_BoardLogic : MonoBehaviour
 
                 for(int j = blocksChangePerSide; j < oldWidth - blocksChangePerSide; ++j)
                 {
-                    newArray.Add(BackdropArray[(currYPos + j)]);
+                    newArray.Add( BackdropArray[currYPos + j] );
 
-                    if (SquircleArray[(y * oldWidth) + j] != null)
+                    int oldArrayPosition = (y * oldWidth) + j;
+                    int newArrayPosition = (y * BoardWidth) + (j - blocksChangePerSide);
+
+                    if (SquircleArray[oldArrayPosition] != null)
                     {
                         print("Success:");
                         // Get new grid coordinate and set tempSquircleArray to refer to that board object
-                        int newPos = (y * BoardWidth) + (j - blocksChangePerSide);
+                        
                         print("X: " + (j - blocksChangePerSide) + ", Y: " + y);
 
-                        tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + j];
+                        Vector2Int newGridCoords = SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords;
+                        newGridCoords.x -= blocksChangePerSide;
 
-                        tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(j, y);
-                        print(tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
+                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = newGridCoords;
+
+                        tempSquircleArray[newArrayPosition] = SquircleArray[oldArrayPosition];
+                        print(tempSquircleArray[newArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
                     }
-                    
-
-                    /*
-                        if( SquircleArray[(y * oldWidth) + x] != null )
-                        {
-                            // Get new grid coordinate and set tempSquircleArray to refer to that board object
-                            int newPos = (y * BoardWidth) + (blocksChangePerSide + x);
-
-                            tempSquircleArray[newPos] = SquircleArray[(y * oldWidth) + x];
-
-                            tempSquircleArray[newPos].gameObject.GetComponent<c_SquircleLogic>().GridCoords = new Vector2Int(x + blocksChangePerSide, y);
-                        }
-                    */
                 }
 
                 for ( int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
