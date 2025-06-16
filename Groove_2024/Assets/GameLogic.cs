@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System;
 using UnityEngine.UIElements;
 
 public enum BoardObject
@@ -1500,10 +1500,16 @@ public class GameLogic : MonoBehaviour
         SetGhostBlock(new Vector2Int(x_, y_));
     }
 
-    void SetGhostBlock(Vector2Int pos_)
+    void SetGhostBlock(Vector2Int _pos)
     {
-        SetBoardObjectAtPosition(pos_.x, pos_.y, BoardObject.Ghost);
-        GhostBlockList.Add(pos_);
+        BoardObject currBoardObject = GetBoardObjectAtPosition(_pos);
+        if (currBoardObject == BoardObject.Alpha_Static || currBoardObject == BoardObject.Bravo_Static)
+        {
+            BoardLogicScript.DestroySquircleAtGridPos(_pos);
+        }
+
+        SetBoardObjectAtPosition(_pos.x, _pos.y, BoardObject.Ghost);
+        GhostBlockList.Add(_pos);
     }
 
     void ClearGhostBlockList()

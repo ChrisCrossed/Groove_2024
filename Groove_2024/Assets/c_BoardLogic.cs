@@ -531,7 +531,6 @@ public class c_BoardLogic : MonoBehaviour
         }
         else
         {
-            print("Backdrop Array has: " + BackdropArray.Count);
             obj = BackdropArray[(_gridPos.y * BoardWidth) + _gridPos.x];
         }
 
