@@ -1116,6 +1116,8 @@ public class GameLogic : MonoBehaviour
         // Store bottom left of active block list
         BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
+        BoardLogicScript.RotateSquirclesAtBottomLeftPos_Clockwise(TileBottomLeftPosition, CurrBlockSize);
+
         int width = 2;
         if (CurrBlockSize == BlockSize.ThreeWide)
             width = 3;
