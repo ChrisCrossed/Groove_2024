@@ -327,6 +327,62 @@ public class c_BoardLogic : MonoBehaviour
         tempSquircle.GetComponent<c_SquircleLogic>().GoToPosition(newWorldPos);
     }
 
+    public void RotateSquirclesAtBottomLeftPos_CounterClockwise(Vector2Int _botLeftPos, BlockSize _squircleGroupSize)
+    {
+        GameObject tempSquircle = GetObjAtPosition(_botLeftPos, true);
+        Vector2Int tempGridPos = _botLeftPos;
+
+        int width = 2;
+        if (_squircleGroupSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (_squircleGroupSize == BlockSize.ThreeTall)
+            height = 3;
+
+        Vector2Int gridPos = new Vector2Int();
+
+        // Blocks on Left Side shift Down
+        for (int y = 0; y < height - 1; y++)
+        {
+            gridPos = new Vector2Int(_botLeftPos.x, _botLeftPos.y + y + 1);
+            MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Down);
+        }
+
+        // Blocks on Top shift Left
+        for (int x = 0; x < width - 1; x++)
+        {
+            // Board Logic Squircle Array Manipulation
+            gridPos = new Vector2Int(_botLeftPos.x + x + 1, _botLeftPos.y + height - 1);
+            MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Left);
+        }
+
+        // Blocks on Right Side shift Up
+        for (int y = height - 1; y > 0; y--)
+        {
+            // Board Logic Squircle Array Manipulation
+            gridPos = new Vector2Int(_botLeftPos.x + width - 1, _botLeftPos.y + y - 1);
+            MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Up);
+        }
+
+        // Blocks on Bottom Side shift Right
+        for (int x = width - 1; x > 0; x--)
+        {
+            // Board Logic Squircle Array Manipulation
+            gridPos = new Vector2Int(_botLeftPos.x + x - 1, _botLeftPos.y);
+            MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Right);
+        }
+
+        tempGridPos.x++;
+
+        // Set Array position to the current Squircle Object
+        //SquircleArray[tempGridPos.y * BoardWidth + tempGridPos.x] = tempSquircle;
+
+        //Vector3 newWorldPos = GetWorldPosition(tempGridPos, true);
+        //tempSquircle.GetComponent<c_SquircleLogic>().GridCoords = tempGridPos;
+        //tempSquircle.GetComponent<c_SquircleLogic>().GoToPosition(newWorldPos);
+    }
+
     int BoardWidth;
     int BoardHeight;
     float BlockScale = 0.85f;

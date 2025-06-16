@@ -1194,6 +1194,8 @@ public class GameLogic : MonoBehaviour
         // Store bottom left of active block list
         BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
+        BoardLogicScript.RotateSquirclesAtBottomLeftPos_CounterClockwise(TileBottomLeftPosition, CurrBlockSize);
+
         int width = 2;
         if (CurrBlockSize == BlockSize.ThreeWide)
             width = 3;
@@ -1204,30 +1206,43 @@ public class GameLogic : MonoBehaviour
             height = 3;
         }
 
+        Vector2Int gridPos = new Vector2Int();
+
+        
+
+        // Blocks on Left Side shift Down
         for (int y = 0; y < height - 1; y++)
         {
+            // Grid Array Manipulation
             BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y + 1);
             SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, shiftBlock);
         }
 
+        // Blocks on Top shift Left
         for (int x = 0; x < width - 1; x++)
         {
+            // Grid Array Manipulation
             BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + height - 1);
             SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, shiftBlock);
         }
 
+        // Blocks on Right Side shift Up
         for (int y = height - 1; y > 0; y--)
         {
+            // Grid Array Manipulation
             BoardObject prevBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y - 1);
             SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, prevBlock);
         }
 
+        // Blocks on Bottom Side shift Right
         for (int x = width - 1; x > 0; x--)
         {
+            // Grid Array Manipulation
             BoardObject shiftBlock = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y);
             SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y, shiftBlock);
         }
 
+        // Grid Array Manipulation
         SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
     }
 
