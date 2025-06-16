@@ -304,43 +304,6 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="_size">Applies a block varying in height and width.</param>
     /// <param name="_position">The bottom left coordinate for the block to spawn</param>
-    void CreateNewBlockOfType(BlockSize _size, Vector2Int _position)
-    {
-        // Determine if all positions are empty and available
-        Vector2Int boardPos = _position;
-        int blockHeight = 2;
-        int blockWidth = 2;
-        if ( _size == BlockSize.ThreeWide )
-            blockWidth = 3;
-        else if ( _size == BlockSize.ThreeTall )
-            blockHeight = 3;
-
-        // TODO: Get the NextBlock and store/remove it from the list
-
-        // TODO: Convert logic to place the NextBlock
-        for( int y = _position.y; y < _position.y + blockHeight; y++ )
-        {
-            for( int x = _position.x; x < _position.x + blockWidth; x++ )
-            {
-                BoardObject tempBlock = GetBoardObjectAtPosition(x, y);
-
-                // Bot left, Bot right, Mid left, Mid right, Top left, Top right
-                if( tempBlock == BoardObject.Empty )
-                {
-                    BoardObject randomBlock = DetermineRandomIndividualBlock(true);
-                    SetBoardObjectAtPosition(x, y, randomBlock);
-                }
-                else
-                {
-                    // TODO: END GAME - STARTING BLOCK POSITIONS ARE FULL
-                }
-            }
-        }
-
-        TileBottomLeftPosition = _position;
-        CurrBlockSize = _size;
-    }
-
     void PlaceNewSquircleGroupOfType(BlockSize _size, List<BoardObject> _blockArray)
     {
         // Find position to begin placing blocks
@@ -387,6 +350,7 @@ public class GameLogic : MonoBehaviour
         }
 
         TileBottomLeftPosition = boardPos;
+        CurrBlockSize = _size;
     }
 
     List<List<BoardObject>> NextBlockList;

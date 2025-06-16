@@ -330,6 +330,7 @@ public class c_BoardLogic : MonoBehaviour
     public void RotateSquirclesAtBottomLeftPos_CounterClockwise(Vector2Int _botLeftPos, BlockSize _squircleGroupSize)
     {
         GameObject tempSquircle = GetObjAtPosition(_botLeftPos, true);
+        print(tempSquircle.gameObject.name);
         Vector2Int tempGridPos = _botLeftPos;
 
         int width = 2;
@@ -339,6 +340,8 @@ public class c_BoardLogic : MonoBehaviour
         int height = 2;
         if (_squircleGroupSize == BlockSize.ThreeTall)
             height = 3;
+
+        print("Height: " + height + ", Width: " + width);
 
         Vector2Int gridPos = new Vector2Int();
 
@@ -366,21 +369,20 @@ public class c_BoardLogic : MonoBehaviour
         }
 
         // Blocks on Bottom Side shift Right
-        for (int x = width - 1; x > 0; x--)
+        for (int x = width - 1; x > 1; x--)
         {
             // Board Logic Squircle Array Manipulation
             gridPos = new Vector2Int(_botLeftPos.x + x - 1, _botLeftPos.y);
             MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Right);
         }
 
+
         tempGridPos.x++;
+        SquircleArray[tempGridPos.y * BoardWidth + tempGridPos.x] = tempSquircle;
 
-        // Set Array position to the current Squircle Object
-        //SquircleArray[tempGridPos.y * BoardWidth + tempGridPos.x] = tempSquircle;
-
-        //Vector3 newWorldPos = GetWorldPosition(tempGridPos, true);
-        //tempSquircle.GetComponent<c_SquircleLogic>().GridCoords = tempGridPos;
-        //tempSquircle.GetComponent<c_SquircleLogic>().GoToPosition(newWorldPos);
+        Vector3 newWorldPos = GetWorldPosition(tempGridPos, true);
+        tempSquircle.GetComponent<c_SquircleLogic>().GridCoords = tempGridPos;
+        tempSquircle.GetComponent<c_SquircleLogic>().GoToPosition(newWorldPos);
     }
 
     int BoardWidth;
