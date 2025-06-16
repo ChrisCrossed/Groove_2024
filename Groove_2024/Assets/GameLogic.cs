@@ -1392,6 +1392,8 @@ public class GameLogic : MonoBehaviour
                         // If it was a ghost block, it gets reset to ghost at end of BeginPathfinding()
                         SetBoardObjectAtPosition(x, y, BoardObject.Empty);
 
+                        BoardLogicScript.MoveSquircleAtPosTowardDirection(new Vector2Int(x, y), PathfindDirection.Down);
+
                         y = 0;
                     }
                 }
