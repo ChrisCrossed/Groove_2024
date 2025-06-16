@@ -1259,9 +1259,14 @@ public class GameLogic : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+                Vector2Int gridPos = new Vector2Int(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
+                BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
 
                 SetBoardObjectAtPosition(TileBottomLeftPosition.x + x - 1, TileBottomLeftPosition.y + y, blockToShift);
+
+                // Board Logic Squircle Object Manipulation
+                BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Left);
             }
         }
 
@@ -1303,9 +1308,14 @@ public class GameLogic : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+                Vector2Int gridPos = new Vector2Int(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
+                BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
 
                 SetBoardObjectAtPosition(TileBottomLeftPosition.x + x + 1, TileBottomLeftPosition.y + y, blockToShift);
+
+                // Board Logic Squircle Object Manipulation
+                BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Right);
             }
         }
 
@@ -1353,19 +1363,21 @@ public class GameLogic : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
+                Vector2Int gridPos = new Vector2Int(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+
                 // Game Logic Array Manipulation
-                BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+                BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
 
                 SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y - 1, blockToShift);
 
                 // Board Logic Squircle Object Manipulation
-                Vector2Int gridPos = new Vector2Int(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
                 BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Down);
             }
         }
 
         for( int x = 0; x < width; x++)
         {
+            // Already Did Board Logic Squircle Object Manipulation, so not needed below
             SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + height - 1, BoardObject.Empty);
         }
 
