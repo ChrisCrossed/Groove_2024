@@ -172,7 +172,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 1
-  controlID: 59
+  controlID: 78
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 50}
   m_MaxSize: {x: 32384, y: 8096}
   vertical: 0
-  controlID: 60
+  controlID: 36
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -219,8 +219,8 @@ MonoBehaviour:
     y: 0
     width: 344
     height: 376
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -798,9 +798,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 6.2564807, y: 8.900243, z: -9.200135}
+    m_Target: {x: 4.3019204, y: 2.6016822, z: 0.35883856}
     speed: 2
-    m_Value: {x: 6.2564807, y: 8.900243, z: -9.200135}
+    m_Value: {x: 4.3019204, y: 2.6016822, z: 0.35883856}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -846,13 +846,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.037197754, y: -0.021900654, z: 0.000799996, w: -0.9992077}
+    m_Target: {x: -0.008402178, y: -0.04710161, z: 0.00038081087, w: -0.9989951}
     speed: 2
-    m_Value: {x: -0.03719255, y: -0.02189759, z: 0.0007998841, w: -0.99906784}
+    m_Value: {x: -0.008400999, y: -0.047095, z: 0.00038075744, w: -0.998855}
   m_Size:
-    m_Target: 0.61921424
+    m_Target: 10
     speed: 2
-    m_Value: 0.61921424
+    m_Value: 10
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1094,23 +1094,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: b48bffff2c8cfffff08bffff788bffff
-      m_LastClickedID: 0
-      m_ExpandedIDs: 2efbffffae5c0000
+      m_SelectedIDs: 925c0000
+      m_LastClickedID: 23698
+      m_ExpandedIDs: 2efbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: GameLogic
+        m_OriginalName: GameLogic
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 23698
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 3}
       m_SearchString: 

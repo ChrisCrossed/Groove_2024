@@ -290,6 +290,43 @@ public class c_BoardLogic : MonoBehaviour
         SquircleArray[(BoardWidth * _gridPos.y) + _gridPos.x] = tempSquircle;
     }
 
+    public void MoveSquircleAtPosTowardDirection(Vector2Int _gridPos, PathfindDirection _direction )
+    {
+        GameObject tempSquircle = GetObjAtPosition(_gridPos, true);
+        Vector2Int newGridPos = _gridPos;
+
+        // Squircle Object is stored above. Empty this Array position.
+        SquircleArray[newGridPos.y * BoardWidth + newGridPos.x] = null;
+
+        switch (_direction)
+        {
+            case PathfindDirection.Up:
+                newGridPos.y++;
+                break;
+            case PathfindDirection.Down:
+                // Move Y position down a space
+                newGridPos.y--;
+                break;
+            case PathfindDirection.Left:
+                // Move X position left
+                newGridPos.x--;
+                break;
+            case PathfindDirection.Right:
+                newGridPos.x++;
+                break;
+            case PathfindDirection.None:
+            default:
+                break;
+        }
+
+        // Set Array position to the current Squircle Object
+        SquircleArray[newGridPos.y * BoardWidth + newGridPos.x] = tempSquircle;
+
+        Vector3 newWorldPos = GetWorldPosition(newGridPos, true);
+        tempSquircle.GetComponent<c_SquircleLogic>().GridCoords = newGridPos;
+        tempSquircle.GetComponent<c_SquircleLogic>().GoToPosition(newWorldPos);
+    }
+
     int BoardWidth;
     int BoardHeight;
     float BlockScale = 0.85f;
@@ -315,7 +352,7 @@ public class c_BoardLogic : MonoBehaviour
     }
 
     float BlockTimeChange_MAX = 0.2f;
-    IEnumerator ChangeBlockColor(Vector2 _pos, BoardObject changeToBlock_)
+    IEnumerator ChangeBackdropColor(Vector2 _pos, BoardObject changeToBlock_)
     { 
         bool isDone = false;
         float fTimer = 0f;

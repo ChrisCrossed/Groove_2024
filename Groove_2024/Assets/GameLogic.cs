@@ -1101,11 +1101,6 @@ public class GameLogic : MonoBehaviour
             /// TESTING
             ///
 
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                BoardLogicScript.AddSquircleToBoard(new Vector2Int(5, 8), BoardObject.Alpha_Active);
-            }
-
             if(Input.GetKeyDown(KeyCode.K))
             {
                 BoardWidth += 2;
@@ -1358,9 +1353,14 @@ public class GameLogic : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
+                // Game Logic Array Manipulation
                 BoardObject blockToShift = GetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
 
                 SetBoardObjectAtPosition(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y - 1, blockToShift);
+
+                // Board Logic Squircle Object Manipulation
+                Vector2Int gridPos = new Vector2Int(TileBottomLeftPosition.x + x, TileBottomLeftPosition.y + y);
+                BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Down);
             }
         }
 
