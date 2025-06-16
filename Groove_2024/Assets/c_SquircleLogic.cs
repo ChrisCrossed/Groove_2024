@@ -7,6 +7,7 @@ public class c_SquircleLogic : MonoBehaviour
 {
     // Transitions between colors
     static float MoveTimer_MAX = 0.03f;
+    static float DestroyTimer_MAX = 0.03f;
 
     public Material AlphaBackdropMaterial;
     public Material BravoBackdropMaterial;
@@ -16,6 +17,8 @@ public class c_SquircleLogic : MonoBehaviour
 
     GameObject Mdl_Alpha;
     GameObject Mdl_Bravo;
+
+    float SquircleScale;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,7 +32,7 @@ public class c_SquircleLogic : MonoBehaviour
         Mdl_Bravo.SetActive(false);
     }
 
-    public void InitializeSquircle(BoardObject _boardObjectType, Vector2Int _gridCoords)
+    public void InitializeSquircle(BoardObject _boardObjectType, Vector2Int _gridCoords, float _modelScale)
     {
         if(_boardObjectType == BoardObject.Alpha_Static || _boardObjectType == BoardObject.Alpha_Active)
         {
@@ -49,6 +52,17 @@ public class c_SquircleLogic : MonoBehaviour
         }
 
         GridCoords = _gridCoords;
+
+        SquircleScale = _modelScale;
+        gameObject.transform.localScale = new Vector3(_modelScale, _modelScale, 1.0f);
+    }
+
+    bool IsDestroy = false;
+    float DestroyTimer;
+    public void DestroySquircle()
+    {
+        IsDestroy = true;
+        DestroyTimer = 0f;
     }
 
     bool IsMoving = false;
@@ -68,21 +82,51 @@ public class c_SquircleLogic : MonoBehaviour
     {
         if (IsMoving)
         {
-            if(MoveTimer < MoveTimer_MAX)
+            Update_MoveSquircle();
+        }
+        else if(IsDestroy)
+        {
+            Update_DestroySquircle();
+        }
+    }
+
+    void Update_MoveSquircle()
+    {
+        if (MoveTimer < MoveTimer_MAX)
+        {
+            MoveTimer += Time.deltaTime;
+
+            if (MoveTimer > MoveTimer_MAX)
             {
-                MoveTimer += Time.deltaTime;
+                MoveTimer = MoveTimer_MAX;
 
-                if(MoveTimer > MoveTimer_MAX)
-                {
-                    MoveTimer = MoveTimer_MAX;
-
-                    IsMoving = false;
-                }
-
-                float lerp = MoveTimer / MoveTimer_MAX;
-                Vector3 currPos = Vector3.Lerp(OldPosition, NewPosition, lerp);
-                gameObject.transform.position = currPos;
+                IsMoving = false;
             }
+
+            float lerp = MoveTimer / MoveTimer_MAX;
+            Vector3 currPos = Vector3.Lerp(OldPosition, NewPosition, lerp);
+            gameObject.transform.position = currPos;
+        }
+    }
+
+    void Update_DestroySquircle()
+    {
+        if (DestroyTimer < DestroyTimer_MAX)
+        {
+            DestroyTimer += Time.deltaTime;
+
+            if(DestroyTimer > DestroyTimer_MAX)
+            {
+                GameObject.Destroy(gameObject);
+                return;
+            }
+                
+            float lerp = DestroyTimer / DestroyTimer_MAX;
+            lerp *= -1f;
+            float squircleSize = lerp * SquircleScale;
+
+            gameObject.transform.localScale = new Vector3(squircleSize, squircleSize, 1.0f);
+
         }
     }
 }

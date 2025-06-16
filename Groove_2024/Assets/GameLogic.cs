@@ -1484,6 +1484,12 @@ public class GameLogic : MonoBehaviour
     {
         foreach (Vector2Int pos in GhostBlockList)
         {
+            BoardObject currBoardObject = GetBoardObjectAtPosition(pos);
+            if(currBoardObject == BoardObject.Alpha_Static || currBoardObject == BoardObject.Bravo_Static)
+            {
+                BoardLogicScript.DestroySquircleAtGridPos(pos);
+            }
+
             SetBoardObjectAtPosition(pos, BoardObject.Ghost);
         }
     }

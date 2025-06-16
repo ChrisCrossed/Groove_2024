@@ -280,9 +280,10 @@ public class c_BoardLogic : MonoBehaviour
             tempSquircle.name = "Bravo_Squircle";
         }
 
-        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos);
+        float squircleScaleSize = 0.7f;
+        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos, squircleScaleSize);
 
-        tempSquircle.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
+        
 
         tempSquircle.transform.position = worldPos;
 
@@ -553,6 +554,13 @@ public class c_BoardLogic : MonoBehaviour
         GameObject.Destroy(blockRemove);
     }
 
+    public void DestroySquircleAtGridPos(Vector2Int _gridPos)
+    {
+        GameObject tempSquircle = GetObjAtPosition(_gridPos, true);
+        tempSquircle.GetComponent<c_SquircleLogic>().DestroySquircle();
+
+        SquircleArray[_gridPos.y * BoardWidth + _gridPos.x] = null;
+    }
 
     // Update is called once per frame
     void Update()
