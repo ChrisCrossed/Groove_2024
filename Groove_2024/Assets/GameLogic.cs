@@ -949,18 +949,18 @@ public class GameLogic : MonoBehaviour
 
         if(boardObjectType == BoardObject.Alpha_Static)
         {
-            if(pathfindList.Count < SuccessfulPathfindList_Alpha.Count || SuccessfulPathfindList_Alpha == new List<PathBoardObject>())
+            if(pathfindList.Count > SuccessfulPathfindList_Alpha.Count)
             {
                 SuccessfulPathfindList_Alpha = pathfindList;
-                CurrentAlpha = SuccessfulPathfindList_Alpha.Count;
             }
         }
         else if(boardObjectType == BoardObject.Bravo_Static)
         {
-            if (pathfindList.Count < SuccessfulPathfindList_Bravo.Count || SuccessfulPathfindList_Bravo == new List<PathBoardObject>())
+            // Unsure why I had this logic. Keeping for future eval.
+            // if (pathfindList.Count < SuccessfulPathfindList_Bravo.Count || SuccessfulPathfindList_Bravo == new List<PathBoardObject>())
+            if (pathfindList.Count > SuccessfulPathfindList_Bravo.Count)
             {
                 SuccessfulPathfindList_Bravo = pathfindList;
-                CurrentBravo = SuccessfulPathfindList_Bravo.Count;
             }
         }
 
@@ -1011,13 +1011,46 @@ public class GameLogic : MonoBehaviour
                 print("Thread Counter: " + boardObjectType.ToString() + " has " + BravoThreads + " remaining");
         }
 
+        if (AlphaThreads == 0 && BravoThreads == 0)
+        {
+            ScorelineLogic();
+        }
+
         if (BugTestConsoleOutput)
         {
             if (AlphaThreads == 0 && BravoThreads == 0)
                 print("--------" + "\nNO MORE THREADS" + "\n--------");
         }
-        
-        
+    }
+
+    void ScorelineLogic()
+    {
+        print("Num Alpha Found: " + SuccessfulPathfindList_Alpha.Count);
+        print("Num Bravo Found: " + SuccessfulPathfindList_Bravo.Count);
+        int alphaCount = SuccessfulPathfindList_Alpha.Count;
+        int bravoCount = SuccessfulPathfindList_Bravo.Count;
+
+        print("Alpha: " + alphaCount);
+        print("Bravo: " + bravoCount);
+
+        if (alphaCount > bravoCount)
+        {
+            foreach(PathBoardObject _obj in SuccessfulPathfindList_Alpha)
+            {
+                BoardLogicScript.DestroySquircleAtGridPos(_obj.Position);
+                SetBoardObjectAtPosition(_obj.Position, BoardObject.Empty);
+            }
+        }
+        else
+        {
+            foreach (PathBoardObject _obj in SuccessfulPathfindList_Bravo)
+            {
+                BoardLogicScript.DestroySquircleAtGridPos(_obj.Position);
+                SetBoardObjectAtPosition(_obj.Position, BoardObject.Empty);
+            }
+        }
+
+        HardDrop();
     }
 
     #endregion Pathfinding Logic

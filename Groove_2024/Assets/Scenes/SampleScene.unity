@@ -156,8 +156,8 @@ MonoBehaviour:
   BoardWidth_Maximum: 10
   BoardHeight_Maximum: 10
   BlockObject_Active_TwoByTwo: 1
-  BlockObject_Active_ThreeWide: 1
-  BlockObject_Active_ThreeTall: 1
+  BlockObject_Active_ThreeWide: 0
+  BlockObject_Active_ThreeTall: 0
 --- !u!4 &197332790
 Transform:
   m_ObjectHideFlags: 0
