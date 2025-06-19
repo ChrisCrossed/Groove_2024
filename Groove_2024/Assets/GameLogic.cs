@@ -453,6 +453,7 @@ public class GameLogic : MonoBehaviour
         CurrentBravo = 99;
         AlphaThreads = 0;
         BravoThreads = 0;
+        FoundScoreline = false;
 
         SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
         SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
@@ -669,6 +670,9 @@ public class GameLogic : MonoBehaviour
                         // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
                         if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
                         {
+                            // Ensure that, when all Threads in the Thread Counter have finished, we progress to ScoreLineLogic
+                            FoundScoreline = true;
+
                             // pathfindList
                             validBoardObjects = pathfindList;
                             validBoardObjects.Add(new PathBoardObject(nextPos, false, false, false, false));
@@ -841,7 +845,6 @@ public class GameLogic : MonoBehaviour
 
                         if (BugTestConsoleOutput)
                         {
-                            print("843");
                             PrintAllPositionsInList(secondNewThread);
                         }
 
@@ -859,7 +862,6 @@ public class GameLogic : MonoBehaviour
 
                 if (BugTestConsoleOutput)
                 {
-                    print("Last Known Successful List");
                     PrintAllPositionsInList(pathfindList);
                 }
 
@@ -876,21 +878,7 @@ public class GameLogic : MonoBehaviour
         yield return false;
     }
 
-    void PrintAllPositionsInList(List<PathBoardObject> _pathfindList)
-    {
-        print("Pathfind Count: " + _pathfindList.Count);
-
-        string output = "";
-        for (int i = 0; i < _pathfindList.Count; i++)
-        {
-            output += "[" + _pathfindList[i].Position + "]";
-            if(i < _pathfindList.Count - 1)
-            {
-                output += ", ";
-            }
-        }
-        print(output);
-    }
+    
 
     /// <summary>
     /// Used to determine if every column has at least one valid piece
@@ -959,16 +947,20 @@ public class GameLogic : MonoBehaviour
 
         if(boardObjectType == BoardObject.Alpha_Static)
         {
-            if(pathfindList.Count < SuccessfulPathfindList_Alpha.Count || SuccessfulPathfindList_Alpha == new List<PathBoardObject>())
+            print("Alpha Noticed");
+            if(pathfindList.Count < CurrentAlpha)
             {
+                print("Alpha Stored");
                 SuccessfulPathfindList_Alpha = pathfindList;
                 CurrentAlpha = SuccessfulPathfindList_Alpha.Count;
             }
         }
         else if(boardObjectType == BoardObject.Bravo_Static)
         {
-            if (pathfindList.Count < SuccessfulPathfindList_Bravo.Count || SuccessfulPathfindList_Bravo == new List<PathBoardObject>())
+            print("Bravo Noticed");
+            if (pathfindList.Count < CurrentBravo)
             {
+                print("Bravo Stored");
                 SuccessfulPathfindList_Bravo = pathfindList;
                 CurrentBravo = SuccessfulPathfindList_Bravo.Count;
             }
@@ -1024,10 +1016,49 @@ public class GameLogic : MonoBehaviour
         if (BugTestConsoleOutput)
         {
             if (AlphaThreads == 0 && BravoThreads == 0)
+            {
                 print("--------" + "\nNO MORE THREADS" + "\n--------");
+
+                // FoundScoreLine is enabled when 1+ successful lines have been found.
+                if(FoundScoreline)
+                {
+                    ScoreLineLogic();
+                }
+            }
+                
         }
-        
-        
+    }
+
+    bool FoundScoreline;
+    void ScoreLineLogic()
+    {
+        // Still determining if I want to score the longer of 2+ lines, or the one closer to the bottom.
+        // Logic exists for the 2+ lines, but gonna prioritize the closest to the bottom for now.
+
+        int alphaLine_YPos = -1;
+        int bravoLine_YPos = -1;
+
+        if(SuccessfulPathfindList_Alpha.Count > 0)
+            alphaLine_YPos = AlphaPathfindList[AlphaPathfindList.Count - 1].Position.y;
+
+        if(SuccessfulPathfindList_Bravo.Count > 0)
+            bravoLine_YPos = SuccessfulPathfindList_Bravo[SuccessfulPathfindList_Bravo.Count - 1].Position.y;
+
+        // If the Alpha line is lower than Bravo line, and not empty, score Alpha
+        if(alphaLine_YPos != -1 && alphaLine_YPos < bravoLine_YPos)
+        {
+            print("Scoring Alpha Line");
+        }
+        // else if Bravo line is lower than Alpha line, and not empty, score Bravo
+        else if(bravoLine_YPos != -1 && bravoLine_YPos < alphaLine_YPos)
+        {
+            print("Scoring Bravo Line");
+        }
+        else
+        {
+            print("************** SCORE LINE FAILURE - HOW DID WE GET HERE?! ************** ");
+            // Lol... Each failed line will remain -1. Fix this.
+        }
     }
 
     #endregion Pathfinding Logic
@@ -1091,6 +1122,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    #region Timer / Gameplay Pause
     double SoftDropWaitTime;
     public void SetSoftDropWaitTime(double _waitTime)
     {
@@ -1118,6 +1150,8 @@ public class GameLogic : MonoBehaviour
 
         yield return false;
     }
+
+    #endregion Timer / Gameplay Pause
 
     #region Block Manipulation
 
@@ -1581,6 +1615,22 @@ public class GameLogic : MonoBehaviour
             print(output);
             print("-----");
         }
+    }
+
+    void PrintAllPositionsInList(List<PathBoardObject> _pathfindList)
+    {
+        print("Pathfind Count: " + _pathfindList.Count);
+
+        string output = "";
+        for (int i = 0; i < _pathfindList.Count; i++)
+        {
+            output += "[" + _pathfindList[i].Position + "]";
+            if (i < _pathfindList.Count - 1)
+            {
+                output += ", ";
+            }
+        }
+        print(output);
     }
 
     #endregion Console Output
