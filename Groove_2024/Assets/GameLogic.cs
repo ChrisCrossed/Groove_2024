@@ -669,6 +669,10 @@ public class GameLogic : MonoBehaviour
                         // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
                         if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
                         {
+                            // pathfindList
+                            validBoardObjects = pathfindList;
+                            validBoardObjects.Add(new PathBoardObject(nextPos, false, false, false, false));
+
                             SaveSuccessfulPathing(boardObjectType, validBoardObjects);
                             ThreadCounter(boardObjectType, false);
                             shouldContinue = false;
@@ -836,7 +840,10 @@ public class GameLogic : MonoBehaviour
                         secondNewThread.Add(validBoardObjects[2]);
 
                         if (BugTestConsoleOutput)
+                        {
+                            print("843");
                             PrintAllPositionsInList(secondNewThread);
+                        }
 
                         StartCoroutine(PathfindLogic(boardObjectType, secondNewThread));
                     }
@@ -851,7 +858,10 @@ public class GameLogic : MonoBehaviour
                 pathfindList.Add(validBoardObjects[0]);
 
                 if (BugTestConsoleOutput)
+                {
+                    print("Last Known Successful List");
                     PrintAllPositionsInList(pathfindList);
+                }
 
             }
             else
