@@ -147,7 +147,7 @@ public class GameLogic : MonoBehaviour
 
         // Set Default SoftDrop Timer Thread
         SetSoftDropWaitTime(5.0f);
-        StartCoroutine(SoftDropTimer());
+        // StartCoroutine(SoftDropTimer());
     }
 
     void TEST_PresetBoard()
@@ -458,7 +458,7 @@ public class GameLogic : MonoBehaviour
         SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
         SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
 
-        
+        SetGamePlayingState(false);
 
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         for (int x = 0; x < BoardWidth; x++)
@@ -563,6 +563,11 @@ public class GameLogic : MonoBehaviour
             {
                 PreloadPathfindBlock(BoardObject.Bravo_Static, BravoPathfindList[x]);
             }
+        }
+
+        if(!alphaExists && !bravoExists)
+        {
+            SetGamePlayingState(true);
         }
 
         ResetGhostBlocks();
@@ -1023,6 +1028,8 @@ public class GameLogic : MonoBehaviour
                 if(FoundScoreline)
                 {
                     ScoreLineLogic();
+
+                    SetGamePlayingState(true);
                 }
             }
                 
@@ -1044,20 +1051,22 @@ public class GameLogic : MonoBehaviour
         if(SuccessfulPathfindList_Bravo.Count > 0)
             bravoLine_YPos = SuccessfulPathfindList_Bravo[SuccessfulPathfindList_Bravo.Count - 1].Position.y;
 
-        // If the Alpha line is lower than Bravo line, and not empty, score Alpha
-        if(alphaLine_YPos != -1 && alphaLine_YPos < bravoLine_YPos)
+        List<PathBoardObject> ChosenPathfindList = SuccessfulPathfindList_Alpha;
+        
+
+        // If a scoreline for each type exist, pick the one closer to the bottom.
+        if (bravoLine_YPos < alphaLine_YPos || alphaLine_YPos == -1)
         {
-            print("Scoring Alpha Line");
+            ChosenPathfindList = SuccessfulPathfindList_Bravo;
         }
-        // else if Bravo line is lower than Alpha line, and not empty, score Bravo
-        else if(bravoLine_YPos != -1 && bravoLine_YPos < alphaLine_YPos)
+
+        for(int i = 0; i < ChosenPathfindList.Count; i++)
         {
-            print("Scoring Bravo Line");
-        }
-        else
-        {
-            print("************** SCORE LINE FAILURE - HOW DID WE GET HERE?! ************** ");
-            // Lol... Each failed line will remain -1. Fix this.
+            Vector2Int _pos = ChosenPathfindList[i].Position;
+
+            print("Clearing: " + _pos);
+            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+            BoardLogicScript.DestroySquircleAtGridPos(_pos);
         }
     }
 
