@@ -267,7 +267,6 @@ public class GameLogic : MonoBehaviour
         // If 'RemoveFromList' is true, clear position 0 from BOTH Lists & run the function to populate the list
         // Return the list 
 
-        // print("Next Block Size: " + NextBlockListSize[0].ToString());
         List<BoardObject> nextBlocks = new List<BoardObject>();
         for(int i = 0; i < NextBlockList[0].Count; i++)
         {
@@ -340,7 +339,11 @@ public class GameLogic : MonoBehaviour
                 {
                     SetBoardObjectAtPosition( x, y, _blockArray[blockCounter] );
 
-                    print("Placing " + _blockArray[blockCounter] + " at position: " + x + ", " + y);
+                    if(BugTestConsoleOutput)
+                    {
+                        print("Placing " + _blockArray[blockCounter] + " at position: " + x + ", " + y);
+                    }
+                    
                     BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, y), _blockArray[blockCounter]);
 
                     blockCounter++;
@@ -392,25 +395,6 @@ public class GameLogic : MonoBehaviour
                 NextBlockList[NextBlockList.Count - 1].Add(randomBlock);
             }
         }
-
-        /*
-        for(int count = 0; count < NextBlockListSize.Count; count++)
-        {
-            print("Block #: " + count + ", Size: " + NextBlockListSize[count]);
-            
-            string output = "";
-            for(int eachBlock = 0; eachBlock < NextBlockList[count].Count; eachBlock++)
-            {
-                output += NextBlockList[count][eachBlock].ToString();
-                if(eachBlock != NextBlockList[count].Count - 1)
-                {
-                    output += ",";
-                }
-            }
-            print(output);
-            print("-----");
-        }
-        */
     }
 
 
@@ -476,7 +460,6 @@ public class GameLogic : MonoBehaviour
 
                 // Run through the column looking for Alpha_Static
                 bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
-                print("tempAlpha at " + x + ": " + tempAlpha);
                 
                 // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
                 if (!tempAlpha)
@@ -510,7 +493,6 @@ public class GameLogic : MonoBehaviour
 
                 // Run through the column looking for Bravo_Static
                 bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
-                print("tempBravo at " + x + ": " + tempBravo);
 
                 if (!tempBravo)
                 {
@@ -960,20 +942,16 @@ public class GameLogic : MonoBehaviour
 
         if(boardObjectType == BoardObject.Alpha_Static)
         {
-            print("Alpha Noticed");
             if(pathfindList.Count < CurrentAlpha)
             {
-                print("Alpha Stored");
                 SuccessfulPathfindList_Alpha = pathfindList;
                 CurrentAlpha = SuccessfulPathfindList_Alpha.Count;
             }
         }
         else if(boardObjectType == BoardObject.Bravo_Static)
         {
-            print("Bravo Noticed");
             if (pathfindList.Count < CurrentBravo)
             {
-                print("Bravo Stored");
                 SuccessfulPathfindList_Bravo = pathfindList;
                 CurrentBravo = SuccessfulPathfindList_Bravo.Count;
             }
@@ -1014,7 +992,8 @@ public class GameLogic : MonoBehaviour
                 AlphaThreads++;
             else AlphaThreads--;
 
-            print("Thread Counter: " + boardObjectType.ToString() + " has " + AlphaThreads + " remaining");
+            if (BugTestConsoleOutput)
+                print("Thread Counter: " + boardObjectType.ToString() + " has " + AlphaThreads + " remaining");
         }
         else if (boardObjectType == BoardObject.Bravo_Static)
         {
@@ -1026,21 +1005,15 @@ public class GameLogic : MonoBehaviour
                 print("Thread Counter: " + boardObjectType.ToString() + " has " + BravoThreads + " remaining");
         }
 
-        if (BugTestConsoleOutput)
+        if (AlphaThreads == 0 && BravoThreads == 0)
         {
-            if (AlphaThreads == 0 && BravoThreads == 0)
+            // FoundScoreLine is enabled when 1+ successful lines have been found.
+            if (FoundScoreline)
             {
-                print("--------" + "\nNO MORE THREADS" + "\n--------");
+                ScoreLineLogic();
 
-                // FoundScoreLine is enabled when 1+ successful lines have been found.
-                if(FoundScoreline)
-                {
-                    ScoreLineLogic();
-
-                    SetGamePlayingState(true);
-                }
+                SetGamePlayingState(true);
             }
-                
         }
     }
 
@@ -1072,7 +1045,9 @@ public class GameLogic : MonoBehaviour
         {
             Vector2Int _pos = ChosenPathfindList[i].Position;
 
-            print("Clearing: " + _pos);
+            if (BugTestConsoleOutput)
+                print("Clearing: " + _pos);
+
             SetBoardObjectAtPosition(_pos, BoardObject.Empty);
             BoardLogicScript.DestroySquircleAtGridPos(_pos);
         }
@@ -1468,10 +1443,16 @@ public class GameLogic : MonoBehaviour
         BlockSize nextBlockSize = NextBlockListSize[0];
         List<BoardObject> nextBlock = GetNextBlock(true);
         PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-        print("-----------");
-        print("-----------");
-        print("-----------");
-        Console_PrintBoard();
+
+        SetGamePlayingState(true);
+
+        if(BugTestConsoleOutput)
+        {
+            print("-----------");
+            print("-----------");
+            print("-----------");
+            Console_PrintBoard();
+        }
     }
 
     void AllBlocksStatic()
