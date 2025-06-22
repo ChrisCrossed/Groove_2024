@@ -25,13 +25,18 @@ public class c_BoardLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    public void Init_BoardLogic()
+    {
         GameLogicObject = GameObject.Find("GameLogic");
         GameLogic = GameLogicObject.GetComponent<GameLogic>();
 
         BackdropGameObject = GameObject.Find("BackdropArray");
 
         BackdropArray = new List<GameObject>();
-        
+
 
         UpdateBoardSize();
         InitializeBackdrop();
@@ -283,11 +288,8 @@ public class c_BoardLogic : MonoBehaviour
         float squircleScaleSize = 0.7f;
         tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos, squircleScaleSize);
 
-        
-
         tempSquircle.transform.position = worldPos;
 
-        // SquircleArray.Add(tempSquircle);
         SquircleArray[(BoardWidth * _gridPos.y) + _gridPos.x] = tempSquircle;
     }
 

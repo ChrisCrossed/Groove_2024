@@ -84,8 +84,9 @@ public class GameLogic : MonoBehaviour
 
         TEST_PresetBoard();
 
-        Console_PrintBoard();
+        HardDrop();
 
+        Console_PrintBoard();
     }
 
     int PreviousRandomSeed;
@@ -144,6 +145,8 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
+
+        BoardLogicScript.Init_BoardLogic();
 
         // Set Default SoftDrop Timer Thread
         SetSoftDropWaitTime(5.0f);
