@@ -464,7 +464,10 @@ public class GameLogic : MonoBehaviour
         SetGamePlayingState(false);
 
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
-        for (int x = 0; x < BoardWidth; x++)
+        // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
+        // because HardDrop needs to reset ghost blocks so the VertValidationCheck can properly evaluate the right wall.
+        /// for (int x = 0; x < BoardWidth; x++)
+        for (int x = 0; x < BoardWidth - 1; x++)
         {
             if(alphaExists)
             {
@@ -473,6 +476,7 @@ public class GameLogic : MonoBehaviour
 
                 // Run through the column looking for Alpha_Static
                 bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
+                print("tempAlpha at " + x + ": " + tempAlpha);
                 
                 // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
                 if (!tempAlpha)
@@ -506,7 +510,8 @@ public class GameLogic : MonoBehaviour
 
                 // Run through the column looking for Bravo_Static
                 bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
-                
+                print("tempBravo at " + x + ": " + tempBravo);
+
                 if (!tempBravo)
                 {
                     bravoExists = false;
@@ -1056,10 +1061,10 @@ public class GameLogic : MonoBehaviour
 
         List<PathBoardObject> ChosenPathfindList = SuccessfulPathfindList_Alpha;
         
-
         // If a scoreline for each type exist, pick the one closer to the bottom.
-        if (bravoLine_YPos < alphaLine_YPos || alphaLine_YPos == -1)
+        if (bravoLine_YPos != -1)
         {
+            if(bravoLine_YPos < alphaLine_YPos || alphaLine_YPos == -1)
             ChosenPathfindList = SuccessfulPathfindList_Bravo;
         }
 
@@ -1071,6 +1076,8 @@ public class GameLogic : MonoBehaviour
             SetBoardObjectAtPosition(_pos, BoardObject.Empty);
             BoardLogicScript.DestroySquircleAtGridPos(_pos);
         }
+
+        HardDrop();
     }
 
     #endregion Pathfinding Logic
