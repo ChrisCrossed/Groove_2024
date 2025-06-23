@@ -1269,8 +1269,8 @@ public class GameLogic : MonoBehaviour
         {
             BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x - 1, TileBottomLeftPosition.y + y);
 
-            if(blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost)
-                continue;
+            if (!(blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost))
+                return;
         }
 
         // Begin shifting blocks left
@@ -1318,8 +1318,8 @@ public class GameLogic : MonoBehaviour
         {
             BoardObject blockCheck = GetBoardObjectAtPosition(TileBottomLeftPosition.x + width, TileBottomLeftPosition.y + y);
 
-            if (blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost)
-                continue;
+            if (!(blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost))
+                return;
         }
 
         // Begin shifting blocks right
