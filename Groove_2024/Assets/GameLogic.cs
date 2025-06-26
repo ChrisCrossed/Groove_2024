@@ -429,6 +429,18 @@ public class GameLogic : MonoBehaviour
 
     #region Pathfinding Logic
 
+    IEnumerator HardDropPathfindLoop()
+    {
+        bool continuePathfindLoop = true;
+
+        while(continuePathfindLoop)
+        {
+
+        }
+
+        yield return true;
+    }
+
     void BeginPathfinding()
     {
         bool alphaExists = true;
@@ -1210,9 +1222,6 @@ public class GameLogic : MonoBehaviour
             height = 3;
         }
 
-        Vector2Int gridPos = new Vector2Int();
-
-        
 
         // Blocks on Left Side shift Down
         for (int y = 0; y < height - 1; y++)
