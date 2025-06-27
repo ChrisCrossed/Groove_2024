@@ -82,7 +82,7 @@ public class GameLogic : MonoBehaviour
 
         SetGamePlayingState(true);
 
-        TEST_PresetBoard();
+        
 
         BlockSize nextBlockSize = NextBlockListSize[0];
         List<BoardObject> nextBlock = GetNextBlock(true);
@@ -162,86 +162,27 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
-        /*
-        for (int x = 0; x < BoardWidth; x++)
+
+        for(int y = 0; y < 6; y++)
         {
-            if (GetBoardObjectAtPosition(x, 2) != BoardObject.Ghost)
-            {
-                SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
-            }
-        }
-
-        SetBoardObjectAtPosition(BoardWidth - 4, 3, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 3, 3, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 2, 3, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 4, 4, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 3, 4, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 2, 4, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 4, 5, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 3, 5, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 2, 5, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 4, 6, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 3, 6, BoardObject.Bravo_Static);
-        SetBoardObjectAtPosition(BoardWidth - 2, 6, BoardObject.Bravo_Static);
-
-        SetBoardObjectAtPosition(BoardWidth - 4, 7, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 3, 7, BoardObject.Alpha_Static);
-        SetBoardObjectAtPosition(BoardWidth - 2, 7, BoardObject.Alpha_Static);
-
-        // SetBoardObjectAtPosition(BoardWidth - 1, BoardHeight - 1, BoardObject.Alpha_Static);
-
-        for (int x = 0; x < BoardWidth; x++)
-        {
-            if (GetBoardObjectAtPosition(x, 1) != BoardObject.Ghost)
-            {
-                if(x % 2 == 0)
-                {
-                    SetBoardObjectAtPosition(x, 1, BoardObject.Alpha_Static);
-                }
-                else
-                {
-                    SetBoardObjectAtPosition(x, 1, BoardObject.Bravo_Static);
-                }
-            }
-        }    
-        */
-
             // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
-            /*
             for (int x = 0; x < BoardWidth; x++)
             {
-                if (GetBoardObjectAtPosition(x, 2) != BoardObject.Sidewall)
+                BoardObject boardObject = new BoardObject();
+                boardObject = BoardObject.Alpha_Active;
+                if(y % 2 == 0)
                 {
-                    SetBoardObjectAtPosition(x, 2, BoardObject.Alpha_Static);
+                    boardObject = BoardObject.Bravo_Active;
                 }
 
-                if(GetBoardObjectAtPosition(x, 4) != BoardObject.Sidewall)
+                if (GetBoardObjectAtPosition(x, y) != BoardObject.Ghost)
                 {
-                    SetBoardObjectAtPosition(x, 4, BoardObject.Bravo_Static);
+                    SetBoardObjectAtPosition(x, y, boardObject);
+                    BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, y), boardObject);
                 }
             }
-
-            SetBoardObjectAtPosition(1, 5, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(1, 3, BoardObject.Bravo_Static);
-
-            SetBoardObjectAtPosition(1, 7, BoardObject.Alpha_Static);
-            SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Static);
-            SetBoardObjectAtPosition(4, 7, BoardObject.Alpha_Static);
-
-            SetBoardObjectAtPosition(2, 3, BoardObject.Alpha_Static);
-
-            SetBoardObjectAtPosition(5, 5, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(5, 6, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(5, 7, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(6, 7, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(7, 7, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(8, 7, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(8, 6, BoardObject.Bravo_Static);
-            SetBoardObjectAtPosition(8, 5, BoardObject.Bravo_Static);
-            */
-
-            // SetBoardObjectAtPosition(0, 2, BoardObject.Empty);
         }
+    }
 
 
     void SetRandomSeed(string seed_)
@@ -1142,7 +1083,6 @@ public class GameLogic : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 StartCoroutine( HardDropPathfindLoop() );
-                
             }
 
             /// 
@@ -1161,6 +1101,11 @@ public class GameLogic : MonoBehaviour
                 BoardWidth -= 2;
                 print(BoardWidth);
                 BoardLogicScript.ReconstructBackdropArray();
+            }
+
+            if(Input.GetKeyDown(KeyCode.M))
+            {
+                TEST_PresetBoard();
             }
         }
     }
