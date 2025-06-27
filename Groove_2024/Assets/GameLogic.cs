@@ -84,7 +84,11 @@ public class GameLogic : MonoBehaviour
 
         TEST_PresetBoard();
 
-        HardDrop();
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+
+        HardDropPathfindLoop();
 
         Console_PrintBoard();
     }
@@ -433,9 +437,38 @@ public class GameLogic : MonoBehaviour
     {
         bool continuePathfindLoop = true;
 
-        while(continuePathfindLoop)
-        {
+        print("HARD DROP PATHFIND LOOP");
 
+        SetGamePlayingState(false);
+
+        while (continuePathfindLoop)
+        {
+            HardDrop();
+
+            // *IF* I choose to implement mid-field Ghost Blocks, this won't
+            // work prior to Pathfinding, since the mid-field Ghost Blocks
+            // won't allow scoring before being cleared.
+            ResetGhostBlocks();
+
+            BeginPathfinding();
+
+            continuePathfindLoop = FoundScoreline;
+
+            yield return new WaitForSecondsRealtime(0.05f);
+        }
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+
+        SetGamePlayingState(true);
+
+        if (BugTestConsoleOutput)
+        {
+            print("-----------");
+            print("-----------");
+            print("-----------");
+            Console_PrintBoard();
         }
 
         yield return true;
@@ -448,16 +481,23 @@ public class GameLogic : MonoBehaviour
 
         AlphaPathfindList = new List<PathBoardObject>();
         BravoPathfindList = new List<PathBoardObject>();
-        CurrentAlpha = 99;
-        CurrentBravo = 99;
+
+        // Current longest Alpha / Bravo length. Set to 999 so all discovered lines are shorter.
+        CurrentAlpha = 999;
+        CurrentBravo = 999;
+
+        // Number of currently running Alpha / Bravo threads.
         AlphaThreads = 0;
         BravoThreads = 0;
+
+        // Pre-load before running next phase
         FoundScoreline = false;
 
+        // Most efficient Alpha / Bravo lists
         SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
         SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
 
-        SetGamePlayingState(false);
+        
 
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
@@ -571,8 +611,6 @@ public class GameLogic : MonoBehaviour
         {
             SetGamePlayingState(true);
         }
-
-        ResetGhostBlocks();
     }
 
     void PreloadPathfindBlock(BoardObject boardObjectType, PathBoardObject startBlock)
@@ -1063,8 +1101,6 @@ public class GameLogic : MonoBehaviour
             SetBoardObjectAtPosition(_pos, BoardObject.Empty);
             BoardLogicScript.DestroySquircleAtGridPos(_pos);
         }
-
-        HardDrop();
     }
 
     #endregion Pathfinding Logic
@@ -1105,7 +1141,8 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                HardDrop();
+                StartCoroutine( HardDropPathfindLoop() );
+                
             }
 
             /// 
@@ -1447,21 +1484,7 @@ public class GameLogic : MonoBehaviour
             }
         }
 
-        BeginPathfinding();
-
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-
-        SetGamePlayingState(true);
-
-        if(BugTestConsoleOutput)
-        {
-            print("-----------");
-            print("-----------");
-            print("-----------");
-            Console_PrintBoard();
-        }
+        
     }
 
     void AllBlocksStatic()
