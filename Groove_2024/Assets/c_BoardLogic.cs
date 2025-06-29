@@ -118,6 +118,7 @@ public class c_BoardLogic : MonoBehaviour
         int oldHeight = BoardHeight;
 
         UpdateBoardSize();
+
         // Need to get the *new* board size first to resize the Squircle Array
         GameObject[] tempSquircleArray = new GameObject[BoardWidth * BoardHeight];
 

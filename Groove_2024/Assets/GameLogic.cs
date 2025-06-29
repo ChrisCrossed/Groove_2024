@@ -1091,16 +1091,18 @@ public class GameLogic : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.K))
             {
-                BoardWidth += 2;
+                // BoardWidth += 2;
                 print(BoardWidth);
-                BoardLogicScript.ReconstructBackdropArray();
+
+                ChangeBoardSize(BoardWidth + 2);
+                // BoardLogicScript.ReconstructBackdropArray();
             }
 
             if(Input.GetKeyDown(KeyCode.L))
             {
-                BoardWidth -= 2;
+                // BoardWidth -= 2;
                 print(BoardWidth);
-                BoardLogicScript.ReconstructBackdropArray();
+                // BoardLogicScript.ReconstructBackdropArray();
             }
 
             if(Input.GetKeyDown(KeyCode.M))
@@ -1505,6 +1507,8 @@ public class GameLogic : MonoBehaviour
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
+        ClearGhostBlockList();
+
         List<BoardObject> tempBoard = new List<BoardObject>();
 
         int widthDiff = _newBoardWidth - oldWidth;
@@ -1524,6 +1528,11 @@ public class GameLogic : MonoBehaviour
                 for(int i = 0; i < blocksChangePerSide; i++)
                 {
                     tempBoard.Add(BoardObject.Empty);
+
+                    if(i == 0)
+                    {
+                        SetGhostBlock(i, y);
+                    }
                 }
                 #endregion Left Side
 
@@ -1531,6 +1540,7 @@ public class GameLogic : MonoBehaviour
                 for (int j = 0; j < oldWidth; j++)
                 {
                     BoardObject tempObj = GetBoardObjectAtPosition(j, y);
+                    print(tempObj);
                     tempBoard.Add(tempObj);
                 }
 
@@ -1540,8 +1550,15 @@ public class GameLogic : MonoBehaviour
                 for (int k = 0; k < blocksChangePerSide; k++)
                 {
                     tempBoard.Add(BoardObject.Empty);
+
+                    if (k == blocksChangePerSide - 1)
+                    {
+                        SetGhostBlock(_newBoardWidth - 1, y);
+                    }
                 }
                 #endregion Right Side
+
+                TileBottomLeftPosition.x++;
 
                 /*
                 #region Left Side
@@ -1604,8 +1621,9 @@ public class GameLogic : MonoBehaviour
         {
             #region Reduction Logic
 
-            /*
             blocksChangePerSide = Mathf.Abs(blocksChangePerSide);
+            
+            /*
             for (int y = 0; y < BoardHeight; y++)
             {
                 int currYPos = y * oldWidth;
@@ -1658,6 +1676,15 @@ public class GameLogic : MonoBehaviour
 
             #endregion Reduction Logic
         }
+
+        BoardWidth = _newBoardWidth;
+
+        HORIZ_RIGHT_WALL_XPos_Playable = BoardWidth - 2;
+        HORIZ_RIGHT_WALL_XPos_Sidewall = HORIZ_RIGHT_WALL_XPos_Playable + 1;
+
+        Board = tempBoard;
+
+        BoardLogicScript.ReconstructBackdropArray();
     }
 
     void ResetGhostBlocks()
