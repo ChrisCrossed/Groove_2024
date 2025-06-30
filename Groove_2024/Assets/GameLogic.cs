@@ -1500,6 +1500,8 @@ public class GameLogic : MonoBehaviour
 
     void ChangeBoardSize(int _newBoardWidth)
     {
+        print("Old Bot Left Pos: " + (TileBottomLeftPosition));
+
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
@@ -1526,8 +1528,6 @@ public class GameLogic : MonoBehaviour
                 for(int i = 0; i < blocksChangePerSide; i++)
                 {
                     tempBoard.Add(BoardObject.Empty);
-
-                    TileBottomLeftPosition.x++;
                 }
                 #endregion Left Side
 
@@ -1564,11 +1564,22 @@ public class GameLogic : MonoBehaviour
                     BoardObject tempObj = GetBoardObjectAtPosition(i, y);
                     print(tempObj);
                     tempBoard.Add(tempObj);
-
-                    TileBottomLeftPosition.x--;
                 }
             }
             #endregion Reduction Logic
+        }
+
+        // Change the TileBottomLeftPosition afterward so it doesn't get modified by the Y-pos loop
+        for(int i = 0; i < Math.Abs(blocksChangePerSide); i++)
+        {
+            if(Math.Sign(widthDiff) == 1)
+            {
+                TileBottomLeftPosition.x++;
+            }
+            else
+            {
+                TileBottomLeftPosition.x--;
+            }
         }
 
         BoardWidth = _newBoardWidth;
