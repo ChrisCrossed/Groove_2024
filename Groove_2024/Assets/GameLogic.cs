@@ -1528,11 +1528,6 @@ public class GameLogic : MonoBehaviour
                 for(int i = 0; i < blocksChangePerSide; i++)
                 {
                     tempBoard.Add(BoardObject.Empty);
-
-                    if(i == 0)
-                    {
-                        SetGhostBlock(i, y);
-                    }
                 }
                 #endregion Left Side
 
@@ -1550,11 +1545,6 @@ public class GameLogic : MonoBehaviour
                 for (int k = 0; k < blocksChangePerSide; k++)
                 {
                     tempBoard.Add(BoardObject.Empty);
-
-                    if (k == blocksChangePerSide - 1)
-                    {
-                        SetGhostBlock(_newBoardWidth - 1, y);
-                    }
                 }
                 #endregion Right Side
 
@@ -1683,6 +1673,12 @@ public class GameLogic : MonoBehaviour
         HORIZ_RIGHT_WALL_XPos_Sidewall = HORIZ_RIGHT_WALL_XPos_Playable + 1;
 
         Board = tempBoard;
+
+        for (int y = 0; y < BoardHeight; y++)
+        {
+            SetGhostBlock(0, y);
+            SetGhostBlock(BoardWidth - 1, y);
+        }
 
         BoardLogicScript.ReconstructBackdropArray();
     }
