@@ -1091,17 +1091,13 @@ public class GameLogic : MonoBehaviour
 
             if(Input.GetKeyDown(KeyCode.K))
             {
-                // BoardWidth += 2;
-                print(BoardWidth);
-
                 ChangeBoardSize(BoardWidth + 2);
                 // BoardLogicScript.ReconstructBackdropArray();
             }
 
             if(Input.GetKeyDown(KeyCode.L))
             {
-                // BoardWidth -= 2;
-                print(BoardWidth);
+                ChangeBoardSize(BoardWidth - 2);
                 // BoardLogicScript.ReconstructBackdropArray();
             }
 
@@ -1507,17 +1503,19 @@ public class GameLogic : MonoBehaviour
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
-        ClearGhostBlockList();
-
-        List<BoardObject> tempBoard = new List<BoardObject>();
-
         int widthDiff = _newBoardWidth - oldWidth;
-        int blocksChangePerSide = widthDiff / 2;
-
+        
         if (widthDiff == 0)
         {
             return;
         }
+
+        ClearGhostBlockList();
+
+        List<BoardObject> tempBoard = new List<BoardObject>();
+
+        int blocksChangePerSide = widthDiff / 2;
+
 
         if (Mathf.Sign(widthDiff) == 1)
         {
@@ -1528,6 +1526,8 @@ public class GameLogic : MonoBehaviour
                 for(int i = 0; i < blocksChangePerSide; i++)
                 {
                     tempBoard.Add(BoardObject.Empty);
+
+                    TileBottomLeftPosition.x++;
                 }
                 #endregion Left Side
 
@@ -1547,64 +1547,8 @@ public class GameLogic : MonoBehaviour
                     tempBoard.Add(BoardObject.Empty);
                 }
                 #endregion Right Side
-
-                TileBottomLeftPosition.x++;
-
-                /*
-                #region Left Side
-                List<GameObject> leftArray = new List<GameObject>();
-                for (int j = 0; j < blocksChangePerSide; j++)
-                {
-                    // Grows column toward the left (-leftWidth) by one block
-                    GameObject tempBlock = CreateBackdropBlock(new Vector2Int(-leftWidth + StartingHalfBoardWidth, y));
-
-
-                    leftArray.Add(tempBlock);
-                }
-
-                // Reverse and add to List
-                leftArray.Reverse();
-                foreach (GameObject obj in leftArray)
-                    newArray.Add(obj);
-                #endregion Left Side
-
-                #region Center Pre-Existing Region
-                for (int x = 0; x < oldWidth; x++)
-                {
-                    int oldArrayPosition = (y * oldWidth) + x;
-                    int newArrayPosition = (y * BoardWidth) + (blocksChangePerSide + x);
-
-                    newArray.Add(BackdropArray[oldArrayPosition]);
-
-                    if (SquircleArray[oldArrayPosition] != null)
-                    {
-                        Vector2Int newGridCoords = SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords;
-                        newGridCoords.x += blocksChangePerSide;
-
-                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = newGridCoords;
-
-                        tempSquircleArray[newArrayPosition] = SquircleArray[oldArrayPosition];
-
-                        print("New Coords: " + tempSquircleArray[newArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
-                    }
-                }
-                #endregion Center Pre-Existing Region
-
-                #region Right Region
-                for (int k = 0; k < blocksChangePerSide; k++)
-                {
-                    // Grows column toward the right (rightWidth) by one block
-                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + StartingHalfBoardWidth + 1, y)));
-                }
-                #endregion Right Region
-
-                */
             }
 
-            /*
-            leftWidth += blocksChangePerSide;
-            rightWidth += blocksChangePerSide;
-            */
             #endregion Expansion Logic
         }
         else
@@ -1612,58 +1556,18 @@ public class GameLogic : MonoBehaviour
             #region Reduction Logic
 
             blocksChangePerSide = Mathf.Abs(blocksChangePerSide);
-            
-            /*
+
             for (int y = 0; y < BoardHeight; y++)
             {
-                int currYPos = y * oldWidth;
-
-                // Reduce Left Side (TODO: Update this to fade blocks out from center-outward)
-                for (int i = 0; i < blocksChangePerSide; i++)
+                for (int i = blocksChangePerSide; i < BoardWidth - blocksChangePerSide; i++)
                 {
-                    // Reduces column toward the left (-leftWidth) by one block
-                    DestroyBackdropBlock(currYPos + i);
+                    BoardObject tempObj = GetBoardObjectAtPosition(i, y);
+                    print(tempObj);
+                    tempBoard.Add(tempObj);
 
-                    // TODO: If there *was* a Squircle Object at this position, tell it to delete itself
-                }
-
-                for (int j = blocksChangePerSide; j < oldWidth - blocksChangePerSide; ++j)
-                {
-                    newArray.Add(BackdropArray[currYPos + j]);
-
-                    int oldArrayPosition = (y * oldWidth) + j;
-                    int newArrayPosition = (y * BoardWidth) + (j - blocksChangePerSide);
-
-                    if (SquircleArray[oldArrayPosition] != null)
-                    {
-                        print("Success:");
-                        // Get new grid coordinate and set tempSquircleArray to refer to that board object
-
-                        print("X: " + (j - blocksChangePerSide) + ", Y: " + y);
-
-                        Vector2Int newGridCoords = SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords;
-                        newGridCoords.x -= blocksChangePerSide;
-
-                        SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = newGridCoords;
-
-                        tempSquircleArray[newArrayPosition] = SquircleArray[oldArrayPosition];
-                        print(tempSquircleArray[newArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
-                    }
-                }
-
-                for (int k = oldWidth - blocksChangePerSide; k < oldWidth; k++)
-                {
-                    // Reduces column toward the left (-leftWidth) by one block
-                    DestroyBackdropBlock(currYPos + k);
-
-                    // TODO: If there *was* a Squircle Object at this position, tell it to delete itself
+                    TileBottomLeftPosition.x--;
                 }
             }
-
-            leftWidth -= blocksChangePerSide;
-            rightWidth -= blocksChangePerSide;
-            */
-
             #endregion Reduction Logic
         }
 
@@ -1674,13 +1578,14 @@ public class GameLogic : MonoBehaviour
 
         Board = tempBoard;
 
+        // Board Logic needs to be reconstructed first so the SetGhostBlock can find the *new* Squircle object pos
+        BoardLogicScript.ReconstructBackdropArray();
+
         for (int y = 0; y < BoardHeight; y++)
         {
             SetGhostBlock(0, y);
             SetGhostBlock(BoardWidth - 1, y);
         }
-
-        BoardLogicScript.ReconstructBackdropArray();
     }
 
     void ResetGhostBlocks()

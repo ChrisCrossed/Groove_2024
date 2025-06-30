@@ -214,18 +214,12 @@ public class c_BoardLogic : MonoBehaviour
 
                     if (SquircleArray[oldArrayPosition] != null)
                     {
-                        print("Success:");
-                        // Get new grid coordinate and set tempSquircleArray to refer to that board object
-                        
-                        print("X: " + (j - blocksChangePerSide) + ", Y: " + y);
-
                         Vector2Int newGridCoords = SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords;
                         newGridCoords.x -= blocksChangePerSide;
 
                         SquircleArray[oldArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords = newGridCoords;
 
                         tempSquircleArray[newArrayPosition] = SquircleArray[oldArrayPosition];
-                        print(tempSquircleArray[newArrayPosition].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
                     }
                 }
 
@@ -559,6 +553,9 @@ public class c_BoardLogic : MonoBehaviour
     public void DestroySquircleAtGridPos(Vector2Int _gridPos)
     {
         GameObject tempSquircle = GetObjAtPosition(_gridPos, true);
+
+        print("Destroying: " + tempSquircle.name);
+
         tempSquircle.GetComponent<c_SquircleLogic>().DestroySquircle();
 
         SquircleArray[_gridPos.y * BoardWidth + _gridPos.x] = null;
