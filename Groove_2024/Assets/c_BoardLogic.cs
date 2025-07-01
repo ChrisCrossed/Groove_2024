@@ -106,6 +106,15 @@ public class c_BoardLogic : MonoBehaviour
                 BackdropArray.Add(tempList[i]);
 
         }
+
+        for (int y = 0; y < BoardHeight; y++)
+        {
+            BackdropArray[y * BoardWidth].GetComponent<c_BackdropLogic>().InitializeBackdrop(false);
+            BackdropArray[y * BoardWidth + 1].GetComponent<c_BackdropLogic>().InitializeBackdrop(true);
+
+            BackdropArray[(y * BoardWidth) + (BoardWidth - 1)].GetComponent<c_BackdropLogic>().InitializeBackdrop(false);
+            BackdropArray[(y * BoardWidth) + (BoardWidth - 2)].GetComponent<c_BackdropLogic>().InitializeBackdrop(true);
+        }
     }
 
     int StartingHalfBoardWidth;
@@ -178,7 +187,8 @@ public class c_BoardLogic : MonoBehaviour
                 for (int k = 0; k < blocksChangePerSide; k++ )
                 {
                     // Grows column toward the right (rightWidth) by one block
-                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + StartingHalfBoardWidth + 1, y)));
+                    // Defaults to not being a Ghost Block just because it's defined manually later
+                    newArray.Add(CreateBackdropBlock(new Vector2Int(rightWidth + StartingHalfBoardWidth + 1, y), false));
                 }
                 #endregion Right Region
             }
@@ -238,12 +248,22 @@ public class c_BoardLogic : MonoBehaviour
             #endregion Reduction Logic
         }
 
+        for (int y = 0; y < BoardHeight; y++)
+        {
+            newArray[y * BoardWidth].GetComponent<c_BackdropLogic>().InitializeBackdrop(false);
+            newArray[y * BoardWidth + 1].GetComponent<c_BackdropLogic>().InitializeBackdrop(true);
+
+            newArray[(y * BoardWidth) + (BoardWidth - 1)].GetComponent<c_BackdropLogic>().InitializeBackdrop(false);
+            newArray[(y * BoardWidth) + (BoardWidth - 2)].GetComponent<c_BackdropLogic>().InitializeBackdrop(true);
+        }
+
+
         BackdropArray = newArray;
         SquircleArray = tempSquircleArray;
     }
 
     
-    GameObject CreateBackdropBlock(Vector2Int _gridPos)
+    GameObject CreateBackdropBlock(Vector2Int _gridPos, bool _isGridBlock = true)
     {
         GameObject tempBackdrop = GameObject.Instantiate(BackdropPrefab);
 
@@ -251,6 +271,8 @@ public class c_BoardLogic : MonoBehaviour
         tempBackdrop.name = "Backdrop";
 
         tempBackdrop.transform.position = GetWorldPosition(_gridPos);
+
+        tempBackdrop.GetComponent<c_BackdropLogic>().InitializeBackdrop(_isGridBlock);
 
         tempBackdrop.transform.SetParent(BackdropGameObject.transform);
 
@@ -546,8 +568,8 @@ public class c_BoardLogic : MonoBehaviour
 
         // Already removing old block during 'Reduction Logic' process
         // BackdropArray.RemoveAt(_BackdropArrayPos);
-        
-        GameObject.Destroy(blockRemove);
+
+        blockRemove.GetComponent<c_BackdropLogic>().DestroyBackdrop();
     }
 
     public void DestroySquircleAtGridPos(Vector2Int _gridPos)
@@ -564,35 +586,7 @@ public class c_BoardLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            AddBlockToBoard(new Vector2Int( (BoardWidth / 2) - 1, BoardHeight - 1) , BoardObject.Bravo_Active);
-        }
 
-        if(Input.GetKeyDown(KeyCode.O))
-        {
-            foreach(GameObject squircle in SquircleArray)
-            {
-                if(squircle != null)
-                {
-                    Vector2Int gridCoords = squircle.GetComponent<c_SquircleLogic>().GridCoords;
-                    print("Old: " + gridCoords);
-                    if(gridCoords.y > 0)
-                    {
-                        gridCoords.y--;
-                    }
-
-                    // Assign new location to Squircle
-                    squircle.GetComponent<c_SquircleLogic>().GridCoords = gridCoords;
-                    
-                    print("New: " + gridCoords);
-
-                    squircle.GetComponent<c_SquircleLogic>().GoToPosition( GetWorldPosition(new Vector2Int(gridCoords.x, gridCoords.y), true ));
-                }
-            }
-        }
-        */
     }
 
     float defaultLeftPos;

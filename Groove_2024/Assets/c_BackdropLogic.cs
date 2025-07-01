@@ -24,17 +24,8 @@ public class c_BackdropLogic : MonoBehaviour
 
     public void InitializeBackdrop(bool _isGrid = true)
     {
-        if (_isGrid)
-        {
-            mdl_Grid.SetActive(true);
-            return;
-        }
-
-        if (!_isGrid)
-        {
-            mdl_GhostBlock.SetActive(true);
-            return;
-        }
+        mdl_Grid.SetActive(_isGrid);
+        mdl_GhostBlock.SetActive(!_isGrid);
     }
 
     bool IsDestroy = false;
@@ -64,7 +55,7 @@ public class c_BackdropLogic : MonoBehaviour
 
     void Update_DestroyBackdrop()
     {
-
+        GameObject.Destroy(gameObject);
     }
 
     // Update is called once per frame
