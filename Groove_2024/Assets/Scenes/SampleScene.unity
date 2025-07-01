@@ -156,8 +156,8 @@ MonoBehaviour:
   BoardWidth_Maximum: 10
   BoardHeight_Maximum: 10
   BlockObject_Active_TwoByTwo: 1
-  BlockObject_Active_ThreeWide: 1
-  BlockObject_Active_ThreeTall: 1
+  BlockObject_Active_ThreeWide: 0
+  BlockObject_Active_ThreeTall: 0
 --- !u!4 &197332790
 Transform:
   m_ObjectHideFlags: 0
@@ -300,7 +300,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 6e-44, z: 3e-45, w: 9.386e-42}
+  m_BoundingSphereOverride: {x: 1.33e-43, y: 6e-45, z: 2.2e-44, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

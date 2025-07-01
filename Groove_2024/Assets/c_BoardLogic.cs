@@ -8,6 +8,7 @@ public class c_BoardLogic : MonoBehaviour
     GameLogic GameLogic;
 
     GameObject BackdropGameObject;
+    GameObject BoardArrayObject;
 
     List<GameObject> BackdropArray;
     GameObject[] SquircleArray;
@@ -34,6 +35,7 @@ public class c_BoardLogic : MonoBehaviour
         GameLogic = GameLogicObject.GetComponent<GameLogic>();
 
         BackdropGameObject = GameObject.Find("BackdropArray");
+        BoardArrayObject = GameObject.Find("BoardArray");
 
         BackdropArray = new List<GameObject>();
 
@@ -304,6 +306,8 @@ public class c_BoardLogic : MonoBehaviour
 
         float squircleScaleSize = 0.7f;
         tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos, squircleScaleSize);
+
+        tempSquircle.transform.SetParent(BoardArrayObject.transform);
 
         tempSquircle.transform.position = worldPos;
 

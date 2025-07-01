@@ -90,7 +90,10 @@ public class GameLogic : MonoBehaviour
 
         HardDropPathfindLoop();
 
-        Console_PrintBoard();
+        if(BugTestConsoleOutput)
+        {
+            Console_PrintBoard();
+        }
     }
 
     int PreviousRandomSeed;
@@ -163,16 +166,40 @@ public class GameLogic : MonoBehaviour
         // O = Bravo
 
 
-        for(int y = 0; y < 6; y++)
+        for(int x = 0; x < BoardWidth - 2; x++)
+        {
+            if (GetBoardObjectAtPosition(x, 1) != BoardObject.Ghost)
+            {
+                SetBoardObjectAtPosition(x, 1, BoardObject.Alpha_Active);
+                BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, 1), BoardObject.Alpha_Active);
+            }
+        }
+
+        for(int j = 0; j < BoardWidth; j++)
+        {
+            BoardObject tempBoardObject = GetBoardObjectAtPosition(j, 1);
+            print(j + ": " + tempBoardObject);
+        }
+
+        /*
+        for(int y = 0; y < BoardHeight - 3; y++)
         {
             // CreateNewBlockOfType(TileType.ThreeTall, TileBottomLeftPosition);
             for (int x = 0; x < BoardWidth; x++)
             {
                 BoardObject boardObject = new BoardObject();
                 boardObject = BoardObject.Alpha_Active;
-                if(y % 2 == 0)
+
+                if (y % 2 == 0)
                 {
                     boardObject = BoardObject.Bravo_Active;
+                }
+                else
+                {
+                    if(x % 2 == 0)
+                    {
+                        boardObject = BoardObject.Bravo_Active;
+                    }
                 }
 
                 if (GetBoardObjectAtPosition(x, y) != BoardObject.Ghost)
@@ -182,6 +209,7 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
+        */
     }
 
 
@@ -234,13 +262,13 @@ public class GameLogic : MonoBehaviour
         return nextBlocks;
     }
 
-    void SetValidActiveBlockTypes(bool threeWide_, bool threeTall, bool twoByTwo_ = true)
+    void SetValidActiveBlockTypes(bool threeWide_, bool threeTall_, bool twoByTwo_ = true)
     {
         BlockObject_Active_TwoByTwo = twoByTwo_;
         BlockObject_Active_ThreeWide = threeWide_;
-        BlockObject_Active_ThreeTall = threeTall;
+        BlockObject_Active_ThreeTall = threeTall_;
 
-        if(!threeWide_ && !threeTall)
+        if(!threeWide_ && !threeTall_)
         {
             BlockObject_Active_TwoByTwo = true;
         }
@@ -395,7 +423,7 @@ public class GameLogic : MonoBehaviour
 
             continuePathfindLoop = FoundScoreline;
 
-            yield return new WaitForSecondsRealtime(0.05f);
+            yield return new WaitForSecondsRealtime(0.25f);
         }
 
         BlockSize nextBlockSize = NextBlockListSize[0];
@@ -1053,31 +1081,51 @@ public class GameLogic : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 RotateCounterClockwise();
-                Console_PrintBoard();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
                 RotateClockwise();
-                Console_PrintBoard();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
                 ShiftLeft();
-                Console_PrintBoard();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.D))
             {
                 ShiftRight();
-                Console_PrintBoard();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.S))
             {
                 SoftDrop();
-                Console_PrintBoard();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
@@ -1104,9 +1152,27 @@ public class GameLogic : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.M))
             {
                 TEST_PresetBoard();
+
+                // StartCoroutine(HardDropPathfindLoop());
+            }
+
+            if(Input.GetKeyDown(KeyCode.O))
+            {
+                BlockSizeFlip = !BlockSizeFlip;
+
+                SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
+            }
+
+            if(Input.GetKeyDown(KeyCode.P))
+            {
+                TwoByTwoFlip = !TwoByTwoFlip;
+
+                SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
             }
         }
     }
+    bool BlockSizeFlip;
+    bool TwoByTwoFlip;
 
     #region Timer / Gameplay Pause
     double SoftDropWaitTime;
@@ -1535,7 +1601,10 @@ public class GameLogic : MonoBehaviour
                 for (int j = 0; j < oldWidth; j++)
                 {
                     BoardObject tempObj = GetBoardObjectAtPosition(j, y);
-                    print(tempObj);
+
+                    if(tempObj == BoardObject.Ghost)
+                        tempObj = BoardObject.Empty;
+
                     tempBoard.Add(tempObj);
                 }
 
