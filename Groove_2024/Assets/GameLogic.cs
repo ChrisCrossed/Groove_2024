@@ -629,7 +629,7 @@ public class GameLogic : MonoBehaviour
 
             if (tempBlock.RightValid)
             {
-                if(nextPos.x < BoardWidth_Maximum)
+                if(nextPos.x < HORIZ_RIGHT_WALL_XPos_Sidewall)
                 {
                     // Evaluate based on the position to the right
                     ++nextPos.x;
