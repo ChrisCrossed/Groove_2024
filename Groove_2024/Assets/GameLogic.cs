@@ -165,21 +165,95 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
+        SetBoardObjectAtPosition(1, 1, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 1), BoardObject.Alpha_Active);
 
-        for(int x = 0; x < BoardWidth - 2; x++)
+        for(int y = 0; y < BoardHeight - 3; y++)
         {
-            if (GetBoardObjectAtPosition(x, 1) != BoardObject.Ghost)
+            for (int x = 3; x < BoardWidth - 3; x++)
             {
-                SetBoardObjectAtPosition(x, 1, BoardObject.Alpha_Active);
-                BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, 1), BoardObject.Alpha_Active);
+                if(y % 3 == 1)
+                {
+                    if (GetBoardObjectAtPosition(x, y) != BoardObject.Ghost)
+                    {
+                        SetBoardObjectAtPosition(x, y, BoardObject.Alpha_Active);
+                        BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, y), BoardObject.Alpha_Active);
+                    }
+                }
+                else
+                {
+                    if (GetBoardObjectAtPosition(x, y) != BoardObject.Ghost)
+                    {
+                        SetBoardObjectAtPosition(x, y, BoardObject.Bravo_Active);
+                        BoardLogicScript.AddSquircleToBoard(new Vector2Int(x, y), BoardObject.Bravo_Active);
+                    }
+                }
             }
         }
 
-        for(int j = 0; j < BoardWidth; j++)
+        SetBoardObjectAtPosition(1, 0, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 0), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(2, 0, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 0), BoardObject.Bravo_Active);
+
+        SetBoardObjectAtPosition(2, 1, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 1), BoardObject.Alpha_Active);
+
+        SetBoardObjectAtPosition(1, 2, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 2), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(2, 2, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 2), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(1, 3, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 3), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(2, 3, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 3), BoardObject.Bravo_Active);
+
+        SetBoardObjectAtPosition(2, 4, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 4), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(2, 5, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 5), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(2, 6, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 6), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(2, 7, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(2, 7), BoardObject.Alpha_Active);
+
+        SetBoardObjectAtPosition(13, 6, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 6), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(13, 5, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 5), BoardObject.Bravo_Active);
+
+        SetBoardObjectAtPosition(14, 0, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(14, 0), BoardObject.Alpha_Active);
+
+        for (int y = 1; y < 7; y++)
         {
-            BoardObject tempBoardObject = GetBoardObjectAtPosition(j, 1);
-            print(j + ": " + tempBoardObject);
+            SetBoardObjectAtPosition(14, y, BoardObject.Bravo_Active);
+            BoardLogicScript.AddSquircleToBoard(new Vector2Int(14, y), BoardObject.Bravo_Active);
         }
+
+        SetBoardObjectAtPosition(1, 4, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 4), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(1, 5, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 5), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(1, 6, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 6), BoardObject.Bravo_Active);
+        SetBoardObjectAtPosition(1, 7, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 7), BoardObject.Bravo_Active);
+
+        SetBoardObjectAtPosition(13, 0, BoardObject.Bravo_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 0), BoardObject.Bravo_Active);
+
+        SetBoardObjectAtPosition(13, 1, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 1), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(13, 2, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 2), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(13, 3, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 3), BoardObject.Alpha_Active);
+        SetBoardObjectAtPosition(13, 4, BoardObject.Alpha_Active);
+        BoardLogicScript.AddSquircleToBoard(new Vector2Int(13, 4), BoardObject.Alpha_Active);
+        /*
+        */
+
 
         /*
         for(int y = 0; y < BoardHeight - 3; y++)
@@ -605,6 +679,7 @@ public class GameLogic : MonoBehaviour
         {
             compareBlock.DownValid = false;
             compareBlock.UpValid = false;
+            print("CHRIS");
         }
 
         pathfindList.Add(compareBlock);
@@ -738,10 +813,11 @@ public class GameLogic : MonoBehaviour
             // Resets comparison
             nextPos = pathfindList[pathfindList.Count - 1].Position;
 
-
+            print("Next Up: " + nextPos);
+            print("Up Valid: " + tempBlock.UpValid);
             if (tempBlock.UpValid)
             {
-                if(nextPos.y < BoardHeight_Maximum)
+                if(nextPos.y < BoardHeight)
                 {
                     // Evaluate based on the position above
                     ++nextPos.y;
