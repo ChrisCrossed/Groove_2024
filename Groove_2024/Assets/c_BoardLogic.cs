@@ -580,7 +580,7 @@ public class c_BoardLogic : MonoBehaviour
     {
         GameObject tempSquircle = GetObjAtPosition(_gridPos, true);
 
-        print("Destroying: " + tempSquircle.name);
+        // print("Destroying: " + tempSquircle.name);
 
         tempSquircle.GetComponent<c_SquircleLogic>().DestroySquircle();
 

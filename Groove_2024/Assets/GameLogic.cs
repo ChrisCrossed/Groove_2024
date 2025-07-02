@@ -664,7 +664,6 @@ public class GameLogic : MonoBehaviour
         PathBoardObject compareBlock = new PathBoardObject();
         compareBlock = startBlock;
 
-
         // If checking to the left && left position is Left Valid Column, don't check it.
         if (startBlock.LeftValid && startBlock.Position.x - 1 <= HORIZ_LEFT_WALL_XPos_Playable)
             compareBlock.LeftValid = false;
@@ -679,7 +678,6 @@ public class GameLogic : MonoBehaviour
         {
             compareBlock.DownValid = false;
             compareBlock.UpValid = false;
-            print("CHRIS");
         }
 
         pathfindList.Add(compareBlock);
@@ -812,12 +810,10 @@ public class GameLogic : MonoBehaviour
 
             // Resets comparison
             nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-            print("Next Up: " + nextPos);
-            print("Up Valid: " + tempBlock.UpValid);
+            
             if (tempBlock.UpValid)
             {
-                if(nextPos.y < BoardHeight)
+                if (nextPos.y < BoardHeight)
                 {
                     // Evaluate based on the position above
                     ++nextPos.y;
@@ -873,7 +869,7 @@ public class GameLogic : MonoBehaviour
 
                     if (tempBlock.LeftValid)
                     {
-                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
+                        validBoardObjects.Add(new PathBoardObject(nextPos, true, false, true, true));
                     }
                 }
                 else tempBlock.LeftValid = false;
@@ -1642,8 +1638,6 @@ public class GameLogic : MonoBehaviour
 
     void ChangeBoardSize(int _newBoardWidth)
     {
-        print("Old Bot Left Pos: " + (TileBottomLeftPosition));
-
         int oldWidth = BoardWidth;
         int oldHeight = BoardHeight;
 
@@ -1707,7 +1701,7 @@ public class GameLogic : MonoBehaviour
                 for (int i = blocksChangePerSide; i < BoardWidth - blocksChangePerSide; i++)
                 {
                     BoardObject tempObj = GetBoardObjectAtPosition(i, y);
-                    print(tempObj);
+                    
                     tempBoard.Add(tempObj);
                 }
             }
