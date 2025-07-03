@@ -480,7 +480,10 @@ public class GameLogic : MonoBehaviour
     {
         bool continuePathfindLoop = true;
 
-        print("HARD DROP PATHFIND LOOP");
+        // print("HARD DROP PATHFIND LOOP");
+
+        // Reset the RepeatScorelineEvalLength
+        RepeatScorelineEvalLength = 999;
 
         SetGamePlayingState(false);
 
@@ -493,7 +496,20 @@ public class GameLogic : MonoBehaviour
             // won't allow scoring before being cleared.
             ResetGhostBlocks();
 
-            BeginPathfinding();
+            // Current longest Alpha / Bravo length.
+            int maxLinePossibility = (BoardHeight - 2) / 2;
+            maxLinePossibility *= (BoardWidth - 4);
+            maxLinePossibility += 2;
+            maxLinePossibility += ((BoardHeight - 2) / 2) - 1;
+
+            if(RepeatScorelineEvalLength < maxLinePossibility)
+            {
+                maxLinePossibility = RepeatScorelineEvalLength;
+                maxLinePossibility += 2;
+                // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
+            }
+
+            BeginPathfinding(maxLinePossibility);
 
             continuePathfindLoop = FoundScoreline;
 
@@ -517,7 +533,7 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    void BeginPathfinding()
+    void BeginPathfinding(int repeatScorelineEvalLength)
     {
         bool alphaExists = true;
         bool bravoExists = true;
@@ -525,9 +541,8 @@ public class GameLogic : MonoBehaviour
         AlphaPathfindList = new List<PathBoardObject>();
         BravoPathfindList = new List<PathBoardObject>();
 
-        // Current longest Alpha / Bravo length. Set to 999 so all discovered lines are shorter.
-        CurrentAlpha = 999;
-        CurrentBravo = 999;
+        CurrentAlpha = repeatScorelineEvalLength;
+        CurrentBravo = repeatScorelineEvalLength;
 
         // Number of currently running Alpha / Bravo threads.
         AlphaThreads = 0;
@@ -1109,6 +1124,7 @@ public class GameLogic : MonoBehaviour
     }
 
     bool FoundScoreline;
+    int RepeatScorelineEvalLength;
     void ScoreLineLogic()
     {
         // Still determining if I want to score the longer of 2+ lines, or the one closer to the bottom.
@@ -1142,6 +1158,10 @@ public class GameLogic : MonoBehaviour
             SetBoardObjectAtPosition(_pos, BoardObject.Empty);
             BoardLogicScript.DestroySquircleAtGridPos(_pos);
         }
+
+        // In case a second evaluation is run, this count is used to limit Scoreline Check
+        // Hopefully stops infinite loops
+        RepeatScorelineEvalLength = ChosenPathfindList.Count;
     }
 
     #endregion Pathfinding Logic
@@ -1535,7 +1555,7 @@ public class GameLogic : MonoBehaviour
 
     void HardDrop()
     {
-        print("HARD DROP");
+        // print("HARD DROP");
 
         AllBlocksStatic();
 
