@@ -987,11 +987,16 @@ public class GameLogic : MonoBehaviour
     /// <param name="_boardObject">The piece to compare against for validity</param>
     /// <returns></returns>
     List<int> tempVertXPositions;
+    int numEachColumn_Alpha;
+    int numEachColumn_Bravo;
     bool VerticalValidationCheck(int _x, BoardObject _boardObject)
     {
         BoardObject tempObject;
         bool validColumn = false;
         tempVertXPositions = new List<int>();
+
+        numEachColumn_Alpha = 0;
+        numEachColumn_Bravo = 0;
 
         // Run vertically. If a static (or Sidewall) exists, continue
         for (int y = 0; y < BoardHeight; y++)
@@ -1021,11 +1026,19 @@ public class GameLogic : MonoBehaviour
                     {
                         // Force exit to next column to check
                         y = BoardHeight;
+
+                        if(_boardObject == BoardObject.Alpha_Static)
+                            numEachColumn_Alpha++;
                     }
                     else
                     {
                         // If the 1st column, get all valid vertical positions (not just the first one) to populate into Pathfinding Check.
                         tempVertXPositions.Add(y);
+
+                        // TODO: Only add 1 to each Alpha / Bravo count for the sake of future evaluation
+
+
+
                         // NOTE: During pathfinding, compare blocks y+1 & y-1 in x == 1 coordinate when x+1 is NOT valid (Basically, check to see if L shape start happens, and remove the possibility)
                         // 
                         // [X] [_] [_] <- Remove from Pathfinding
