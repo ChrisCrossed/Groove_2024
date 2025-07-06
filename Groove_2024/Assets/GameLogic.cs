@@ -88,7 +88,7 @@ public class GameLogic : MonoBehaviour
         List<BoardObject> nextBlock = GetNextBlock(true);
         PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
 
-        HardDropPathfindLoop();
+        // HardDropPathfindLoop();
 
         if(BugTestConsoleOutput)
         {
@@ -475,6 +475,8 @@ public class GameLogic : MonoBehaviour
     #endregion Block Placement
 
     #region Pathfinding Logic
+
+    
 
     IEnumerator HardDropPathfindLoop()
     {
@@ -1191,6 +1193,63 @@ public class GameLogic : MonoBehaviour
     /// 
     /// 2.) For each successful pathing from middle-out, find as many valid connections from the middle column to their opposing side.
     /// </summary>
+    IEnumerator NEW_HardDropPathfindLoop()
+    {
+        bool continuePathfindLoop = true;
+
+        // print("HARD DROP PATHFIND LOOP");
+
+        // Reset the RepeatScorelineEvalLength
+        RepeatScorelineEvalLength = 999;
+
+        SetGamePlayingState(false);
+
+        while (continuePathfindLoop)
+        {
+            HardDrop();
+
+            // *IF* I choose to implement mid-field Ghost Blocks, this won't
+            // work prior to Pathfinding, since the mid-field Ghost Blocks
+            // won't allow scoring before being cleared.
+            ResetGhostBlocks();
+
+            // Current longest Alpha / Bravo length.
+            int maxLinePossibility = (BoardHeight - 2) / 2;
+            maxLinePossibility *= (BoardWidth - 4);
+            maxLinePossibility += 2;
+            maxLinePossibility += ((BoardHeight - 2) / 2) - 1;
+
+            if (RepeatScorelineEvalLength < maxLinePossibility)
+            {
+                maxLinePossibility = RepeatScorelineEvalLength;
+                maxLinePossibility += 2;
+                // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
+            }
+
+            BeginPathfinding(maxLinePossibility);
+
+            continuePathfindLoop = FoundScoreline;
+
+            yield return new WaitForSecondsRealtime(0.25f);
+        }
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+
+        SetGamePlayingState(true);
+
+        if (BugTestConsoleOutput)
+        {
+            print("-----------");
+            print("-----------");
+            print("-----------");
+            Console_PrintBoard();
+        }
+
+        yield return true;
+    }
+
     #endregion Pathfinding 2.0
 
     #endregion Pathfinding Logic
@@ -1251,7 +1310,8 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine( HardDropPathfindLoop() );
+                // StartCoroutine( HardDropPathfindLoop() );
+                StartCoroutine( NEW_HardDropPathfindLoop() );
             }
 
             /// 
