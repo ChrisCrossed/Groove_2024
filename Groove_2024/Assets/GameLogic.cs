@@ -1213,20 +1213,7 @@ public class GameLogic : MonoBehaviour
             // won't allow scoring before being cleared.
             ResetGhostBlocks();
 
-            // Current longest Alpha / Bravo length.
-            int maxLinePossibility = (BoardHeight - 2) / 2;
-            maxLinePossibility *= (BoardWidth - 4);
-            maxLinePossibility += 2;
-            maxLinePossibility += ((BoardHeight - 2) / 2) - 1;
-
-            if (RepeatScorelineEvalLength < maxLinePossibility)
-            {
-                maxLinePossibility = RepeatScorelineEvalLength;
-                maxLinePossibility += 2;
-                // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
-            }
-
-            BeginPathfinding(maxLinePossibility);
+            NEW_BeginPathfinding();
 
             continuePathfindLoop = FoundScoreline;
 
@@ -1248,6 +1235,144 @@ public class GameLogic : MonoBehaviour
         }
 
         yield return true;
+    }
+
+    void NEW_BeginPathfinding()
+    {
+        bool alphaExists = true;
+        bool bravoExists = true;
+
+        AlphaPathfindList = new List<PathBoardObject>();
+        BravoPathfindList = new List<PathBoardObject>();
+
+        CurrentAlpha = 999;
+        CurrentBravo = 999;
+
+        // Number of currently running Alpha / Bravo threads.
+        AlphaThreads = 0;
+        BravoThreads = 0;
+
+        // Pre-load before running next phase
+        FoundScoreline = false;
+
+        // Most efficient Alpha / Bravo lists
+        SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
+        SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
+
+
+
+        // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
+        // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
+        // because HardDrop needs to reset ghost blocks so the VertValidationCheck can properly evaluate the right wall.
+        /// for (int x = 0; x < BoardWidth; x++)
+        for (int x = 0; x < BoardWidth - 1; x++)
+        {
+            if (alphaExists)
+            {
+                // Idea: Grab each column '1' Alpha position and add to AlphaPathfindList?
+                // Reset if !tempAlpha?
+
+                // Run through the column looking for Alpha_Static
+                bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
+
+                // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
+                if (!tempAlpha)
+                {
+                    // Sets to False without kicking out of loop to check for Bravo
+                    alphaExists = false;
+                }
+                // Only want to apply the following data if in the left playable column, AND we found a tempAlpha
+                else if (x == 1)
+                {
+                    string test = "Alpha: ";
+                    for (int num = 0; num < tempVertXPositions.Count; num++)
+                    {
+                        test += tempVertXPositions[num].ToString() + ", ";
+
+                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
+
+                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
+                        AlphaPathfindList.Add(tempPathingBoardObject);
+                    }
+
+                    if (BugTestConsoleOutput)
+                        print(test);
+                }
+            }
+
+            if (bravoExists)
+            {
+                // Idea: Grab each column '1' Bravo position and add to BravoPathfindList?
+                // Reset if !tempBravo?
+
+                // Run through the column looking for Bravo_Static
+                bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
+
+                if (!tempBravo)
+                {
+                    bravoExists = false;
+                }
+                else if (x == 1)
+                {
+                    string test = "Bravo: ";
+                    for (int num = 0; num < tempVertXPositions.Count; num++)
+                    {
+                        test += tempVertXPositions[num].ToString() + ", ";
+
+                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
+
+                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
+                        BravoPathfindList.Add(tempPathingBoardObject);
+                    }
+
+                    if (BugTestConsoleOutput)
+                        print(test);
+                }
+            }
+        }
+
+        if (BugTestConsoleOutput)
+        {
+            print("--------------------");
+            print("Alpha Vertical Test: " + alphaExists);
+            print("Bravo Vertical Test: " + bravoExists);
+            print("--------------------");
+        }
+
+
+        // This *MUST* be run before moving to the PreloadPathfindBlock section
+        if (alphaExists)
+        {
+            for (int i = 0; i < AlphaPathfindList.Count; i++)
+                ThreadCounter(BoardObject.Alpha_Static, true);
+        }
+        if (bravoExists)
+        {
+            for (int j = 0; j < BravoPathfindList.Count; j++)
+                ThreadCounter(BoardObject.Bravo_Static, true);
+        }
+
+
+        if (alphaExists)
+        {
+            for (int x = 0; x < AlphaPathfindList.Count; x++)
+            {
+                PreloadPathfindBlock(BoardObject.Alpha_Static, AlphaPathfindList[x]);
+            }
+        }
+
+        if (bravoExists)
+        {
+            for (int x = 0; x < BravoPathfindList.Count; x++)
+            {
+                PreloadPathfindBlock(BoardObject.Bravo_Static, BravoPathfindList[x]);
+            }
+        }
+
+        if (!alphaExists && !bravoExists)
+        {
+            SetGamePlayingState(true);
+        }
     }
 
     #endregion Pathfinding 2.0
