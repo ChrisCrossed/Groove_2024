@@ -1177,6 +1177,22 @@ public class GameLogic : MonoBehaviour
         RepeatScorelineEvalLength = ChosenPathfindList.Count;
     }
 
+    #region Pathfinding 2.0
+    /// <summary>
+    /// Goal - Middle-Out pathfinding
+    /// After vertical checks are run, perform the following in order:
+    /// 
+    /// 1a.) Search from center column toward Left ghost-block wall, OR
+    /// --- 1a.) Connection back to the middle column with a length GREATER than 4 that doesn't result in a Y position +/- 1 from start
+    /// 1b.) Search from center column toward Right ghost-block wall.
+    /// --- 1b.) Connection back to the middle column with a length GREATER than 4 that doesn't result in a Y position +/- 1 from start
+    /// 
+    /// During this process, if either side cannot make a connection to their appropriate edge, end the whole process.
+    /// 
+    /// 2.) For each successful pathing from middle-out, find as many valid connections from the middle column to their opposing side.
+    /// </summary>
+    #endregion Pathfinding 2.0
+
     #endregion Pathfinding Logic
     // Update is called once per frame
     void Update()
