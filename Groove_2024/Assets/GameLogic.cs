@@ -1183,15 +1183,17 @@ public class GameLogic : MonoBehaviour
     /// <summary>
     /// Goal - Middle-Out pathfinding
     /// After vertical checks are run, perform the following in order:
+    ///
+    /// 1.) Find the column with the most of the EACH block type
     /// 
-    /// 1a.) Search from center column toward Left ghost-block wall, OR
-    /// --- 1a.) Connection back to the middle column with a length GREATER than 4 that doesn't result in a Y position +/- 1 from start
-    /// 1b.) Search from center column toward Right ghost-block wall.
-    /// --- 1b.) Connection back to the middle column with a length GREATER than 4 that doesn't result in a Y position +/- 1 from start
+    /// 2.) For each column that have their own block type, start at the bottom and work upward.
+    /// 2a.) Each block of that matching type, push out horizontally until the first block of resistance, OR goal.
     /// 
-    /// During this process, if either side cannot make a connection to their appropriate edge, end the whole process.
-    /// 
-    /// 2.) For each successful pathing from middle-out, find as many valid connections from the middle column to their opposing side.
+    /// 3.) From that point ONLY, start their natural pathfinding, ensuring that...
+    /// 3a.) ... the pathing stops at the starting column, OR
+    /// 3b.) ... the pathing reaches a goal column, OR
+    /// 3c.) ... if a successful path is found, do not allow longer paths OR column connections.
+    ///
     /// </summary>
     IEnumerator NEW_HardDropPathfindLoop()
     {
@@ -1435,7 +1437,7 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                // StartCoroutine( HardDropPathfindLoop() );
+                StartCoroutine( HardDropPathfindLoop() );
                 StartCoroutine( NEW_HardDropPathfindLoop() );
             }
 
