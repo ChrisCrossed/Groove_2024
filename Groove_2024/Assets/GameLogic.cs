@@ -1054,6 +1054,56 @@ public class GameLogic : MonoBehaviour
         return validColumn;
     }
 
+    /// <summary>
+    /// Used to determine if every column has at least one valid piece. Returns the best column for future evaluation.
+    /// </summary>
+    /// <param name="_boardObject">The piece to compare against for validity</param>
+    /// <returns></returns>
+    int VerticalValidationCheck_MiddleOut(BoardObject _boardObjectType, int _numColumns)
+    {
+        int middleColumn = (BoardWidth_Maximum / 2);
+        int startingColumn = middleColumn - (_numColumns / 2);
+        int numBoardObject = -1;
+        int bestColumn = -1;
+
+        for(int i = startingColumn; i < startingColumn + _numColumns; i++)
+        {
+            int currNumBoardObject = 0;
+
+            // Run upward through the column, counting the number of board objects of this type there are.
+            for (int j = 0; j < BoardHeight; j++)
+            {
+                BoardObject boardObject = GetBoardObjectAtPosition(i, j);
+
+                if(boardObject == _boardObjectType)
+                {
+                    currNumBoardObject++;
+                }
+            }
+
+            if(currNumBoardObject >= numBoardObject)
+            {
+                if(i <= middleColumn)
+                {
+                    bestColumn = i;
+                }
+                else
+                {
+                    // Looking to prioritize the 'center' columns, unless it's obviously better (Hence >, not >=)
+                    if(currNumBoardObject > numBoardObject)
+                    {
+                        bestColumn = i;
+                    }
+                }
+
+                // Override previous best
+                numBoardObject = currNumBoardObject;
+            }
+        }
+
+        return bestColumn;
+    }
+
     List<PathBoardObject> SuccessfulPathfindList_Alpha;
     List<PathBoardObject> SuccessfulPathfindList_Bravo;
     void SaveSuccessfulPathing(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
@@ -1261,7 +1311,12 @@ public class GameLogic : MonoBehaviour
         SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
         SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
 
+        int mostAlpha = VerticalValidationCheck_MiddleOut(BoardObject.Alpha_Static, 5);
+        int mostBravo = VerticalValidationCheck_MiddleOut(BoardObject.Bravo_Static, 5);
 
+        print("Column with most Alpha: " + mostAlpha);
+        print("Column with most Bravo: " + mostBravo);
+        /*
 
         // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
         // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
@@ -1375,6 +1430,7 @@ public class GameLogic : MonoBehaviour
         {
             SetGamePlayingState(true);
         }
+        */
     }
 
     #endregion Pathfinding 2.0
@@ -1437,7 +1493,7 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine( HardDropPathfindLoop() );
+                // StartCoroutine( HardDropPathfindLoop() );
                 StartCoroutine( NEW_HardDropPathfindLoop() );
             }
 
