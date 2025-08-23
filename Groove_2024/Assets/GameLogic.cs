@@ -88,8 +88,6 @@ public class GameLogic : MonoBehaviour
         List<BoardObject> nextBlock = GetNextBlock(true);
         PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
 
-        // HardDropPathfindLoop();
-
         if(BugTestConsoleOutput)
         {
             Console_PrintBoard();
@@ -475,8 +473,6 @@ public class GameLogic : MonoBehaviour
     #endregion Block Placement
 
     #region Pathfinding Logic
-
-    
 
     IEnumerator HardDropPathfindLoop()
     {
@@ -1059,51 +1055,7 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     /// <param name="_boardObject">The piece to compare against for validity</param>
     /// <returns></returns>
-    int VerticalValidationCheck_MiddleOut(BoardObject _boardObjectType, int _numColumns)
-    {
-        int middleColumn = (BoardWidth_Maximum / 2);
-        int startingColumn = middleColumn - (_numColumns / 2);
-        int numBoardObject = -1;
-        int bestColumn = -1;
-
-        for(int i = startingColumn; i < startingColumn + _numColumns; i++)
-        {
-            int currNumBoardObject = 0;
-
-            // Run upward through the column, counting the number of board objects of this type there are.
-            for (int j = 0; j < BoardHeight; j++)
-            {
-                BoardObject boardObject = GetBoardObjectAtPosition(i, j);
-
-                if(boardObject == _boardObjectType)
-                {
-                    currNumBoardObject++;
-                }
-            }
-
-            if(currNumBoardObject >= numBoardObject)
-            {
-                if(i <= middleColumn)
-                {
-                    bestColumn = i;
-                }
-                else
-                {
-                    // Looking to prioritize the 'center' columns, unless it's obviously better (Hence >, not >=)
-                    if(currNumBoardObject > numBoardObject)
-                    {
-                        bestColumn = i;
-                    }
-                }
-
-                // Override previous best
-                numBoardObject = currNumBoardObject;
-            }
-        }
-
-        return bestColumn;
-    }
-
+    
     List<PathBoardObject> SuccessfulPathfindList_Alpha;
     List<PathBoardObject> SuccessfulPathfindList_Bravo;
     void SaveSuccessfulPathing(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
@@ -1229,211 +1181,6 @@ public class GameLogic : MonoBehaviour
         RepeatScorelineEvalLength = ChosenPathfindList.Count;
     }
 
-    #region Pathfinding 2.0
-    /// <summary>
-    /// Goal - Middle-Out pathfinding
-    /// After vertical checks are run, perform the following in order:
-    ///
-    /// 1.) Find the column with the most of the EACH block type
-    /// 
-    /// 2.) For each column that have their own block type, start at the bottom and work upward.
-    /// 2a.) Each block of that matching type, push out horizontally until the first block of resistance, OR goal.
-    /// 
-    /// 3.) From that point ONLY, start their natural pathfinding, ensuring that...
-    /// 3a.) ... the pathing stops at the starting column, OR
-    /// 3b.) ... the pathing reaches a goal column, OR
-    /// 3c.) ... if a successful path is found, do not allow longer paths OR column connections.
-    ///
-    /// </summary>
-    IEnumerator NEW_HardDropPathfindLoop()
-    {
-        bool continuePathfindLoop = true;
-
-        // print("HARD DROP PATHFIND LOOP");
-
-        // Reset the RepeatScorelineEvalLength
-        RepeatScorelineEvalLength = 999;
-
-        SetGamePlayingState(false);
-
-        while (continuePathfindLoop)
-        {
-            HardDrop();
-
-            // *IF* I choose to implement mid-field Ghost Blocks, this won't
-            // work prior to Pathfinding, since the mid-field Ghost Blocks
-            // won't allow scoring before being cleared.
-            ResetGhostBlocks();
-
-            NEW_BeginPathfinding();
-
-            continuePathfindLoop = FoundScoreline;
-
-            yield return new WaitForSecondsRealtime(0.25f);
-        }
-
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-
-        SetGamePlayingState(true);
-
-        if (BugTestConsoleOutput)
-        {
-            print("-----------");
-            print("-----------");
-            print("-----------");
-            Console_PrintBoard();
-        }
-
-        yield return true;
-    }
-
-    void NEW_BeginPathfinding()
-    {
-        bool alphaExists = true;
-        bool bravoExists = true;
-
-        AlphaPathfindList = new List<PathBoardObject>();
-        BravoPathfindList = new List<PathBoardObject>();
-
-        CurrentAlpha = 999;
-        CurrentBravo = 999;
-
-        // Number of currently running Alpha / Bravo threads.
-        AlphaThreads = 0;
-        BravoThreads = 0;
-
-        // Pre-load before running next phase
-        FoundScoreline = false;
-
-        // Most efficient Alpha / Bravo lists
-        SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
-        SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
-
-        int mostAlpha = VerticalValidationCheck_MiddleOut(BoardObject.Alpha_Static, 5);
-        int mostBravo = VerticalValidationCheck_MiddleOut(BoardObject.Bravo_Static, 5);
-
-        print("Column with most Alpha: " + mostAlpha);
-        print("Column with most Bravo: " + mostBravo);
-        /*
-
-        // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
-        // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
-        // because HardDrop needs to reset ghost blocks so the VertValidationCheck can properly evaluate the right wall.
-        /// for (int x = 0; x < BoardWidth; x++)
-        for (int x = 0; x < BoardWidth - 1; x++)
-        {
-            if (alphaExists)
-            {
-                // Idea: Grab each column '1' Alpha position and add to AlphaPathfindList?
-                // Reset if !tempAlpha?
-
-                // Run through the column looking for Alpha_Static
-                bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
-
-                // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
-                if (!tempAlpha)
-                {
-                    // Sets to False without kicking out of loop to check for Bravo
-                    alphaExists = false;
-                }
-                // Only want to apply the following data if in the left playable column, AND we found a tempAlpha
-                else if (x == 1)
-                {
-                    string test = "Alpha: ";
-                    for (int num = 0; num < tempVertXPositions.Count; num++)
-                    {
-                        test += tempVertXPositions[num].ToString() + ", ";
-
-                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
-
-                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        AlphaPathfindList.Add(tempPathingBoardObject);
-                    }
-
-                    if (BugTestConsoleOutput)
-                        print(test);
-                }
-            }
-
-            if (bravoExists)
-            {
-                // Idea: Grab each column '1' Bravo position and add to BravoPathfindList?
-                // Reset if !tempBravo?
-
-                // Run through the column looking for Bravo_Static
-                bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
-
-                if (!tempBravo)
-                {
-                    bravoExists = false;
-                }
-                else if (x == 1)
-                {
-                    string test = "Bravo: ";
-                    for (int num = 0; num < tempVertXPositions.Count; num++)
-                    {
-                        test += tempVertXPositions[num].ToString() + ", ";
-
-                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
-
-                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        BravoPathfindList.Add(tempPathingBoardObject);
-                    }
-
-                    if (BugTestConsoleOutput)
-                        print(test);
-                }
-            }
-        }
-
-        if (BugTestConsoleOutput)
-        {
-            print("--------------------");
-            print("Alpha Vertical Test: " + alphaExists);
-            print("Bravo Vertical Test: " + bravoExists);
-            print("--------------------");
-        }
-
-
-        // This *MUST* be run before moving to the PreloadPathfindBlock section
-        if (alphaExists)
-        {
-            for (int i = 0; i < AlphaPathfindList.Count; i++)
-                ThreadCounter(BoardObject.Alpha_Static, true);
-        }
-        if (bravoExists)
-        {
-            for (int j = 0; j < BravoPathfindList.Count; j++)
-                ThreadCounter(BoardObject.Bravo_Static, true);
-        }
-
-
-        if (alphaExists)
-        {
-            for (int x = 0; x < AlphaPathfindList.Count; x++)
-            {
-                PreloadPathfindBlock(BoardObject.Alpha_Static, AlphaPathfindList[x]);
-            }
-        }
-
-        if (bravoExists)
-        {
-            for (int x = 0; x < BravoPathfindList.Count; x++)
-            {
-                PreloadPathfindBlock(BoardObject.Bravo_Static, BravoPathfindList[x]);
-            }
-        }
-
-        if (!alphaExists && !bravoExists)
-        {
-            SetGamePlayingState(true);
-        }
-        */
-    }
-
-    #endregion Pathfinding 2.0
 
     #endregion Pathfinding Logic
     // Update is called once per frame
@@ -1493,8 +1240,7 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                // StartCoroutine( HardDropPathfindLoop() );
-                StartCoroutine( NEW_HardDropPathfindLoop() );
+                StartCoroutine( HardDropPathfindLoop() );
             }
 
             /// 

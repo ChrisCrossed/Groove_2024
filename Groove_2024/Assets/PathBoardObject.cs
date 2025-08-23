@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-struct PathBoardObject
+public struct PathBoardObject
 {
     private Vector2Int _thisPosition;
     private bool _leftValid;
