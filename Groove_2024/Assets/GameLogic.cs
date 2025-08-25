@@ -476,6 +476,7 @@ public class GameLogic : MonoBehaviour
 
     IEnumerator HardDropPathfindLoop()
     {
+        /*
         bool continuePathfindLoop = true;
 
         // print("HARD DROP PATHFIND LOOP");
@@ -507,9 +508,9 @@ public class GameLogic : MonoBehaviour
                 // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
             }
 
-            BeginPathfinding(maxLinePossibility);
+            c_PathfindingLogic.BeginPathfinding(maxLinePossibility);
 
-            continuePathfindLoop = FoundScoreline;
+            continuePathfindLoop = c_PathfindingLogic.FoundScoreline;
 
             yield return new WaitForSecondsRealtime(0.25f);
         }
@@ -527,10 +528,12 @@ public class GameLogic : MonoBehaviour
             print("-----------");
             Console_PrintBoard();
         }
+        */
 
         yield return true;
     }
 
+    /*
     void BeginPathfinding(int repeatScorelineEvalLength)
     {
         bool alphaExists = true;
@@ -1181,8 +1184,10 @@ public class GameLogic : MonoBehaviour
         RepeatScorelineEvalLength = ChosenPathfindList.Count;
     }
 
+    */
 
     #endregion Pathfinding Logic
+
     // Update is called once per frame
     void Update()
     {

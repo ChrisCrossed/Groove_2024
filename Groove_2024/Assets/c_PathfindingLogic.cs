@@ -28,7 +28,70 @@ public static class c_PathfindingLogic
     static int numEachColumn_Alpha;
     static int numEachColumn_Bravo;
 
+    static int RepeatScorelineEvalLength;
+
     #region Old Pathfinding
+
+    static IEnumerator HardDropPathfindLoop()
+    {
+        bool continuePathfindLoop = true;
+
+        // print("HARD DROP PATHFIND LOOP");
+
+        // Reset the RepeatScorelineEvalLength
+        RepeatScorelineEvalLength = 999;
+
+        // SetGamePlayingState(false);
+
+        while (continuePathfindLoop)
+        {
+            // HardDrop();
+
+            // *IF* I choose to implement mid-field Ghost Blocks, this won't
+            // work prior to Pathfinding, since the mid-field Ghost Blocks
+            // won't allow scoring before being cleared.
+            // ResetGhostBlocks();
+
+            // Current longest Alpha / Bravo length.
+            int maxLinePossibility = (BoardHeight - 2) / 2;
+            maxLinePossibility *= (BoardWidth - 4);
+            maxLinePossibility += 2;
+            maxLinePossibility += ((BoardHeight - 2) / 2) - 1;
+
+            if (RepeatScorelineEvalLength < maxLinePossibility)
+            {
+                maxLinePossibility = RepeatScorelineEvalLength;
+                maxLinePossibility += 2;
+                // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
+            }
+
+            BeginPathfinding(maxLinePossibility);
+
+            continuePathfindLoop = FoundScoreline;
+
+            yield return new WaitForSecondsRealtime(0.25f);
+        }
+
+        /*
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+        */
+
+        // SetGamePlayingState(true);
+
+        /*
+        if (BugTestConsoleOutput)
+        {
+            print("-----------");
+            print("-----------");
+            print("-----------");
+            Console_PrintBoard();
+        }
+        */
+
+        yield return true;
+    }
 
     public static void BeginPathfinding( int repeatScorelineEvalLength )
     {
