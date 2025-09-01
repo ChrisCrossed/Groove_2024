@@ -39,12 +39,9 @@ public static class c_PathfindingLogic
         InitialBoard = _board;
 
         #region Vertical Tests
-
         bool hasAlpha = VerticalTest(BoardObject.Alpha_Static);
         bool hasBravo = VerticalTest(BoardObject.Bravo_Static);
-
         #endregion Vertical Tests
-
 
         #region Preload Left Column Start Positions
         List<int> LeftColumnStartPoints_Alpha = new List<int>();
@@ -75,56 +72,8 @@ public static class c_PathfindingLogic
             }
         }
         #endregion Preload Left Column Start Position
-
-        if(hasAlpha)
-        {
-            string output = "Alpha: ";
-
-            foreach(int i in LeftColumnStartPoints_Alpha)
-            {
-                int x = i % BoardWidth;
-                int y = i / BoardWidth;
-
-                output += "[ " + x + ", " + y + "] ";
-            }
-
-            output += " --- ";
-
-            foreach(int j in RightColumnEndPoints_Alpha)
-            {
-                int x = j % BoardWidth;
-                int y = j / BoardWidth;
-
-                output += "[ " + x + ", " + y + "] ";
-            }
-
-            // GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(output);
-        }
-
-        if (hasBravo)
-        {
-            string output = "Bravo: ";
-
-            foreach (int i in LeftColumnStartPoints_Bravo)
-            {
-                int x = i % BoardWidth;
-                int y = i / BoardWidth;
-
-                output += "[ " + x + ", " + y + "] ";
-            }
-
-            output += " --- ";
-
-            foreach (int j in RightColumnEndPoints_Bravo)
-            {
-                int x = j % BoardWidth;
-                int y = j / BoardWidth;
-
-                output += "[ " + x + ", " + y + "] ";
-            }
-
-            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(output);
-        }
+    
+        
     }
 
     #region Tests & Checks
@@ -206,6 +155,16 @@ public static class c_PathfindingLogic
         return results;
     }
 
+    static int[] BoardConnectionsArray;
+    static void MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints)
+    {
+        BoardConnectionsArray = new int[BoardWidth * BoardHeight];
+
+        for(int i = 0; i < _columnValidStartPoints.Count; i++)
+        {
+            BoardConnectionsArray[_columnValidStartPoints[i]] = 1;
+        }
+    }
     #endregion Tests & Checks
 
     #region Old Pathfinding
