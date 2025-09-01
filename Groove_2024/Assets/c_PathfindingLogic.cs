@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 public static class c_PathfindingLogic
 {
+    static List<BoardObject> InitialBoard;
     static int BoardWidth;
     static int BoardHeight;
 
@@ -29,6 +30,48 @@ public static class c_PathfindingLogic
     static int numEachColumn_Bravo;
 
     static int RepeatScorelineEvalLength;
+
+    public static void StartPathfindingLogic(List<BoardObject> _board, int _boardWidth)
+    {
+        BoardWidth = _boardWidth;
+        BoardHeight = _board.Count / _boardWidth;
+
+        InitialBoard = _board;
+
+        // Run Vertical Test
+        bool hasAlpha = VerticalTest(BoardObject.Alpha_Static);
+        bool hasBravo = VerticalTest(BoardObject.Bravo_Static);
+
+        GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(hasAlpha.ToString());
+        GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(hasBravo.ToString());
+    }
+
+    static bool VerticalTest(BoardObject _boardObject)
+    {
+        // Skip Ghost Columns
+        for(int x = 1; x < BoardWidth - 1; x++)
+        {
+            for (int y = 0; y < BoardHeight; y++)
+            {
+                BoardObject foundObject = InitialBoard[(y * BoardWidth) + x];
+
+                if (foundObject == _boardObject)
+                {
+                    y = BoardHeight;
+
+                    continue;
+                }
+
+                if( y == (BoardHeight - 1) )
+                {
+                    return false;
+                }
+            }
+            
+        }
+
+        return true;
+    }
 
     #region Old Pathfinding
 

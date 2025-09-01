@@ -474,6 +474,11 @@ public class GameLogic : MonoBehaviour
 
     #region Pathfinding Logic
 
+    void StartPathfindingLogic()
+    {
+        c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
+    }
+
     IEnumerator HardDropPathfindLoop()
     {
         /*
@@ -1245,7 +1250,14 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine( HardDropPathfindLoop() );
+                HardDrop();
+
+                StartPathfindingLogic();
+
+                BlockSize nextBlockSize = NextBlockListSize[0];
+                List<BoardObject> nextBlock = GetNextBlock(true);
+                PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+                // StartCoroutine( HardDropPathfindLoop() );
             }
 
             /// 
@@ -1888,6 +1900,11 @@ public class GameLogic : MonoBehaviour
             }
         }
         print(output);
+    }
+
+    public void PF_OutputTest(string _text)
+    {
+        print(_text);
     }
 
     #endregion Console Output
