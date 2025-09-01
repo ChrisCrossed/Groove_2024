@@ -188,35 +188,103 @@ public static class c_PathfindingLogic
         while(!connectionsFilled)
         {
             bool foundNewConnection = false;
+            int nextPos;
 
             // Take starting position AND remove from CurrentOneConnectors List
+            int startingPos = CurrentOneConnectors[0];
+            CurrentOneConnectors.RemoveAt(0);
 
-            // Check if InitialBoard position to the Right is same type AND empty.
+            // Position to the RIGHT
+            nextPos = startingPos + 1;
+
+            // Check if InitialBoard position to the Right is same type AND empty (Because it wasn't checked yet)
+            if (InitialBoard[nextPos] == _boardObjectType && BoardConnectionsArray[nextPos] == 0)
+            {
                 foundNewConnection = true;
+
                 // If it is, put a '1' in BoardConnectionsArray spot
+                BoardConnectionsArray[nextPos] = 1;
+
                 // Add position to CurrentOneConnectors List
+                CurrentOneConnectors.Add(nextPos);
 
-                // If starting position is NOT left column, ADD 1 to starting position in BoardConnectionsArray spot
+                // If starting position is NOT left playable column, ADD 1 to starting position in BoardConnectionsArray spot
+                if(startingPos % BoardWidth != 1)
+                    BoardConnectionsArray[startingPos]++;
+            }
 
-            // If starting position is left column, do not check Up / Down / Left
 
-            // Check if InitialBoard position Below is same type AND empty (ensure valid position)
-                foundNewConnection = true;
-                // If it is, put a '1' in BoardConnectionsArray spot
-                // Add position to CurrentOneConnectors List
-                // Add 1 to starting position in BoardConnectionsArray spot
+            // If starting position is left playable column, do not check Up / Down / Left
+            if (startingPos % BoardWidth != 1)
+            {
+                // Potential 'below' position
+                nextPos = startingPos - BoardWidth;
+                if(nextPos > 0)
+                {
+                    // Check if InitialBoard position Below is same type AND empty (ensure valid position)
+                    if(InitialBoard[nextPos] == _boardObjectType && BoardConnectionsArray[nextPos] == 0)
+                    {
+                        foundNewConnection = true;
 
-            // Check if InitialBoard position Above is same type AND empty (ensure valid position)
-                foundNewConnection = true;
-                // If it is, put a '1' in BoardConnectionsArray spot
-                // Add position to CurrentOneConnectors List
-                // Add 1 to starting position in BoardConnectionsArray spot
+                        // If it is, put a '1' in BoardConnectionsArray spot
+                        BoardConnectionsArray[nextPos] = 1;
 
-            // Check if InitialBoard position Left is same type AND empty (ensure valid position)
-                foundNewConnection = true;
-                // If it is, put a '1' in BoardConnectionsArray spot
-                // Add position to CurrentOneConnectors List
-                // Add 1 to starting position in BoardConnectionsArray spot
+                        // Add position to CurrentOneConnectors List
+                        CurrentOneConnectors.Add(nextPos);
+
+                        // Add 1 to starting position in BoardConnectionsArray spot
+                        BoardConnectionsArray[startingPos]++;
+                    }
+                }
+
+                // Potential 'above' position
+                nextPos = startingPos + BoardWidth;
+                if(nextPos < InitialBoard.Count)
+                {
+                    // Check if InitialBoard position Above is same type AND empty (ensure valid position)
+                    if (InitialBoard[nextPos] == _boardObjectType && BoardConnectionsArray[nextPos] == 0)
+                    {
+                        foundNewConnection = true;
+
+                        // If it is, put a '1' in BoardConnectionsArray spot
+                        BoardConnectionsArray[nextPos] = 1;
+
+                        // Add position to CurrentOneConnectors List
+                        CurrentOneConnectors.Add(nextPos);
+
+                        // Add 1 to starting position in BoardConnectionsArray spot
+                        BoardConnectionsArray[startingPos]++;
+                    }
+                }
+
+                // Potential 'left' position
+                nextPos = startingPos - 1;
+
+                // Needs to not be Ghost column
+                if (nextPos % BoardWidth > 0)
+                {
+                    // Check if InitialBoard position Left is same type AND empty (ensure valid position)
+                    if (InitialBoard[nextPos] == _boardObjectType && BoardConnectionsArray[nextPos] == 0)
+                    {
+                        foundNewConnection = true;
+
+                        // Error catch to ensure left playable column doesn't get wrong data
+                        if( nextPos % BoardWidth != 1 )
+                        {
+                            // If valid, put a '1' in BoardConnectionsArray spot
+                            BoardConnectionsArray[nextPos] = 1;
+
+                            // Add position to CurrentOneConnectors List
+                            CurrentOneConnectors.Add(nextPos);
+                        }
+
+                        // Add 1 to starting position in BoardConnectionsArray spot
+                        BoardConnectionsArray[startingPos]++;
+                    }
+                }
+            }
+
+            
 
             // If foundNewConnection = false, reduce all potential nearby connections by 1
             if(!foundNewConnection)
