@@ -79,12 +79,16 @@ public static class c_PathfindingLogic
 
         if(hasAlpha)
         {
-            MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
+            bool output = MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha, RightColumnEndPoints_Alpha);
+
+            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest("Alpha: " + output);
         }
 
         if(hasBravo)
         {
-            MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
+            bool output = MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo, RightColumnEndPoints_Bravo);
+
+            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest("Bravo: " + output);
         }
     }
 
@@ -166,8 +170,10 @@ public static class c_PathfindingLogic
         return results;
     }
 
-    static void MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints)
+    static bool MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints, List<int> _columnValidEndPoints)
     {
+        bool successfulEnd = false;
+
         // Two-dimensional array to evaluate number of Board connections of same type
         int[] BoardConnectionsArray = new int[BoardWidth * BoardHeight];
 
@@ -200,13 +206,23 @@ public static class c_PathfindingLogic
             // Check if InitialBoard position to the Right is same type AND empty (Because it wasn't checked yet)
             if (InitialBoard[nextPos] == _boardObjectType && BoardConnectionsArray[nextPos] == 0)
             {
+                // TODO: Clean this up.
+                // Compares left column logic, to right column logic, to normal logic.
+                if(nextPos % BoardWidth == BoardWidth - 2)
+                {
+                    // Don't add position to CurrentOneConnectors list since it's already the end
+                    successfulEnd = true;
+                }
+                else
+                {
+                    // Add position to CurrentOneConnectors List 
+                    CurrentOneConnectors.Add(nextPos);
+                }
+
                 foundNewConnection = true;
 
                 // If it is, put a '1' in BoardConnectionsArray spot
                 BoardConnectionsArray[nextPos] = 1;
-
-                // Add position to CurrentOneConnectors List
-                CurrentOneConnectors.Add(nextPos);
 
                 // If starting position is NOT left playable column, ADD 1 to starting position in BoardConnectionsArray spot
                 if(startingPos % BoardWidth != 1)
@@ -284,17 +300,47 @@ public static class c_PathfindingLogic
                 }
             }
 
-            
-
             // If foundNewConnection = false, reduce all potential nearby connections by 1
             if(!foundNewConnection)
             {
                 // Reset current position in BoardConnectionsArray spot to 0
+                BoardConnectionsArray[startingPos] = 0;
+
                 // Check each valid direction surrounding starting position of same type, and reduce them by 1
+                List<int> checkPos = new List<int>();
+
+                nextPos = startingPos + 1; // Position to the RIGHT
+                if (nextPos % BoardWidth < BoardWidth - 2)
+                    checkPos.Add(nextPos);
+
+                nextPos = startingPos - BoardWidth; // Position BELOW
+                if(nextPos > 0)
+                    checkPos.Add(nextPos);
+
+                nextPos = startingPos + BoardWidth; // Position ABOVE
+                if (nextPos < InitialBoard.Count)
+                    checkPos.Add(nextPos);
+
+                nextPos = startingPos - 1;
+                if (nextPos % BoardWidth > 0)
+                    checkPos.Add(nextPos);
+
+                for(int i = 0; i < checkPos.Count; i++)
+                {
+                    // If the position in question matches the object type, AND is greater than 0 connections
+                    if (InitialBoard[checkPos[i]] == _boardObjectType && BoardConnectionsArray[checkPos[i]] != 0)
+                    {
+                        BoardConnectionsArray[checkPos[i]]--;
+                    }
+                }
             }
 
             // If CurrentOneConnectors List is empty, set connectionsFilled to true
+            if (CurrentOneConnectors.Count == 0)
+                connectionsFilled = true;
         }
+
+        return successfulEnd;
     }
     #endregion Tests & Checks
 
