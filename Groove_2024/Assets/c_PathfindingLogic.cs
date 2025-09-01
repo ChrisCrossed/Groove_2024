@@ -72,8 +72,20 @@ public static class c_PathfindingLogic
             }
         }
         #endregion Preload Left Column Start Position
-    
-        
+
+        // Just kick out if no proper paths can exist
+        if (!hasAlpha && !hasBravo)
+            return;
+
+        if(hasAlpha)
+        {
+            MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
+        }
+
+        if(hasBravo)
+        {
+            MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
+        }
     }
 
     #region Tests & Checks
@@ -98,7 +110,6 @@ public static class c_PathfindingLogic
                     return false;
                 }
             }
-            
         }
 
         return true;
@@ -155,14 +166,53 @@ public static class c_PathfindingLogic
         return results;
     }
 
-    static int[] BoardConnectionsArray;
     static void MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints)
     {
-        BoardConnectionsArray = new int[BoardWidth * BoardHeight];
+        // Two-dimensional array to evaluate number of Board connections of same type
+        int[] BoardConnectionsArray = new int[BoardWidth * BoardHeight];
+
+        // Quick reference list of 'new' or 'initial' conncetors that currently have 1 branch.
+        List<int> CurrentOneConnectors = new List<int>();
 
         for(int i = 0; i < _columnValidStartPoints.Count; i++)
         {
+            // Preloads the left column with '1' connection (even though we know one to the right exists)
             BoardConnectionsArray[_columnValidStartPoints[i]] = 1;
+
+            // Preloads the List with these same positions
+            CurrentOneConnectors.Add(_columnValidStartPoints[i]);
+        }
+
+        bool connectionsFilled = false;
+
+        while(!connectionsFilled)
+        {
+            // Take starting position AND remove from CurrentOneConnectors List
+
+            // Check if InitialBoard position to the Right is same type AND empty.
+                // If it is, put a '1' in BoardConnectionsArray spot
+                // Add position to CurrentOneConnectors List
+
+                // If starting position is NOT left column, ADD 1 to starting position in BoardConnectionsArray spot
+
+            // If starting position is left column, do not check Up / Down / Left
+
+            // Check if InitialBoard position Below is same type AND empty (ensure valid position)
+                // If it is, put a '1' in BoardConnectionsArray spot
+                // Add position to CurrentOneConnectors List
+                // Add 1 to starting position in BoardConnectionsArray spot
+
+            // Check if InitialBoard position Above is same type AND empty (ensure valid position)
+                // If it is, put a '1' in BoardConnectionsArray spot
+                // Add position to CurrentOneConnectors List
+                // Add 1 to starting position in BoardConnectionsArray spot
+
+            // Check if InitialBoard position Left is same type AND empty (ensure valid position)
+                // If it is, put a '1' in BoardConnectionsArray spot
+                // Add position to CurrentOneConnectors List
+                // Add 1 to starting position in BoardConnectionsArray spot
+
+            // If CurrentOneConnectors List is empty, set connectionsFilled to true
         }
     }
     #endregion Tests & Checks
