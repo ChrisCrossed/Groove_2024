@@ -187,9 +187,12 @@ public static class c_PathfindingLogic
 
         while(!connectionsFilled)
         {
+            bool foundNewConnection = false;
+
             // Take starting position AND remove from CurrentOneConnectors List
 
             // Check if InitialBoard position to the Right is same type AND empty.
+                foundNewConnection = true;
                 // If it is, put a '1' in BoardConnectionsArray spot
                 // Add position to CurrentOneConnectors List
 
@@ -198,19 +201,29 @@ public static class c_PathfindingLogic
             // If starting position is left column, do not check Up / Down / Left
 
             // Check if InitialBoard position Below is same type AND empty (ensure valid position)
+                foundNewConnection = true;
                 // If it is, put a '1' in BoardConnectionsArray spot
                 // Add position to CurrentOneConnectors List
                 // Add 1 to starting position in BoardConnectionsArray spot
 
             // Check if InitialBoard position Above is same type AND empty (ensure valid position)
+                foundNewConnection = true;
                 // If it is, put a '1' in BoardConnectionsArray spot
                 // Add position to CurrentOneConnectors List
                 // Add 1 to starting position in BoardConnectionsArray spot
 
             // Check if InitialBoard position Left is same type AND empty (ensure valid position)
+                foundNewConnection = true;
                 // If it is, put a '1' in BoardConnectionsArray spot
                 // Add position to CurrentOneConnectors List
                 // Add 1 to starting position in BoardConnectionsArray spot
+
+            // If foundNewConnection = false, reduce all potential nearby connections by 1
+            if(!foundNewConnection)
+            {
+                // Reset current position in BoardConnectionsArray spot to 0
+                // Check each valid direction surrounding starting position of same type, and reduce them by 1
+            }
 
             // If CurrentOneConnectors List is empty, set connectionsFilled to true
         }
