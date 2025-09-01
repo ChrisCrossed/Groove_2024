@@ -38,14 +38,96 @@ public static class c_PathfindingLogic
 
         InitialBoard = _board;
 
-        // Run Vertical Test
+        #region Vertical Tests
+
         bool hasAlpha = VerticalTest(BoardObject.Alpha_Static);
         bool hasBravo = VerticalTest(BoardObject.Bravo_Static);
 
-        GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(hasAlpha.ToString());
-        GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(hasBravo.ToString());
+        #endregion Vertical Tests
+
+
+        #region Preload Left Column Start Positions
+        List<int> LeftColumnStartPoints_Alpha = new List<int>();
+        List<int> RightColumnEndPoints_Alpha = new List<int>();
+
+        List<int> LeftColumnStartPoints_Bravo = new List<int>();
+        List<int> RightColumnEndPoints_Bravo = new List<int>();
+
+        if (hasAlpha)
+        {
+            LeftColumnStartPoints_Alpha = GetLeftColumnValidStartPoints(BoardObject.Alpha_Static);
+            RightColumnEndPoints_Alpha = GetRightColumnValidEndPoints(BoardObject.Alpha_Static);
+
+            if (LeftColumnStartPoints_Alpha == new List<int>() && RightColumnEndPoints_Alpha == new List<int>())
+            {
+                hasAlpha = false;
+            }
+        }
+
+        if (hasBravo)
+        {
+            LeftColumnStartPoints_Bravo = GetLeftColumnValidStartPoints(BoardObject.Bravo_Static);
+            RightColumnEndPoints_Bravo = GetRightColumnValidEndPoints(BoardObject.Bravo_Static);
+
+            if (LeftColumnStartPoints_Bravo == new List<int>() && RightColumnEndPoints_Bravo == new List<int>())
+            {
+                hasBravo = false;
+            }
+        }
+        #endregion Preload Left Column Start Position
+
+        if(hasAlpha)
+        {
+            string output = "Alpha: ";
+
+            foreach(int i in LeftColumnStartPoints_Alpha)
+            {
+                int x = i % BoardWidth;
+                int y = i / BoardWidth;
+
+                output += "[ " + x + ", " + y + "] ";
+            }
+
+            output += " --- ";
+
+            foreach(int j in RightColumnEndPoints_Alpha)
+            {
+                int x = j % BoardWidth;
+                int y = j / BoardWidth;
+
+                output += "[ " + x + ", " + y + "] ";
+            }
+
+            // GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(output);
+        }
+
+        if (hasBravo)
+        {
+            string output = "Bravo: ";
+
+            foreach (int i in LeftColumnStartPoints_Bravo)
+            {
+                int x = i % BoardWidth;
+                int y = i / BoardWidth;
+
+                output += "[ " + x + ", " + y + "] ";
+            }
+
+            output += " --- ";
+
+            foreach (int j in RightColumnEndPoints_Bravo)
+            {
+                int x = j % BoardWidth;
+                int y = j / BoardWidth;
+
+                output += "[ " + x + ", " + y + "] ";
+            }
+
+            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest(output);
+        }
     }
 
+    #region Tests & Checks
     static bool VerticalTest(BoardObject _boardObject)
     {
         // Skip Ghost Columns
@@ -72,6 +154,59 @@ public static class c_PathfindingLogic
 
         return true;
     }
+
+    static List<int> GetLeftColumnValidStartPoints(BoardObject boardObject)
+    {
+        List<int> results = new List<int>();
+
+        for(int y = 0; y < BoardHeight; y++)
+        {
+            int currPos = (y * BoardWidth) + 1;
+
+            // Move on if not this block type
+            if (InitialBoard[currPos] != boardObject)
+                continue;
+
+            // Move on if the block to the right is not the same block type
+            if (InitialBoard[currPos + 1] != boardObject)
+                continue;
+
+            // Position, and position to the right, are valid. Add to list.
+            results.Add(currPos);
+        }
+
+        return results;
+    }
+
+    static List<int> GetRightColumnValidEndPoints(BoardObject boardObject)
+    {
+        List<int> results = new List<int>();
+
+        for (int y = 0; y < BoardHeight; y++)
+        {
+            // -2 from board width due to 'Width' starting at 1
+            int currPos = (y * BoardWidth) + (BoardWidth - 2);
+
+            // Move on if not this block type
+            if (InitialBoard[currPos] != boardObject)
+            {
+                continue;
+            }
+
+            // Move on if the block to its left is not the same block type
+            if (InitialBoard[currPos - 1] != boardObject)
+            {
+                continue;
+            }
+
+            // Position, and position to the left, are valid. Add to the list.
+            results.Add(currPos);
+        }
+
+        return results;
+    }
+
+    #endregion Tests & Checks
 
     #region Old Pathfinding
 
