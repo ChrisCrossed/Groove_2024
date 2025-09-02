@@ -304,8 +304,9 @@ public static class c_PathfindingLogic
             if(!foundNewConnection)
             {
                 // Reset current position in BoardConnectionsArray spot to 0
-                BoardConnectionsArray[startingPos] = 0;
+                BoardConnectionsArray[startingPos] = -1;
 
+                /*
                 // Check each valid direction surrounding starting position of same type, and reduce them by 1
                 List<int> checkPos = new List<int>();
 
@@ -333,11 +334,40 @@ public static class c_PathfindingLogic
                         BoardConnectionsArray[checkPos[i]]--;
                     }
                 }
+                */
             }
 
             // If CurrentOneConnectors List is empty, set connectionsFilled to true
             if (CurrentOneConnectors.Count == 0)
                 connectionsFilled = true;
+        }
+
+        if(successfulEnd)
+        {
+            GameObject gameLogic = GameObject.Find("GameLogic");
+            GameLogic gameLogicScr = gameLogic.GetComponent<GameLogic>();
+
+            gameLogicScr.PF_OutputTest("-----");
+            gameLogicScr.PF_OutputTest("SOLUTION ABOVE");
+            gameLogicScr.PF_OutputTest("-----");
+
+            for(int y = BoardHeight - 1; y > -1; y--)
+            {
+                string output = "";
+
+                for(int x = 0; x < BoardWidth; x++)
+                {
+                    output += "[";
+                    output += BoardConnectionsArray[(y * BoardWidth) + x];
+                    output += "]";
+                }
+
+                gameLogicScr.PF_OutputTest(output);
+            }
+
+            gameLogicScr.PF_OutputTest("-----");
+            gameLogicScr.PF_OutputTest("SOLUTION BELOW");
+            gameLogicScr.PF_OutputTest("-----");
         }
 
         return successfulEnd;
