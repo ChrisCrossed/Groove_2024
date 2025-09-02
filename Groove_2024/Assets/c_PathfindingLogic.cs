@@ -79,16 +79,32 @@ public static class c_PathfindingLogic
 
         if(hasAlpha)
         {
-            bool output = MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
+            int[] alphaArray = new int[BoardWidth * BoardHeight];
+            List<int> alphaExitList;
 
-            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest("Alpha: " + output);
+            if(MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha, out alphaArray, out alphaExitList))
+            {
+                for (int i = 0; i < alphaExitList.Count; i++)
+                {
+                    ReverseConnectionsFloodFill(alphaArray, alphaExitList[i]);
+                }
+            }
+
+            
         }
 
         if(hasBravo)
         {
-            bool output = MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
+            int[] bravoArray;
+            List<int> bravoExitList;
 
-            GameObject.Find("GameLogic").GetComponent<GameLogic>().PF_OutputTest("Bravo: " + output);
+            if(MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo, out bravoArray, out bravoExitList))
+            {
+                for(int i = 0; i < bravoExitList.Count; i++)
+                {
+                    ReverseConnectionsFloodFill(bravoArray, bravoExitList[i]);
+                }
+            }
         }
     }
 
@@ -170,9 +186,11 @@ public static class c_PathfindingLogic
         return results;
     }
 
-    static bool MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints)
+    static bool MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints, out int[] _outArray, out List<int> _validRightColumnExits)
     {
         bool successfulEnd = false;
+        _outArray = new int[0];
+        _validRightColumnExits = new List<int>();
 
         // Two-dimensional array to evaluate number of Board connections of same type
         int[] BoardConnectionsArray = new int[BoardWidth * BoardHeight];
@@ -208,7 +226,13 @@ public static class c_PathfindingLogic
             {
                 // If position to the right happens to be the right-most playable column, there's a valid path
                 if (nextPos % BoardWidth == BoardWidth - 2)
+                {
                     successfulEnd = true;
+
+                    if(!_validRightColumnExits.Contains(nextPos))
+                        _validRightColumnExits.Add(nextPos);
+
+                }
 
                 // Add the position to the right for future valid checks
                 if (BoardConnectionsArray[nextPos] == 0)
@@ -282,9 +306,103 @@ public static class c_PathfindingLogic
         }
 
         if(successfulEnd)
+        {
             PrintCurrentList(BoardConnectionsArray);
+            _outArray = BoardConnectionsArray;
+        }
 
         return successfulEnd;
+    }
+    
+    static void ReverseConnectionsFloodFill(int[] _connectionsArray, int _rightColumnExitPos)
+    {
+        int[] floodFillArray = new int[BoardWidth * BoardHeight];
+
+        List<int> nextBatchList = new List<int>();
+        List<int> currentBatchList = new List<int>();
+
+        int counter = 1;
+
+        bool reachedStart = false;
+
+        currentBatchList.Add(_rightColumnExitPos);
+        floodFillArray[_rightColumnExitPos] = 1;
+
+        while(!reachedStart)
+        {
+            // Add 1 to counter
+            counter++;
+
+            for(int i = 0; i < currentBatchList.Count; i++)
+            {
+                // Check Position LEFT
+                int nextPos = currentBatchList[i] - 1;
+
+                int evalPos = nextPos % BoardWidth;
+                if (evalPos > 0)
+                {
+                    // Normal position
+                    if (_connectionsArray[nextPos] > 0 && floodFillArray[nextPos] == 0)
+                    {
+                        floodFillArray[nextPos] = counter;
+
+                        nextBatchList.Add(nextPos);
+
+                        if (evalPos == 1)
+                        {
+                            reachedStart = true;
+
+                            continue;
+                        }
+                    }
+                }
+
+                // Check Position ABOVE
+                nextPos = currentBatchList[i] + BoardWidth;
+                if(nextPos < InitialBoard.Count)
+                {
+                    if (_connectionsArray[nextPos] > 0 && floodFillArray[nextPos] == 0)
+                    {
+                        floodFillArray[nextPos] = counter;
+
+                        nextBatchList.Add(nextPos);
+                    }
+                }
+
+                // Check Position BELOW
+                nextPos = currentBatchList[i] - BoardWidth;
+                if(nextPos > 0)
+                {
+                    if (_connectionsArray[nextPos] > 0 && floodFillArray[nextPos] == 0)
+                    {
+                        floodFillArray[nextPos] = counter;
+
+                        nextBatchList.Add(nextPos);
+                    }
+                }
+
+                // Check Position RIGHT
+                nextPos = currentBatchList[i] + 1;
+                if(nextPos < BoardWidth - 1)
+                {
+                    if (_connectionsArray[nextPos] > 0 && floodFillArray[nextPos] == 0)
+                    {
+                        floodFillArray[nextPos] = counter;
+
+                        nextBatchList.Add(nextPos);
+                    }
+                }
+            }
+
+            if (!reachedStart)
+            {
+                currentBatchList = nextBatchList;
+                nextBatchList = new List<int>();
+            }
+
+        }
+
+        PrintCurrentList(floodFillArray);
     }
     #endregion Tests & Checks
 
