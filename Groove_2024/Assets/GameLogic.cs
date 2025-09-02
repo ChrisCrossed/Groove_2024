@@ -1251,6 +1251,7 @@ public class GameLogic : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 HardDrop();
+                ResetGhostBlocks();
 
                 StartPathfindingLogic();
 
