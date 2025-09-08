@@ -77,34 +77,94 @@ public static class c_PathfindingLogic
         if (!hasAlpha && !hasBravo)
             return;
 
+        int lowestAlphaLeftColumnPosition = -1;
         if(hasAlpha)
         {
             int[] alphaArray = new int[BoardWidth * BoardHeight];
             List<int> alphaExitList;
 
+            int[] alpha_FinalFloodFillList = new int[BoardWidth * BoardHeight];
+
             if(MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha, out alphaArray, out alphaExitList))
             {
-                for (int i = 0; i < alphaExitList.Count; i++)
+                // Find the lowest Y position in the AlphaExitList, and only check that path.
+                int lowestYArrayPos = 0;
+                for (int i = 1; i < alphaExitList.Count; i++)
                 {
-                    ReverseConnectionsFloodFill(alphaArray, alphaExitList[i]);
+                    // In all honesty, just finds the lowest array position. No division required.
+                    if (alphaExitList[i] < alphaExitList[lowestYArrayPos])
+                        lowestYArrayPos = i;
+                }
+
+                alpha_FinalFloodFillList = ReverseConnectionsFloodFill(alphaArray, alphaExitList[lowestYArrayPos]);
+
+                for (int y = 0; y < BoardHeight; y++)
+                {
+                    if (alpha_FinalFloodFillList[(y * BoardWidth) + 1] > 0)
+                    {
+                        lowestAlphaLeftColumnPosition = alpha_FinalFloodFillList[(y * BoardWidth) + 1];
+                    }
                 }
             }
-
-            
         }
 
-        if(hasBravo)
+        int lowestBravoLeftColumnPosition = -1;
+        if (hasBravo)
         {
+            // The array of left-to-right 'How Many Connections' test
             int[] bravoArray;
+
+            // The array positions on the right hand side that are valid for the final test
             List<int> bravoExitList;
 
-            if(MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo, out bravoArray, out bravoExitList))
+            // All 
+            int[] bravo_FinalFloodFillList = new int[BoardWidth * BoardHeight];
+
+            if (MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo, out bravoArray, out bravoExitList))
             {
-                for(int i = 0; i < bravoExitList.Count; i++)
+                // Find the lowest Y position in the BravoExitList, and only check that path.
+                int lowestYArrayPos = 0;
+                for (int i = 1; i < bravoExitList.Count; i++)
                 {
-                    ReverseConnectionsFloodFill(bravoArray, bravoExitList[i]);
+                    // In all honesty, just finds the lowest array position. No division required.
+                    if (bravoExitList[i] < bravoExitList[lowestYArrayPos])
+                        lowestYArrayPos = i;
+                }
+
+                bravo_FinalFloodFillList = ReverseConnectionsFloodFill(bravoArray, bravoExitList[lowestYArrayPos]);
+
+                for(int y = 0; y < BoardHeight; y++)
+                {
+                    if (bravo_FinalFloodFillList[(y * BoardWidth) + 1] > 0)
+                    {
+                        lowestBravoLeftColumnPosition = bravo_FinalFloodFillList[(y * BoardWidth) + 1];
+                    }
                 }
             }
+        }
+
+        // I'm tired. I'll clean this up later.
+        if(hasAlpha && hasBravo)
+        {
+            // Check the lower of the two 'lowestAlpha/BravoLeftColumnPosition' values and disable the other.
+            if(lowestAlphaLeftColumnPosition < lowestBravoLeftColumnPosition)
+                hasBravo = false;
+            else
+                hasAlpha = false;
+        }
+
+        List<int> SuccessfulPathfindList = new List<int>();
+        BoardObject successfulBoardObjectType = BoardObject.Alpha_Static; // Unsure if I need this, but using for eval for now
+        if(hasAlpha)
+        {
+            // int startingAlpha = 
+            // Pathfind from final floodfill list using starting Alpha position toward '1'
+        }
+        else // hasBravo
+        {
+            successfulBoardObjectType = BoardObject.Bravo_Static;
+
+            // Pathfind from final floodfill list using starting Bravo position toward '1'
         }
     }
 
@@ -314,7 +374,7 @@ public static class c_PathfindingLogic
         return successfulEnd;
     }
     
-    static void ReverseConnectionsFloodFill(int[] _connectionsArray, int _rightColumnExitPos)
+    static int[] ReverseConnectionsFloodFill(int[] _connectionsArray, int _rightColumnExitPos)
     {
         int[] floodFillArray = new int[BoardWidth * BoardHeight];
 
@@ -403,6 +463,8 @@ public static class c_PathfindingLogic
         }
 
         PrintCurrentList(floodFillArray);
+
+        return floodFillArray;
     }
     #endregion Tests & Checks
 
