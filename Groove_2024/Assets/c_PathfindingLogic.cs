@@ -11,12 +11,14 @@ public struct FloodFillArrayObject
     private int[] floodFillArray;
     private int currBestColumnValue;
     private int currBestColumnPosition;
+    private bool successfulPath;
 
     public FloodFillArrayObject(int currBestColumnValue_ = 999, int currBestColumnPosition_ = 0)
     {
         floodFillArray = new int[0];
         currBestColumnValue = currBestColumnValue_;
         currBestColumnPosition = currBestColumnPosition_;
+        successfulPath = false;
     }
 
     public int[] FloodFillArray
@@ -35,6 +37,12 @@ public struct FloodFillArrayObject
     {
         get => currBestColumnPosition;
         set => currBestColumnPosition = value;
+    }
+
+    public bool SuccessfulPath
+    {
+        get => successfulPath;
+        set => successfulPath = value;
     }
 }
 
@@ -88,7 +96,18 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Alpha = GetLeftColumnValidStartPoints(BoardObject.Alpha_Static);
             RightColumnEndPoints_Alpha = GetRightColumnValidEndPoints(BoardObject.Alpha_Static);
 
-            if (LeftColumnStartPoints_Alpha == new List<int>() && RightColumnEndPoints_Alpha == new List<int>())
+            Print("Alpha (Left)");
+            for (int i = 0; i < LeftColumnStartPoints_Alpha.Count; i++)
+            {
+                Print(LeftColumnStartPoints_Alpha[i].ToString());
+            }
+            Print("---\nAlpha (Right)");
+            for (int i = 0; i < RightColumnEndPoints_Alpha.Count; i++)
+            {
+                Print(RightColumnEndPoints_Alpha[i].ToString());
+            }
+
+            if (LeftColumnStartPoints_Alpha == new List<int>() || RightColumnEndPoints_Alpha == new List<int>())
             {
                 hasAlpha = false;
             }
@@ -99,7 +118,18 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Bravo = GetLeftColumnValidStartPoints(BoardObject.Bravo_Static);
             RightColumnEndPoints_Bravo = GetRightColumnValidEndPoints(BoardObject.Bravo_Static);
 
-            if (LeftColumnStartPoints_Bravo == new List<int>() && RightColumnEndPoints_Bravo == new List<int>())
+            Print("Bravo (Left)");
+            for (int i = 0; i < LeftColumnStartPoints_Bravo.Count; i++)
+            {
+                Print(LeftColumnStartPoints_Bravo[i].ToString());
+            }
+            Print("---\nBravo (Right)");
+            for (int i = 0; i < RightColumnEndPoints_Bravo.Count; i++)
+            {
+                Print(RightColumnEndPoints_Bravo[i].ToString());
+            }
+
+            if (LeftColumnStartPoints_Bravo == new List<int>() || RightColumnEndPoints_Bravo == new List<int>())
             {
                 hasBravo = false;
             }
@@ -117,6 +147,8 @@ public static class c_PathfindingLogic
         if (hasAlpha)
         {
             floodFillArray_Alpha = CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
+
+            hasAlpha = floodFillArray_Alpha.SuccessfulPath;
         }
 
         // Store Bravo Array, and current best information for comparison
@@ -124,24 +156,47 @@ public static class c_PathfindingLogic
 
         if (hasBravo)
         {
-            CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
+            floodFillArray_Bravo = CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
+
+            hasBravo = floodFillArray_Bravo.SuccessfulPath;
+        }
+
+        if (hasAlpha)
+        {
+            //Print(floodFillArray_Alpha.FloodFillArray.Length.ToString());
+            //Print(floodFillArray_Alpha.SuccessfulPath.ToString());
+            //PrintCurrentList(floodFillArray_Alpha.FloodFillArray);
+            // RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
+        }
+        else
+        {
+            //Print(floodFillArray_Bravo.FloodFillArray.Length.ToString());
+            //Print(floodFillArray_Bravo.SuccessfulPath.ToString());
+            //PrintCurrentList(floodFillArray_Bravo.FloodFillArray);
+            // RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
         }
 
         // Decline the position that is higher up on the board
-        if(hasAlpha && hasBravo)
+        if (hasAlpha && hasBravo)
         {
+            //Print("HAS BOTH! Evaluation:");
             hasAlpha = (floodFillArray_Alpha.CurrBestColumnPosition < floodFillArray_Bravo.CurrBestColumnPosition);
             hasBravo = !hasAlpha;
+
+            //Print("Alpha: " + hasAlpha);
+            //Print("Bravo: " + hasBravo);
         }
 
         List<int> finalPathfind = new List<int>();
         if(hasAlpha)
         {
-            RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
+            //PrintCurrentList(floodFillArray_Alpha.FloodFillArray);
+            // RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
         }
         else
         {
-            RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
+            //PrintCurrentList(floodFillArray_Bravo.FloodFillArray);
+            // RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
         }
     }
 
@@ -344,6 +399,7 @@ public static class c_PathfindingLogic
 
         if(successfulEnd)
         {
+            Print("CHRIS TEST");
             PrintCurrentList(BoardConnectionsArray);
             _outArray = BoardConnectionsArray;
         }
@@ -363,6 +419,7 @@ public static class c_PathfindingLogic
         tempFloodFillArrayObject.FloodFillArray = new int[0];
         tempFloodFillArrayObject.CurrBestColumnValue = 999;
         tempFloodFillArrayObject.CurrBestColumnPosition = 0;
+        tempFloodFillArrayObject.SuccessfulPath = true;
 
         int[] connectionArray = new int[BoardWidth * BoardHeight];
         List<int> exitList;
@@ -556,7 +613,7 @@ public static class c_PathfindingLogic
         GameLogic gameLogicScr = gameLogic.GetComponent<GameLogic>();
 
         gameLogicScr.PF_OutputTest("-----");
-        gameLogicScr.PF_OutputTest("SOLUTION ABOVE");
+        gameLogicScr.PF_OutputTest("SOLUTION BELOW");
         gameLogicScr.PF_OutputTest("-----");
 
         for (int y = BoardHeight - 1; y > -1; y--)
@@ -570,11 +627,12 @@ public static class c_PathfindingLogic
                 output += "]";
             }
 
-            gameLogicScr.PF_OutputTest(output);
+            // gameLogicScr.PF_OutputTest(output);
+            Print(output);
         }
 
         gameLogicScr.PF_OutputTest("-----");
-        gameLogicScr.PF_OutputTest("SOLUTION BELOW");
+        gameLogicScr.PF_OutputTest("SOLUTION ABOVE");
         gameLogicScr.PF_OutputTest("-----");
     }
 
