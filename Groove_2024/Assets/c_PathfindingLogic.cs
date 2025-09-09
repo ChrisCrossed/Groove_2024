@@ -166,7 +166,7 @@ public static class c_PathfindingLogic
             //Print(floodFillArray_Alpha.FloodFillArray.Length.ToString());
             //Print(floodFillArray_Alpha.SuccessfulPath.ToString());
             //PrintCurrentList(floodFillArray_Alpha.FloodFillArray);
-            // RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
+            RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
         }
         else
         {
@@ -563,35 +563,84 @@ public static class c_PathfindingLogic
         List<int> currPath = new List<int>();
         int currValue = _boardReverseFloodFillArray[_leftColumnStartPos];
         
-        currPath.Add(currValue);
+        currPath.Add(_leftColumnStartPos);
         
         int currPos = _leftColumnStartPos;
 
         while(currValue > 0)
         {
-            int currArrayPos_ = currPath[currPath.Count - 1];
+            int currArrayPos_ = currPath[currPos - 1];
             int currScore_ = _boardReverseFloodFillArray[currArrayPos_];
 
+            int currentBestNextPosition = currPos;
+
             // Starting with the current array position score, check each direction for:
-                // If it is > 0, AND
-                // If it is lower than the previous directional check.
-                    // If it fits both, then it's the current new direction.
+            // If it is > 0, AND
+            // If it is lower than the previous directional check.
+            // If it fits both, then it's the current new direction.
 
+            int rightScore = 999;
+            int downScore = 999;
+            int upScore = 999;
+            int leftScore = 999;
+            
+            int rightPos = currArrayPos_ + 1;
+            int downPos = currArrayPos_ - BoardWidth;
+            int upPos = currArrayPos_ + BoardWidth;
+            int leftPos = currArrayPos_ - 1;
 
-            // Take the current best array position, and add it to the list, AND:
-                // Store the value as the current position to compare against.
+            if(rightPos < BoardWidth)
+                rightScore = _boardReverseFloodFillArray[rightPos];
 
-            // If the value found == 1, add it to the list, and end.
+            if(downPos > 0)
+                downScore = _boardReverseFloodFillArray[downPos];
 
-            bool rightValid = false;
-            bool downValid = false;
-            bool upValid = false;
-            bool leftValid = false;
+            if (upPos < (BoardWidth * BoardHeight))
+                upScore = _boardReverseFloodFillArray[upPos];
 
-            // Right-direction check
-            int dirCheck_Right = currPos + 1;
-            int boardArrayValue_Right = _boardReverseFloodFillArray[dirCheck_Right];
-            // if (boardArrayValue_Right > 0 && boardArrayValue_Right < )
+            if(leftPos % BoardWidth > 0)
+                leftScore = _boardReverseFloodFillArray[leftPos];
+
+            // Concerned about problems evaluating against 0 although not intended.
+            if (rightScore > 0 && rightScore < currScore_)
+            {
+                if (rightScore < upScore && rightScore < downScore && rightScore < leftScore)
+                {
+                    currPath.Add(rightPos);
+                    currValue = _boardReverseFloodFillArray[rightPos];
+                    continue;
+                }
+            }
+
+            if (downScore > 0 && downScore < currScore_)
+            {
+                if (downScore < upScore && downScore < leftScore && downScore < rightScore)
+                {
+                    currPath.Add(downPos);
+                    currValue = _boardReverseFloodFillArray[downPos];
+                    continue;
+                }
+            }
+
+            if (upScore > 0 && upScore < currScore_)
+            {
+                if (upScore < leftScore && upScore < rightScore && upScore < downScore)
+                {
+                    currPath.Add(upPos);
+                    currValue = _boardReverseFloodFillArray[upPos];
+                    continue;
+                }
+            }
+
+            if(leftScore > 0 && leftScore < currScore_)
+            {
+                if (leftScore < upScore && leftScore < downScore && leftScore < rightScore)
+                {
+                    currPath.Add(leftPos);
+                    currValue = _boardReverseFloodFillArray[leftPos];
+                    continue;
+                }
+            }
         }
 
 
