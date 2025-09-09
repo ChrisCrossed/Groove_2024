@@ -5,6 +5,39 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
 
+public struct FloodFillArrayObject
+{
+    // Store Array, and current best information for comparison
+    private int[] floodFillArray;
+    private int currBestColumnValue;
+    private int currBestColumnPosition;
+
+    public FloodFillArrayObject(int currBestColumnValue_ = 999, int currBestColumnPosition_ = 0)
+    {
+        floodFillArray = new int[0];
+        currBestColumnValue = currBestColumnValue_;
+        currBestColumnPosition = currBestColumnPosition_;
+    }
+
+    public int[] FloodFillArray
+    {
+        get => floodFillArray;
+        set => floodFillArray = value;
+    }
+
+    public int CurrBestColumnValue
+    {
+        get => currBestColumnValue;
+        set => currBestColumnValue = value;
+    }
+
+    public int CurrBestColumnPosition
+    {
+        get => currBestColumnPosition;
+        set => currBestColumnPosition = value;
+    }
+}
+
 public static class c_PathfindingLogic
 {
     static List<BoardObject> InitialBoard;
@@ -79,100 +112,36 @@ public static class c_PathfindingLogic
 
 
         // Store Alpha Array, and current best information for comparison
-        int[] floodFillArray_Alpha = new int[0];
-        int currBestColumnValue_Alpha = 999;
-        int currBestColumnPosition_Alpha = 0;
+        FloodFillArrayObject floodFillArray_Alpha = new FloodFillArrayObject();
 
         if (hasAlpha)
         {
-            int[] alphaArray = new int[BoardWidth * BoardHeight];
-            List<int> alphaExitList;
-
-            if( MakeConnectionsBoard(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha, out alphaArray, out alphaExitList) )
-            {
-                // Run through all alphaExitList positions, and find the lowest left-side column value.
-                for (int i = 0; i < alphaExitList.Count; i++)
-                {
-                    // Get 'flower'-style positional floodfill starting from right-hand column
-                    int[] tempArray = ReverseConnectionsFloodFill(alphaArray, alphaExitList[i]);
-
-                    // Get left-side column value and compare against previous best
-                    for(int j = 0; j < BoardHeight; j++)
-                    {
-                        // Array position to check assigned value
-                        int evalPos = (j * BoardWidth) + 1;
-                        int valueAtArrayPosition = tempArray[evalPos];
-
-                        // If the value of the array position is positive, and less than the previous best, store this as new best.
-                        if (valueAtArrayPosition > 0 && valueAtArrayPosition < currBestColumnValue_Alpha)
-                        {
-                            currBestColumnValue_Alpha = valueAtArrayPosition;
-                            floodFillArray_Alpha = tempArray;
-                            currBestColumnPosition_Alpha = evalPos;
-                        }
-
-                        // Continue since the value has been evaluated
-                        continue;
-                    }
-                }
-            }
+            floodFillArray_Alpha = CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
         }
 
         // Store Bravo Array, and current best information for comparison
-        int[] floodFillArray_Bravo = new int[0];
-        int currBestColumnValue_Bravo = 999;
-        int currBestColumnPosition_Bravo = 0;
+        FloodFillArrayObject floodFillArray_Bravo = new FloodFillArrayObject();
 
         if (hasBravo)
         {
-            int[] bravoArray = new int[BoardWidth * BoardHeight];
-            List<int> bravoExitList;
-
-            if (MakeConnectionsBoard(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo, out bravoArray, out bravoExitList))
-            {
-                // Run through all alphaExitList positions, and find the lowest left-side column value.
-                for (int i = 0; i < bravoExitList.Count; i++)
-                {
-                    // Get 'flower'-style positional floodfill starting from right-hand column
-                    int[] tempArray = ReverseConnectionsFloodFill(bravoArray, bravoExitList[i]);
-
-                    // Get left-side column value and compare against previous best
-                    for (int j = 0; j < BoardHeight; j++)
-                    {
-                        // Array position to check assigned value
-                        int evalPos = (j * BoardWidth) + 1;
-                        int valueAtArrayPosition = tempArray[evalPos];
-
-                        // If the value of the array position is positive, and less than the previous best, store this as new best.
-                        if (valueAtArrayPosition > 0 && valueAtArrayPosition < currBestColumnValue_Bravo)
-                        {
-                            currBestColumnValue_Bravo = valueAtArrayPosition;
-                            floodFillArray_Bravo = tempArray;
-                            currBestColumnPosition_Bravo = evalPos;
-                        }
-
-                        // Continue since the value has been evaluated
-                        continue;
-                    }
-                }
-            }
+            CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
         }
 
         // Decline the position that is higher up on the board
         if(hasAlpha && hasBravo)
         {
-            hasAlpha = (currBestColumnPosition_Alpha < currBestColumnPosition_Bravo);
+            hasAlpha = (floodFillArray_Alpha.CurrBestColumnPosition < floodFillArray_Bravo.CurrBestColumnPosition);
             hasBravo = !hasAlpha;
         }
 
-        int[] finalPathfind = new int[0];
+        List<int> finalPathfind = new List<int>();
         if(hasAlpha)
         {
-            RecordFloodFillPath(floodFillArray_Alpha, currBestColumnPosition_Alpha);
+            RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
         }
         else
         {
-            RecordFloodFillPath(floodFillArray_Bravo, currBestColumnPosition_Bravo);
+            RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
         }
     }
 
@@ -381,7 +350,55 @@ public static class c_PathfindingLogic
 
         return successfulEnd;
     }
-    
+
+    /// <summary>
+    /// A wrapper to run through all Reverse-Connection Flood Fill Arrays as the process is performed more than once.
+    /// </summary>
+    /// <param name="_boardObjectType"></param>
+    /// <param name="leftColumnStartPoints"></param>
+    static FloodFillArrayObject CycleAllReverseConnectionFloodFillArraysOfType(BoardObject _boardObjectType, List<int> leftColumnStartPoints)
+    {
+        // Store Array, and current best information for comparison
+        FloodFillArrayObject tempFloodFillArrayObject = new FloodFillArrayObject();
+        tempFloodFillArrayObject.FloodFillArray = new int[0];
+        tempFloodFillArrayObject.CurrBestColumnValue = 999;
+        tempFloodFillArrayObject.CurrBestColumnPosition = 0;
+
+        int[] connectionArray = new int[BoardWidth * BoardHeight];
+        List<int> exitList;
+
+        if (MakeConnectionsBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
+        {
+            // Run through all alphaExitList positions, and find the lowest left-side column value.
+            for (int i = 0; i < exitList.Count; i++)
+            {
+                // Get 'flower'-style positional floodfill starting from right-hand column
+                int[] tempArray = ReverseConnectionsFloodFill(connectionArray, exitList[i]);
+
+                // Get left-side column value and compare against previous best
+                for (int j = 0; j < BoardHeight; j++)
+                {
+                    // Array position to check assigned value
+                    int evalPos = (j * BoardWidth) + 1;
+                    int valueAtArrayPosition = tempArray[evalPos];
+
+                    // If the value of the array position is positive, and less than the previous best, store this as new best.
+                    if (valueAtArrayPosition > 0 && valueAtArrayPosition < tempFloodFillArrayObject.CurrBestColumnValue)
+                    {
+                        tempFloodFillArrayObject.CurrBestColumnValue = valueAtArrayPosition;
+                        tempFloodFillArrayObject.FloodFillArray = tempArray;
+                        tempFloodFillArrayObject.CurrBestColumnPosition = evalPos;
+                    }
+
+                    // Continue since the value has been evaluated
+                    continue;
+                }
+            }
+        }
+
+        return tempFloodFillArrayObject;
+    }
+
     /// <summary>
     /// Takes an Array of BoardObjects that were previously given values of all same-type adjacent connections 
     /// Creates a new 2D Array based on _connectionsArray, starting at the given [x,y] position on the right-hand column,
@@ -390,6 +407,7 @@ public static class c_PathfindingLogic
     /// </summary>
     /// <param name="_connectionsArray"></param> The Board, as int[], where each populated position is the number of surrounded same-type blocks. 
     /// <param name="_rightColumnExitPos"></param> The given Array position of the Board to begin pathfinding from the right-side column.
+    /// <param name="_maxLength"></param> The highest value this path should attempt to go. Anything longer will forcibly break out.
     /// <returns>int</returns> A new Array of value-based pathfinding, with the starting position being the lowest, and the left-column being the highest.
     static int[] ReverseConnectionsFloodFill(int[] _connectionsArray, int _rightColumnExitPos)
     {
@@ -483,9 +501,45 @@ public static class c_PathfindingLogic
         return floodFillArray;
     }
     
-    static void RecordFloodFillPath(int[] _boardReverseFloodFillArray, int _leftColumnStartPos)
+    static List<int> RecordFloodFillPath(int[] _boardReverseFloodFillArray, int _leftColumnStartPos)
     {
+        List<int> currPath = new List<int>();
+        int currValue = _boardReverseFloodFillArray[_leftColumnStartPos];
+        
+        currPath.Add(currValue);
+        
+        int currPos = _leftColumnStartPos;
 
+        while(currValue > 0)
+        {
+            int currArrayPos_ = currPath[currPath.Count - 1];
+            int currScore_ = _boardReverseFloodFillArray[currArrayPos_];
+
+            // Starting with the current array position score, check each direction for:
+                // If it is > 0, AND
+                // If it is lower than the previous directional check.
+                    // If it fits both, then it's the current new direction.
+
+
+            // Take the current best array position, and add it to the list, AND:
+                // Store the value as the current position to compare against.
+
+            // If the value found == 1, add it to the list, and end.
+
+            bool rightValid = false;
+            bool downValid = false;
+            bool upValid = false;
+            bool leftValid = false;
+
+            // Right-direction check
+            int dirCheck_Right = currPos + 1;
+            int boardArrayValue_Right = _boardReverseFloodFillArray[dirCheck_Right];
+            // if (boardArrayValue_Right > 0 && boardArrayValue_Right < )
+        }
+
+
+
+        return new List<int>();
     }
     #endregion Tests & Checks
 
