@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
+using System.Linq;
 
 public struct FloodFillArrayObject
 {
@@ -72,7 +73,7 @@ public static class c_PathfindingLogic
 
     static int RepeatScorelineEvalLength;
 
-    public static void StartPathfindingLogic(List<BoardObject> _board, int _boardWidth)
+    public static List<int> StartPathfindingLogic(List<BoardObject> _board, int _boardWidth)
     {
         BoardWidth = _boardWidth;
         BoardHeight = _board.Count / _boardWidth;
@@ -96,6 +97,7 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Alpha = GetLeftColumnValidStartPoints(BoardObject.Alpha_Static);
             RightColumnEndPoints_Alpha = GetRightColumnValidEndPoints(BoardObject.Alpha_Static);
 
+            /*
             Print("Alpha (Left)");
             for (int i = 0; i < LeftColumnStartPoints_Alpha.Count; i++)
             {
@@ -106,8 +108,9 @@ public static class c_PathfindingLogic
             {
                 Print(RightColumnEndPoints_Alpha[i].ToString());
             }
+            */
 
-            if (LeftColumnStartPoints_Alpha == new List<int>() || RightColumnEndPoints_Alpha == new List<int>())
+            if (LeftColumnStartPoints_Alpha.Count == 0 || RightColumnEndPoints_Alpha.Count == 0)
             {
                 hasAlpha = false;
             }
@@ -118,6 +121,7 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Bravo = GetLeftColumnValidStartPoints(BoardObject.Bravo_Static);
             RightColumnEndPoints_Bravo = GetRightColumnValidEndPoints(BoardObject.Bravo_Static);
 
+            /*
             Print("Bravo (Left)");
             for (int i = 0; i < LeftColumnStartPoints_Bravo.Count; i++)
             {
@@ -128,8 +132,9 @@ public static class c_PathfindingLogic
             {
                 Print(RightColumnEndPoints_Bravo[i].ToString());
             }
+            */
 
-            if (LeftColumnStartPoints_Bravo == new List<int>() || RightColumnEndPoints_Bravo == new List<int>())
+            if (LeftColumnStartPoints_Bravo.Count == 0 || RightColumnEndPoints_Bravo.Count == 0)
             {
                 hasBravo = false;
             }
@@ -138,7 +143,7 @@ public static class c_PathfindingLogic
 
         // Just kick out if no proper paths can exist
         if (!hasAlpha && !hasBravo)
-            return;
+            return null;
 
 
         // Store Alpha Array, and current best information for comparison
@@ -149,6 +154,15 @@ public static class c_PathfindingLogic
             floodFillArray_Alpha = CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Alpha_Static, LeftColumnStartPoints_Alpha);
 
             hasAlpha = floodFillArray_Alpha.SuccessfulPath;
+
+            /*
+            Print("Alpha Values:");
+            Print("Length: " + floodFillArray_Alpha.FloodFillArray.Length.ToString());
+            Print("Best Column Score: " + floodFillArray_Alpha.CurrBestColumnValue);
+            Print("Best Column Array Position: " + floodFillArray_Alpha.CurrBestColumnPosition);
+            Print("Successful: " + floodFillArray_Alpha.SuccessfulPath);
+            Print("---");
+            */
         }
 
         // Store Bravo Array, and current best information for comparison
@@ -159,27 +173,22 @@ public static class c_PathfindingLogic
             floodFillArray_Bravo = CycleAllReverseConnectionFloodFillArraysOfType(BoardObject.Bravo_Static, LeftColumnStartPoints_Bravo);
 
             hasBravo = floodFillArray_Bravo.SuccessfulPath;
+
+            /*
+            Print("Bravo Values:");
+            Print("Length: " + floodFillArray_Bravo.FloodFillArray.Length.ToString());
+            Print("Best Column Score: " + floodFillArray_Bravo.CurrBestColumnValue);
+            Print("Best Column Position: " + floodFillArray_Bravo.CurrBestColumnPosition);
+            Print("Successful: " + floodFillArray_Bravo.SuccessfulPath);
+            Print("---");
+            */
         }
 
-        if (hasAlpha)
-        {
-            //Print(floodFillArray_Alpha.FloodFillArray.Length.ToString());
-            //Print(floodFillArray_Alpha.SuccessfulPath.ToString());
-            //PrintCurrentList(floodFillArray_Alpha.FloodFillArray);
-            RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
-        }
-        else
-        {
-            //Print(floodFillArray_Bravo.FloodFillArray.Length.ToString());
-            //Print(floodFillArray_Bravo.SuccessfulPath.ToString());
-            //PrintCurrentList(floodFillArray_Bravo.FloodFillArray);
-            // RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
-        }
+        // Print("PRE Check: Alpha - " + hasAlpha + ", Bravo - " + hasBravo);
 
         // Decline the position that is higher up on the board
         if (hasAlpha && hasBravo)
         {
-            //Print("HAS BOTH! Evaluation:");
             hasAlpha = (floodFillArray_Alpha.CurrBestColumnPosition < floodFillArray_Bravo.CurrBestColumnPosition);
             hasBravo = !hasAlpha;
 
@@ -187,17 +196,21 @@ public static class c_PathfindingLogic
             //Print("Bravo: " + hasBravo);
         }
 
+        // Print("Post Check: Alpha - " + hasAlpha + ", Bravo - " + hasBravo);
+
         List<int> finalPathfind = new List<int>();
         if(hasAlpha)
         {
             //PrintCurrentList(floodFillArray_Alpha.FloodFillArray);
-            // RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
+            finalPathfind = RecordFloodFillPath(floodFillArray_Alpha.FloodFillArray, floodFillArray_Alpha.CurrBestColumnPosition);
         }
-        else
+        else if(hasBravo)
         {
-            //PrintCurrentList(floodFillArray_Bravo.FloodFillArray);
-            // RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
+            finalPathfind = RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
         }
+
+        // Print("Length: " + finalPathfind.Count.ToString());
+        return finalPathfind;
     }
 
     #region Tests & Checks
@@ -399,8 +412,7 @@ public static class c_PathfindingLogic
 
         if(successfulEnd)
         {
-            Print("CHRIS TEST");
-            PrintCurrentList(BoardConnectionsArray);
+            // PrintCurrentArray(BoardConnectionsArray);
             _outArray = BoardConnectionsArray;
         }
 
@@ -419,7 +431,7 @@ public static class c_PathfindingLogic
         tempFloodFillArrayObject.FloodFillArray = new int[0];
         tempFloodFillArrayObject.CurrBestColumnValue = 999;
         tempFloodFillArrayObject.CurrBestColumnPosition = 0;
-        tempFloodFillArrayObject.SuccessfulPath = true;
+        tempFloodFillArrayObject.SuccessfulPath = false;
 
         int[] connectionArray = new int[BoardWidth * BoardHeight];
         List<int> exitList;
@@ -452,6 +464,9 @@ public static class c_PathfindingLogic
                 }
             }
         }
+
+        if(tempFloodFillArrayObject.CurrBestColumnValue < 999)
+            tempFloodFillArrayObject.SuccessfulPath = true;
 
         return tempFloodFillArrayObject;
     }
@@ -554,31 +569,44 @@ public static class c_PathfindingLogic
 
         }
 
-        PrintCurrentList(floodFillArray);
+        // PrintCurrentArray(floodFillArray);
         return floodFillArray;
     }
     
     static List<int> RecordFloodFillPath(int[] _boardReverseFloodFillArray, int _leftColumnStartPos)
     {
         List<int> currPath = new List<int>();
-        int currValue = _boardReverseFloodFillArray[_leftColumnStartPos];
-        
         currPath.Add(_leftColumnStartPos);
-        
-        int currPos = _leftColumnStartPos;
 
-        while(currValue > 0)
+        // Current Score
+        int currValue = _boardReverseFloodFillArray[_leftColumnStartPos];
+        // Print("Starting Score: " + currValue);
+
+        // Current Array Position
+        int currPos = _leftColumnStartPos;
+        // Print("Starting Column Pos: " + currPos);
+        // Print("START Flood Fill Loop");
+        
+        while(currValue > 1)
         {
-            int currArrayPos_ = currPath[currPos - 1];
+            int currArrayPos_ = currPath[currPath.Count - 1];
             int currScore_ = _boardReverseFloodFillArray[currArrayPos_];
 
             int currentBestNextPosition = currPos;
+
+            /*
+            Print("Next Loop: ");
+            Print("currArrayPos: " + currArrayPos_);
+            Print("currScore: " + currScore_);
+            Print("Loop Starting Array Pos: " +  currentBestNextPosition);
+            */
 
             // Starting with the current array position score, check each direction for:
             // If it is > 0, AND
             // If it is lower than the previous directional check.
             // If it fits both, then it's the current new direction.
 
+            #region Init
             int rightScore = 999;
             int downScore = 999;
             int upScore = 999;
@@ -589,25 +617,102 @@ public static class c_PathfindingLogic
             int upPos = currArrayPos_ + BoardWidth;
             int leftPos = currArrayPos_ - 1;
 
-            if(rightPos < BoardWidth)
-                rightScore = _boardReverseFloodFillArray[rightPos];
+            /*
+            Print("Comparison Array Positions: " + rightPos + ", " + downPos + ", " + upPos + ", " + leftPos);
+
+            string arrayScoresOutput = "Comparison Array Scores: ";
+            if (rightPos < BoardWidth * BoardHeight)
+                arrayScoresOutput += _boardReverseFloodFillArray[rightPos];
+            else
+                arrayScoresOutput += "-1";
+
+            arrayScoresOutput += ", ";
+
+            if (downPos > 0)
+                arrayScoresOutput += _boardReverseFloodFillArray[downPos];
+            else
+                arrayScoresOutput += "-1";
+            arrayScoresOutput += ", ";
+
+
+            if (upPos < BoardHeight * BoardWidth)
+                arrayScoresOutput += _boardReverseFloodFillArray[upPos];
+            else
+                arrayScoresOutput += "-1";
+
+            arrayScoresOutput += ", ";
+
+            if (leftPos > 0)
+                arrayScoresOutput += _boardReverseFloodFillArray[leftPos];
+            else
+                arrayScoresOutput += "-1";
+                
+            Print(arrayScoresOutput);
+            */
+            #endregion Init
+
+            #region Compare & Assign Values
+            if (rightPos % BoardWidth < BoardWidth)
+            {
+                int value = _boardReverseFloodFillArray[rightPos];
+
+                if(value > 0)
+                {
+                    rightScore = value;
+
+                    if(value == 1)
+                    {
+                        currPath.Add(rightPos);
+                        currValue = 1;
+                        continue;
+                    }
+                }
+
+                //Print("Right Score: " + value);
+            }
 
             if(downPos > 0)
-                downScore = _boardReverseFloodFillArray[downPos];
+            {
+                int value = _boardReverseFloodFillArray[downPos];
+
+                if(value > 0)
+                    downScore = value;
+
+                //Print("Down Score: " + value);
+            }
 
             if (upPos < (BoardWidth * BoardHeight))
-                upScore = _boardReverseFloodFillArray[upPos];
+            {
+                int value = _boardReverseFloodFillArray[upPos];
 
-            if(leftPos % BoardWidth > 0)
-                leftScore = _boardReverseFloodFillArray[leftPos];
+                if(value > 0)
+                    upScore = _boardReverseFloodFillArray[upPos];
 
-            // Concerned about problems evaluating against 0 although not intended.
+                //Print("Up Score: " + value);
+            }
+
+            // Probably unnecessary, but...
+            // Just a quick check that the leftPos is within the same row, and a positive value 
+            if(leftPos % BoardWidth > 0 && leftPos > 0)
+            {
+                int value = _boardReverseFloodFillArray[leftPos];
+
+                if (value > 0)
+                    leftScore = value;
+
+                //Print("Left Score: " + value);
+            }
+            #endregion Compare & Assign Values
+
+            #region Compare in preferred order for lowest score
             if (rightScore > 0 && rightScore < currScore_)
             {
                 if (rightScore < upScore && rightScore < downScore && rightScore < leftScore)
                 {
                     currPath.Add(rightPos);
                     currValue = _boardReverseFloodFillArray[rightPos];
+
+                    // Print("Adding RIGHT: " + rightPos);
                     continue;
                 }
             }
@@ -618,6 +723,7 @@ public static class c_PathfindingLogic
                 {
                     currPath.Add(downPos);
                     currValue = _boardReverseFloodFillArray[downPos];
+                    // Print("Adding DOWN: " + downPos);
                     continue;
                 }
             }
@@ -628,6 +734,7 @@ public static class c_PathfindingLogic
                 {
                     currPath.Add(upPos);
                     currValue = _boardReverseFloodFillArray[upPos];
+                    // Print("Adding UP: " + upPos);
                     continue;
                 }
             }
@@ -638,14 +745,15 @@ public static class c_PathfindingLogic
                 {
                     currPath.Add(leftPos);
                     currValue = _boardReverseFloodFillArray[leftPos];
+                    // Print("Adding LEFT: " + leftPos);
                     continue;
                 }
             }
+
+            #endregion Compare in preferred order for lowest score
         }
 
-
-
-        return new List<int>();
+        return currPath;
     }
     #endregion Tests & Checks
 
@@ -656,7 +764,7 @@ public static class c_PathfindingLogic
 
         gameLogicScr.PF_OutputTest(_output);
     }
-    static void PrintCurrentList(int[] _boardConnectionsArray)
+    static void PrintCurrentArray(int[] _boardConnectionsArray)
     {
         GameObject gameLogic = GameObject.Find("GameLogic");
         GameLogic gameLogicScr = gameLogic.GetComponent<GameLogic>();
@@ -683,6 +791,16 @@ public static class c_PathfindingLogic
         gameLogicScr.PF_OutputTest("-----");
         gameLogicScr.PF_OutputTest("SOLUTION ABOVE");
         gameLogicScr.PF_OutputTest("-----");
+    }
+
+    static void PrintCurrentList(List<int> _boardConnectionsList)
+    {
+        int[] tempArray = new int[_boardConnectionsList.Count];
+
+        foreach(int i in _boardConnectionsList)
+            tempArray[i] = _boardConnectionsList[i];
+
+        PrintCurrentArray(tempArray);
     }
 
     #region Old Pathfinding

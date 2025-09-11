@@ -476,7 +476,71 @@ public class GameLogic : MonoBehaviour
 
     void StartPathfindingLogic()
     {
-        c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
+        List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
+
+        print(finalPathfind == null);
+
+        if(finalPathfind != null && finalPathfind.Count > 1)
+        {
+            print("Clearing " + finalPathfind.Count + " Blocks");
+
+            for (int i = 0; i < finalPathfind.Count; i++)
+            {
+                Vector2Int _pos = new Vector2Int();
+                _pos.x = finalPathfind[i] % BoardWidth;
+                _pos.y = finalPathfind[i] / BoardWidth;
+
+
+                print("Clearing: " + _pos);
+            }
+            /*
+            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+            BoardLogicScript.DestroySquircleAtGridPos(_pos);
+            */
+
+            /*
+            for (int i = 0; i < finalPathfind.Count; i++)
+            {
+                Vector2Int _pos = new Vector2Int();
+                _pos.x = finalPathfind[i] % BoardWidth;
+                _pos.y = finalPathfind[i] / BoardWidth;
+
+                if (BugTestConsoleOutput)
+                    print("Clearing: " + _pos);
+
+                SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+                BoardLogicScript.DestroySquircleAtGridPos(_pos);
+            }
+            */
+
+            // 
+        }
+
+        HardDrop();
+
+        /*
+        if(finalPathfind != null && finalPathfind.Count > 1)
+        {
+            SetGamePlayingState(false);
+
+            for (int i = 0; i < finalPathfind.Count; i++)
+            {
+                Vector2Int _pos = new Vector2Int();
+                _pos.x = finalPathfind[i] % BoardWidth;
+                _pos.y = finalPathfind[i] / BoardWidth;
+
+                if (BugTestConsoleOutput)
+                    print("Clearing: " + _pos);
+
+                SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+                BoardLogicScript.DestroySquircleAtGridPos(_pos);
+            }
+
+            HardDrop();
+
+            SetGamePlayingState(true);
+        }
+        */
     }
 
     IEnumerator HardDropPathfindLoop()
@@ -1620,8 +1684,6 @@ public class GameLogic : MonoBehaviour
                 }
             }
         }
-
-        
     }
 
     void AllBlocksStatic()
