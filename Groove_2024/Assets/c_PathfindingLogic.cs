@@ -75,6 +75,7 @@ public static class c_PathfindingLogic
 
     public static List<int> StartPathfindingLogic(List<BoardObject> _board, int _boardWidth)
     {
+        Print("Here");
         BoardWidth = _boardWidth;
         BoardHeight = _board.Count / _boardWidth;
 
@@ -97,7 +98,6 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Alpha = GetLeftColumnValidStartPoints(BoardObject.Alpha_Static);
             RightColumnEndPoints_Alpha = GetRightColumnValidEndPoints(BoardObject.Alpha_Static);
 
-            /*
             Print("Alpha (Left)");
             for (int i = 0; i < LeftColumnStartPoints_Alpha.Count; i++)
             {
@@ -108,7 +108,6 @@ public static class c_PathfindingLogic
             {
                 Print(RightColumnEndPoints_Alpha[i].ToString());
             }
-            */
 
             if (LeftColumnStartPoints_Alpha.Count == 0 || RightColumnEndPoints_Alpha.Count == 0)
             {
@@ -121,7 +120,6 @@ public static class c_PathfindingLogic
             LeftColumnStartPoints_Bravo = GetLeftColumnValidStartPoints(BoardObject.Bravo_Static);
             RightColumnEndPoints_Bravo = GetRightColumnValidEndPoints(BoardObject.Bravo_Static);
 
-            /*
             Print("Bravo (Left)");
             for (int i = 0; i < LeftColumnStartPoints_Bravo.Count; i++)
             {
@@ -132,7 +130,6 @@ public static class c_PathfindingLogic
             {
                 Print(RightColumnEndPoints_Bravo[i].ToString());
             }
-            */
 
             if (LeftColumnStartPoints_Bravo.Count == 0 || RightColumnEndPoints_Bravo.Count == 0)
             {
@@ -155,14 +152,12 @@ public static class c_PathfindingLogic
 
             hasAlpha = floodFillArray_Alpha.SuccessfulPath;
 
-            /*
             Print("Alpha Values:");
             Print("Length: " + floodFillArray_Alpha.FloodFillArray.Length.ToString());
             Print("Best Column Score: " + floodFillArray_Alpha.CurrBestColumnValue);
             Print("Best Column Array Position: " + floodFillArray_Alpha.CurrBestColumnPosition);
             Print("Successful: " + floodFillArray_Alpha.SuccessfulPath);
             Print("---");
-            */
         }
 
         // Store Bravo Array, and current best information for comparison
@@ -174,14 +169,12 @@ public static class c_PathfindingLogic
 
             hasBravo = floodFillArray_Bravo.SuccessfulPath;
 
-            /*
             Print("Bravo Values:");
             Print("Length: " + floodFillArray_Bravo.FloodFillArray.Length.ToString());
             Print("Best Column Score: " + floodFillArray_Bravo.CurrBestColumnValue);
             Print("Best Column Position: " + floodFillArray_Bravo.CurrBestColumnPosition);
             Print("Successful: " + floodFillArray_Bravo.SuccessfulPath);
             Print("---");
-            */
         }
 
         // Print("PRE Check: Alpha - " + hasAlpha + ", Bravo - " + hasBravo);
@@ -209,7 +202,7 @@ public static class c_PathfindingLogic
             finalPathfind = RecordFloodFillPath(floodFillArray_Bravo.FloodFillArray, floodFillArray_Bravo.CurrBestColumnPosition);
         }
 
-        // Print("Length: " + finalPathfind.Count.ToString());
+        Print("Length: " + finalPathfind.Count.ToString());
         return finalPathfind;
     }
 
@@ -274,6 +267,8 @@ public static class c_PathfindingLogic
             // -2 from board width due to 'Width' starting at 1
             int currPos = (y * BoardWidth) + (BoardWidth - 2);
 
+            Print("Right Column: Positions " + currPos + " & " + (currPos - 1));
+
             // Move on if not this block type
             if (InitialBoard[currPos] != boardObject)
             {
@@ -286,6 +281,7 @@ public static class c_PathfindingLogic
                 continue;
             }
 
+            Print("Adding: " + currPos);
             // Position, and position to the left, are valid. Add to the list.
             results.Add(currPos);
         }
@@ -305,21 +301,47 @@ public static class c_PathfindingLogic
         // Quick reference list of 'new' or 'initial' conncetors that currently have 1 branch.
         List<int> CurrentOneConnectors = new List<int>();
 
+        Print("Incoming Valid Column Starts: " + _columnValidStartPoints.Count);
+
+        CurrentOneConnectors.Add(_columnValidStartPoints[0]);
+        /*
         for(int i = 0; i < _columnValidStartPoints.Count; i++)
         {
             // Preloads the List with these same positions
             CurrentOneConnectors.Add(_columnValidStartPoints[i]);
         }
+        */
 
         bool connectionsFilled = false;
 
         while(!connectionsFilled)
         {
             int nextPos;
+            int startingPos = -1;
+
+            Print("Running Connector List Pos: " + CurrentOneConnectors[CurrentOneConnectors.Count - 1]);
 
             // Take starting position AND remove from CurrentOneConnectors List
-            int startingPos = CurrentOneConnectors[0];
-            CurrentOneConnectors.RemoveAt(0);
+            if (CurrentOneConnectors != null && CurrentOneConnectors.Count > 0)
+            {
+                startingPos = CurrentOneConnectors[0];
+                CurrentOneConnectors.RemoveAt(0);
+            }
+            else
+            {
+                if (CurrentOneConnectors == null)
+                    Print("Is Null");
+
+                if (CurrentOneConnectors.Count <= 0)
+                    Print("Count: " + CurrentOneConnectors.Count);
+
+                successfulEnd = false;
+                connectionsFilled = true;
+
+                Print("CRASH");
+
+                continue;
+            }
 
             // Reset connections value for evaluation
             int numConnections = 0;
@@ -339,6 +361,7 @@ public static class c_PathfindingLogic
                     if(!_validRightColumnExits.Contains(nextPos))
                         _validRightColumnExits.Add(nextPos);
 
+                    continue;
                 }
 
                 // Add the position to the right for future valid checks

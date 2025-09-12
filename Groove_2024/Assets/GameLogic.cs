@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -1303,6 +1305,10 @@ public class GameLogic : MonoBehaviour
 
                 int crashCounter = 0;
 
+                // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
+                StartPathfindingLogic();
+
+                /*
                 while(StartPathfindingLogic() && crashCounter < 10)
                 {
                     HardDrop();
@@ -1312,6 +1318,7 @@ public class GameLogic : MonoBehaviour
                     if (crashCounter >= 10)
                         print("CRASH!");
                 }
+                */
 
                 BlockSize nextBlockSize = NextBlockListSize[0];
                 List<BoardObject> nextBlock = GetNextBlock(true);
@@ -1966,4 +1973,39 @@ public class GameLogic : MonoBehaviour
     }
 
     #endregion Console Output
+
+    bool timedOut;
+    CancellationToken ct;
+    private IEnumerator PerformTimedAction(Action action, int timeout = 1)
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        ct = cts.Token;
+
+        Coroutine timeoutCoroutine = StartCoroutine(TimeoutChecker(timeout));
+        var t = Task.Run(action, ct);
+        yield return new WaitWhile(() => t.Status != TaskStatus.RanToCompletion && !timedOut);
+
+        if(timedOut)
+        {
+            cts.Cancel();
+            Debug.Log("Task Timed Out");
+        }
+        else
+        {
+            StopCoroutine(timeoutCoroutine);
+            Debug.Log("Task successfully completed");
+        }
+    }
+
+    private IEnumerator TimeoutChecker(float timeout)
+    {
+        timedOut = false;
+        while (timeout > 0)
+        {
+            timeout -= Time.deltaTime;
+            yield return null;
+        }
+        timedOut = true;
+    }
+
 }
