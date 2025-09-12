@@ -256,6 +256,8 @@ public static class c_PathfindingLogic
             if (InitialBoard[currPos + 1] != boardObject)
                 continue;
 
+            Print("Pos: " + currPos + ", " + (currPos + 1));
+
             // Position, and position to the right, are valid. Add to list.
             results.Add(currPos);
         }

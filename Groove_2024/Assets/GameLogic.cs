@@ -474,9 +474,10 @@ public class GameLogic : MonoBehaviour
 
     #region Pathfinding Logic
 
-    void StartPathfindingLogic()
+    bool StartPathfindingLogic()
     {
         List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
+        bool foundPath = false;
 
         print(finalPathfind == null);
 
@@ -484,39 +485,21 @@ public class GameLogic : MonoBehaviour
         {
             print("Clearing " + finalPathfind.Count + " Blocks");
 
+            foundPath = true;
+
             for (int i = 0; i < finalPathfind.Count; i++)
             {
                 Vector2Int _pos = new Vector2Int();
                 _pos.x = finalPathfind[i] % BoardWidth;
                 _pos.y = finalPathfind[i] / BoardWidth;
-
 
                 print("Clearing: " + _pos);
-            }
-            /*
-            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-            BoardLogicScript.DestroySquircleAtGridPos(_pos);
-            */
-
-            /*
-            for (int i = 0; i < finalPathfind.Count; i++)
-            {
-                Vector2Int _pos = new Vector2Int();
-                _pos.x = finalPathfind[i] % BoardWidth;
-                _pos.y = finalPathfind[i] / BoardWidth;
-
-                if (BugTestConsoleOutput)
-                    print("Clearing: " + _pos);
 
                 SetBoardObjectAtPosition(_pos, BoardObject.Empty);
                 BoardLogicScript.DestroySquircleAtGridPos(_pos);
             }
-            */
-
-            // 
         }
-
-        HardDrop();
+        return foundPath;
 
         /*
         if(finalPathfind != null && finalPathfind.Count > 1)
@@ -1314,15 +1297,27 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                SetGamePlayingState(false);
                 HardDrop();
                 ResetGhostBlocks();
 
-                StartPathfindingLogic();
+                int crashCounter = 0;
+
+                while(StartPathfindingLogic() && crashCounter < 10)
+                {
+                    HardDrop();
+
+                    crashCounter++;
+
+                    if (crashCounter >= 10)
+                        print("CRASH!");
+                }
 
                 BlockSize nextBlockSize = NextBlockListSize[0];
                 List<BoardObject> nextBlock = GetNextBlock(true);
                 PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-                // StartCoroutine( HardDropPathfindLoop() );
+                
+                SetGamePlayingState(true);
             }
 
             /// 
