@@ -289,9 +289,33 @@ public static class c_PathfindingLogic
         return results;
     }
 
-    static bool MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints, out int[] _outArray, out List<int> _validRightColumnExits)
+    static bool FindBestConnectionBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints, out int[] _outArray, out List<int> _validRightColumnExits)
     {
-        MakeConnectionsBoard(_boardObjectType, _columnValidStartPoints[0], out _outArray, out _validRightColumnExits);
+        int[] outArray = new int[0];
+        List<int> validRightColumnExits = new List<int>();
+
+
+        foreach (int columnValidStartPoint in _columnValidStartPoints)
+        {
+            int[] tempBest_OutArray = new int[0];
+            List<int> tempBest_ValidRightColumnExits = new List<int>();
+
+            if (MakeConnectionsBoard(_boardObjectType, columnValidStartPoint, out tempBest_OutArray, out tempBest_ValidRightColumnExits))
+            {
+                if (tempBest_ValidRightColumnExits.Count > 0)
+                {
+                    _outArray = tempBest_OutArray;
+                    _validRightColumnExits = tempBest_ValidRightColumnExits;
+
+                    return true;
+                }
+            }
+        }
+
+        _outArray = null;
+        _validRightColumnExits = null;
+
+        Print("ERROR - No Connection Board Found");
 
         return false;
     }
@@ -334,8 +358,6 @@ public static class c_PathfindingLogic
         {
             int nextPos;
             int startingPos = -1;
-
-            Print("Running Connector List Pos: " + CurrentOneConnectors[CurrentOneConnectors.Count - 1]);
 
             // Take starting position AND remove from CurrentOneConnectors List
             if (CurrentOneConnectors != null && CurrentOneConnectors.Count > 0)
@@ -479,8 +501,7 @@ public static class c_PathfindingLogic
         List<int> exitList;
 
         // Change to run a For Loop through each 'leftColumnStartPoints', which populate new List<int[]> positions
-        // if (MakeConnectionsBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
-        if (MakeConnectionsBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
+        if (FindBestConnectionBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
         {
             // Run through all alphaExitList positions, and find the lowest left-side column value.
             for (int i = 0; i < exitList.Count; i++)
@@ -594,7 +615,7 @@ public static class c_PathfindingLogic
 
                 // Check Position RIGHT
                 nextPos = currentBatchList[i] + 1;
-                if(nextPos < BoardWidth - 1)
+                if(nextPos % BoardWidth < BoardWidth - 1)
                 {
                     if (_connectionsArray[nextPos] > 0 && floodFillArray[nextPos] == 0)
                     {
@@ -631,7 +652,7 @@ public static class c_PathfindingLogic
         // Print("Starting Column Pos: " + currPos);
         // Print("START Flood Fill Loop");
         
-        while(currValue > 1)
+        while(currValue > 2)
         {
             int currArrayPos_ = currPath[currPath.Count - 1];
             int currScore_ = _boardReverseFloodFillArray[currArrayPos_];
