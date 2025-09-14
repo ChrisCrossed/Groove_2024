@@ -291,6 +291,17 @@ public static class c_PathfindingLogic
 
     static bool MakeConnectionsBoard(BoardObject _boardObjectType, List<int> _columnValidStartPoints, out int[] _outArray, out List<int> _validRightColumnExits)
     {
+        MakeConnectionsBoard(_boardObjectType, _columnValidStartPoints[0], out _outArray, out _validRightColumnExits);
+
+        return false;
+    }
+
+    static bool MakeConnectionsBoard(BoardObject _boardObjectType, int _columnValidStartPoint, out int[] _outArray, out List<int> _validRightColumnExits)
+    {
+        // Run new logic loop based on *one* Valid Column Start Point (Left side)
+        // Instead of filling with numbers based on how many connections there are, just apply a True bool
+        // Return a bool if successful, and 'out' an array, and valid Right Column Exit positions
+
         bool successfulEnd = false;
         _outArray = new int[0];
         _validRightColumnExits = new List<int>();
@@ -301,16 +312,21 @@ public static class c_PathfindingLogic
         // Quick reference list of 'new' or 'initial' conncetors that currently have 1 branch.
         List<int> CurrentOneConnectors = new List<int>();
 
+        /*
         Print("Incoming Valid Column Starts: " + _columnValidStartPoints.Count);
 
-        CurrentOneConnectors.Add(_columnValidStartPoints[0]);
-        /*
         for(int i = 0; i < _columnValidStartPoints.Count; i++)
         {
             // Preloads the List with these same positions
             CurrentOneConnectors.Add(_columnValidStartPoints[i]);
         }
         */
+
+
+        Print("Incoming Valid Column Start: " + _columnValidStartPoint);
+
+        // Preloads the List with these same positions
+        CurrentOneConnectors.Add(_columnValidStartPoint);
 
         bool connectionsFilled = false;
 
@@ -459,8 +475,11 @@ public static class c_PathfindingLogic
         tempFloodFillArrayObject.SuccessfulPath = false;
 
         int[] connectionArray = new int[BoardWidth * BoardHeight];
+        List<int[]> connectionArrayList = new List<int[]>();
         List<int> exitList;
 
+        // Change to run a For Loop through each 'leftColumnStartPoints', which populate new List<int[]> positions
+        // if (MakeConnectionsBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
         if (MakeConnectionsBoard(_boardObjectType, leftColumnStartPoints, out connectionArray, out exitList))
         {
             // Run through all alphaExitList positions, and find the lowest left-side column value.
