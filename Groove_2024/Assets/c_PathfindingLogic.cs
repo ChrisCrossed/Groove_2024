@@ -294,18 +294,14 @@ public static class c_PathfindingLogic
         int[] outArray = new int[0];
         List<int> validRightColumnExits = new List<int>();
 
-
         foreach (int columnValidStartPoint in _columnValidStartPoints)
         {
-            int[] tempBest_OutArray = new int[0];
-            List<int> tempBest_ValidRightColumnExits = new List<int>();
-
-            if (MakeConnectionsBoard(_boardObjectType, columnValidStartPoint, out tempBest_OutArray, out tempBest_ValidRightColumnExits))
+            if (MakeConnectionsBoard(_boardObjectType, columnValidStartPoint, out outArray, out validRightColumnExits))
             {
-                if (tempBest_ValidRightColumnExits.Count > 0)
+                if (validRightColumnExits.Count > 0)
                 {
-                    _outArray = tempBest_OutArray;
-                    _validRightColumnExits = tempBest_ValidRightColumnExits;
+                    _outArray = outArray;
+                    _validRightColumnExits = validRightColumnExits;
 
                     return true;
                 }
@@ -373,7 +369,7 @@ public static class c_PathfindingLogic
                 if (CurrentOneConnectors.Count <= 0)
                     Print("Count: " + CurrentOneConnectors.Count);
 
-                successfulEnd = false;
+                // successfulEnd = false;
                 connectionsFilled = true;
 
                 Print("CRASH");
