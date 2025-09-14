@@ -481,7 +481,7 @@ public class GameLogic : MonoBehaviour
         List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
         bool foundPath = false;
 
-        print(finalPathfind == null);
+        // print(finalPathfind == null);
 
         if(finalPathfind != null && finalPathfind.Count > 1)
         {
@@ -1306,7 +1306,10 @@ public class GameLogic : MonoBehaviour
                 int crashCounter = 0;
 
                 // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
-                StartPathfindingLogic();
+                while(StartPathfindingLogic())
+                {
+                    HardDrop();
+                }
 
                 /*
                 while(StartPathfindingLogic() && crashCounter < 10)

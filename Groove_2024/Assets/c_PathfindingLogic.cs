@@ -75,7 +75,7 @@ public static class c_PathfindingLogic
 
     public static List<int> StartPathfindingLogic(List<BoardObject> _board, int _boardWidth)
     {
-        Print("Here");
+        // Print("Here");
         BoardWidth = _boardWidth;
         BoardHeight = _board.Count / _boardWidth;
 
@@ -358,6 +358,13 @@ public static class c_PathfindingLogic
             // Take starting position AND remove from CurrentOneConnectors List
             if (CurrentOneConnectors != null && CurrentOneConnectors.Count > 0)
             {
+                if (BoardConnectionsArray[CurrentOneConnectors[0]] > 0)
+                {
+                    Print("Already performed this position");
+                    CurrentOneConnectors.RemoveAt(0);
+                    continue;
+                }
+
                 startingPos = CurrentOneConnectors[0];
                 CurrentOneConnectors.RemoveAt(0);
             }
@@ -369,7 +376,7 @@ public static class c_PathfindingLogic
                 if (CurrentOneConnectors.Count <= 0)
                     Print("Count: " + CurrentOneConnectors.Count);
 
-                // successfulEnd = false;
+                successfulEnd = false;
                 connectionsFilled = true;
 
                 Print("CRASH");
@@ -395,7 +402,7 @@ public static class c_PathfindingLogic
                     if(!_validRightColumnExits.Contains(nextPos))
                         _validRightColumnExits.Add(nextPos);
 
-                    continue;
+                    // continue;
                 }
 
                 // Add the position to the right for future valid checks
@@ -471,7 +478,7 @@ public static class c_PathfindingLogic
 
         if(successfulEnd)
         {
-            // PrintCurrentArray(BoardConnectionsArray);
+            PrintCurrentArray(BoardConnectionsArray);
             _outArray = BoardConnectionsArray;
         }
 
@@ -766,9 +773,10 @@ public static class c_PathfindingLogic
             #endregion Compare & Assign Values
 
             #region Compare in preferred order for lowest score
+            // Due to how I want to prioritize Right / Down / Up / Left order, that is the rule for tiebreakers below (<= instead of <)
             if (rightScore > 0 && rightScore < currScore_)
             {
-                if (rightScore < upScore && rightScore < downScore && rightScore < leftScore)
+                if (rightScore <= upScore && rightScore <= downScore && rightScore <= leftScore)
                 {
                     currPath.Add(rightPos);
                     currValue = _boardReverseFloodFillArray[rightPos];
@@ -780,7 +788,7 @@ public static class c_PathfindingLogic
 
             if (downScore > 0 && downScore < currScore_)
             {
-                if (downScore < upScore && downScore < leftScore && downScore < rightScore)
+                if (downScore <= upScore && downScore <= leftScore && downScore < rightScore)
                 {
                     currPath.Add(downPos);
                     currValue = _boardReverseFloodFillArray[downPos];
@@ -791,7 +799,7 @@ public static class c_PathfindingLogic
 
             if (upScore > 0 && upScore < currScore_)
             {
-                if (upScore < leftScore && upScore < rightScore && upScore < downScore)
+                if (upScore <= leftScore && upScore < rightScore && upScore < downScore)
                 {
                     currPath.Add(upPos);
                     currValue = _boardReverseFloodFillArray[upPos];
