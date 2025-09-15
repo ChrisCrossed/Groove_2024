@@ -1243,6 +1243,7 @@ public class GameLogic : MonoBehaviour
     #endregion Pathfinding Logic
 
     // Update is called once per frame
+    float EscapeTime;
     void Update()
     {
         if(IsGamePlaying)
@@ -1303,25 +1304,11 @@ public class GameLogic : MonoBehaviour
                 HardDrop();
                 ResetGhostBlocks();
 
-                int crashCounter = 0;
-
                 // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
                 while(StartPathfindingLogic())
                 {
                     HardDrop();
                 }
-
-                /*
-                while(StartPathfindingLogic() && crashCounter < 10)
-                {
-                    HardDrop();
-
-                    crashCounter++;
-
-                    if (crashCounter >= 10)
-                        print("CRASH!");
-                }
-                */
 
                 BlockSize nextBlockSize = NextBlockListSize[0];
                 List<BoardObject> nextBlock = GetNextBlock(true);
@@ -1365,6 +1352,27 @@ public class GameLogic : MonoBehaviour
                 TwoByTwoFlip = !TwoByTwoFlip;
 
                 SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
+            }
+
+            if (EscapeTime > 0f)
+            {
+                EscapeTime -= Time.deltaTime;
+
+                if (EscapeTime < 0f)
+                    EscapeTime = 0f;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if(EscapeTime == 0f)
+                {
+                    EscapeTime = 0.5f;
+                }
+                else
+                {
+                    Application.Quit();
+                    print("QUIT");
+                }
             }
         }
     }
