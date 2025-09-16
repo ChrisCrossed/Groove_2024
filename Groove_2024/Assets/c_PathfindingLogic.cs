@@ -655,7 +655,7 @@ public static class c_PathfindingLogic
         // Print("Starting Column Pos: " + currPos);
         // Print("START Flood Fill Loop");
         
-        while(currValue > 2)
+        while(currValue > 1)
         {
             int currArrayPos_ = currPath[currPath.Count - 1];
             int currScore_ = _boardReverseFloodFillArray[currArrayPos_];
@@ -723,6 +723,7 @@ public static class c_PathfindingLogic
             if (rightPos % BoardWidth < BoardWidth)
             {
                 int value = _boardReverseFloodFillArray[rightPos];
+                Print("VALUE: " +  value);
 
                 if(value > 0)
                 {
