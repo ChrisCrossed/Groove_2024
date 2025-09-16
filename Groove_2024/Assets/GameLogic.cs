@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -1330,6 +1331,11 @@ public class GameLogic : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.L))
             {
                 ChangeBoardSize(BoardWidth - 2);
+
+                while (StartPathfindingLogic())
+                {
+                    HardDrop(true);
+                }
                 // BoardLogicScript.ReconstructBackdropArray();
             }
 
@@ -1354,25 +1360,16 @@ public class GameLogic : MonoBehaviour
                 SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
             }
 
-            if (EscapeTime > 0f)
-            {
-                EscapeTime -= Time.deltaTime;
-
-                if (EscapeTime < 0f)
-                    EscapeTime = 0f;
-            }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if(EscapeTime == 0f)
-                {
-                    EscapeTime = 0.5f;
-                }
-                else
+                if(Time.time - EscapeTime < 0.5f)
                 {
                     Application.Quit();
                     print("QUIT");
                 }
+
+                EscapeTime = Time.time;
             }
         }
     }
@@ -1666,11 +1663,16 @@ public class GameLogic : MonoBehaviour
         Console_PrintBoard();
     }
 
-    void HardDrop()
+    void HardDrop(bool staticOnly = false)
     {
         // print("HARD DROP");
 
-        AllBlocksStatic();
+        // In case I only want blocks that are already 'Static' to move, not Active blocks the player has control over.
+        // This will most likely be used for mid-round board size changes, or static-block horizontal shifts.
+        if(!staticOnly)
+        {
+            AllBlocksStatic();
+        }
 
         // Go from left side to right, bottom to top
         for (int x = 0; x < BoardWidth; x++)
