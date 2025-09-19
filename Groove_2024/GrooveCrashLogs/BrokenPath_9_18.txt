@@ -1,0 +1,703 @@
+Pos: 41, 42
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetLeftColumnValidStartPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Pos: 49, 50
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetLeftColumnValidStartPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 6 & 5
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 14 & 13
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Adding: 14
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 22 & 21
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 30 & 29
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 38 & 37
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Adding: 38
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 46 & 45
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Adding: 46
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 54 & 53
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Adding: 54
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 62 & 61
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 70 & 69
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 78 & 77
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 86 & 85
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 94 & 93
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Alpha (Left)
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+41
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+49
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+---
+Alpha (Right)
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+14
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+38
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+46
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+54
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Pos: 25, 26
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetLeftColumnValidStartPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Pos: 57, 58
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetLeftColumnValidStartPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 6 & 5
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 14 & 13
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 22 & 21
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 30 & 29
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 38 & 37
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 46 & 45
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 54 & 53
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 62 & 61
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Adding: 62
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 70 & 69
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 78 & 77
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 86 & 85
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Right Column: Positions 94 & 93
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:GetRightColumnValidEndPoints (BoardObject)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Bravo (Left)
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+25
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+57
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+---
+Bravo (Right)
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+62
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Incoming Valid Column Start: 41
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Count: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+CRASH
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Incoming Valid Column Start: 49
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Already performed this position
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Count: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+CRASH
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+ERROR - No Connection Board Found
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Alpha Values:
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Length: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Best Column Score: 999
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Best Column Array Position: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Successful: False
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+---
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Incoming Valid Column Start: 25
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Incoming Valid Column Start: 57
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:MakeConnectionsBoard (BoardObject,int,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+ERROR - No Connection Board Found
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:FindBestConnectionBoard (BoardObject,System.Collections.Generic.List`1<int>,int[]&,System.Collections.Generic.List`1<int>&)
+c_PathfindingLogic:CycleAllReverseConnectionFloodFillArraysOfType (BoardObject,System.Collections.Generic.List`1<int>)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Bravo Values:
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Length: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Best Column Score: 999
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Best Column Position: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Successful: False
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+---
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+
+Length: 0
+UnityEngine.MonoBehaviour:print (object)
+GameLogic:PF_OutputTest (string)
+c_PathfindingLogic:Print (string)
+c_PathfindingLogic:StartPathfindingLogic (System.Collections.Generic.List`1<BoardObject>,int)
+GameLogic:StartPathfindingLogic ()
+GameLogic:Update ()
+

@@ -74,3 +74,6 @@ crashlytics-build.properties
 /Groove_2024/Library/Bee
 /Groove_2024/Library/PackageCache
 /Groove_2024/Library/ShaderCache
+Groove_2024/Library/SourceAssetDB
+Groove_2024/Library/Search/transactions.db
+Groove_2024/Library/SceneVisibilityState.asset
