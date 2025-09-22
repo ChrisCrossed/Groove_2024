@@ -95,6 +95,8 @@ public static class c_PathfindingLogic
 
         if (hasAlpha)
         {
+            Print("Alpha Vertical Passed");
+
             LeftColumnStartPoints_Alpha = GetLeftColumnValidStartPoints(BoardObject.Alpha_Static);
             RightColumnEndPoints_Alpha = GetRightColumnValidEndPoints(BoardObject.Alpha_Static);
 
@@ -376,7 +378,8 @@ public static class c_PathfindingLogic
                 if (CurrentOneConnectors.Count <= 0)
                     Print("Count: " + CurrentOneConnectors.Count);
 
-                successfulEnd = false;
+                // Why did I apply this override? It's conflicting with successful pathing.
+                // successfulEnd = false;
                 connectionsFilled = true;
 
                 Print("CRASH");

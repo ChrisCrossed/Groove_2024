@@ -166,8 +166,8 @@ public class GameLogic : MonoBehaviour
         // X = Alpha
         // O = Bravo
 
-        SetBoardObjectAtPosition(1, 1, BoardObject.Alpha_Active);
-        BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 1), BoardObject.Alpha_Active);
+        // SetBoardObjectAtPosition(1, 1, BoardObject.Alpha_Active);
+        // BoardLogicScript.AddSquircleToBoard(new Vector2Int(1, 1), BoardObject.Alpha_Active);
 
         List<Vector2Int> alphaPos = new List<Vector2Int>();
         List<Vector2Int> bravoPos = new List<Vector2Int>();
