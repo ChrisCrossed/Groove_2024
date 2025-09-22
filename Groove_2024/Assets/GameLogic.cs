@@ -432,7 +432,8 @@ public class GameLogic : MonoBehaviour
 
         if(finalPathfind != null && finalPathfind.Count > 1)
         {
-            print("Clearing " + finalPathfind.Count + " Blocks");
+            if (BugTestConsoleOutput)
+                print("Clearing " + finalPathfind.Count + " Blocks");
 
             foundPath = true;
 
@@ -442,7 +443,8 @@ public class GameLogic : MonoBehaviour
                 _pos.x = finalPathfind[i] % BoardWidth;
                 _pos.y = finalPathfind[i] / BoardWidth;
 
-                print("Clearing: " + _pos);
+                if (BugTestConsoleOutput) 
+                    print("Clearing: " + _pos);
 
                 SetBoardObjectAtPosition(_pos, BoardObject.Empty);
                 BoardLogicScript.DestroySquircleAtGridPos(_pos);
@@ -1606,7 +1608,9 @@ public class GameLogic : MonoBehaviour
         TileBottomLeftPosition.y -= 1;
 
         LastSoftDropTimeActivated = Time.time;
-        Console_PrintBoard();
+
+        if (BugTestConsoleOutput)
+            Console_PrintBoard();
     }
 
     void HardDrop(bool staticOnly = false)
