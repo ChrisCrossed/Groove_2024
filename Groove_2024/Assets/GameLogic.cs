@@ -1777,6 +1777,20 @@ public class GameLogic : MonoBehaviour
         {
             #region Reduction Logic
 
+            // If Active Blocks are on the far left or right side, shift them inward
+            if(IsGamePlaying)
+            {
+                int blockWidth = 2;
+                if (CurrBlockSize == BlockSize.ThreeWide)
+                    blockWidth = 3;
+
+                if (TileBottomLeftPosition.x == HORIZ_LEFT_WALL_XPos_Playable || TileBottomLeftPosition.x == HORIZ_LEFT_WALL_XPos_Playable - 1)
+                    ShiftRight();
+                else if (TileBottomLeftPosition.x + blockWidth - 1 == HORIZ_RIGHT_WALL_XPos_Playable || TileBottomLeftPosition.x + blockWidth - 2 == HORIZ_RIGHT_WALL_XPos_Playable)
+                    ShiftLeft();
+            }
+
+            // Continue with Reduction Logic
             blocksChangePerSide = Mathf.Abs(blocksChangePerSide);
 
             for (int y = 0; y < BoardHeight; y++)
