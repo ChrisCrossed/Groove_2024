@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 public enum BoardObject
 {
@@ -432,49 +433,96 @@ public class GameLogic : MonoBehaviour
 
         if(finalPathfind != null && finalPathfind.Count > 1)
         {
+            SetGamePlayingState(false);
+
             if (BugTestConsoleOutput)
                 print("Clearing " + finalPathfind.Count + " Blocks");
 
+            DetermineScoreFromScoreLine(finalPathfind);
+
+            StartCoroutine(AnimateScoreLine(finalPathfind));
+
             foundPath = true;
-
-            for (int i = 0; i < finalPathfind.Count; i++)
-            {
-                Vector2Int _pos = new Vector2Int();
-                _pos.x = finalPathfind[i] % BoardWidth;
-                _pos.y = finalPathfind[i] / BoardWidth;
-
-                if (BugTestConsoleOutput) 
-                    print("Clearing: " + _pos);
-
-                SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-                BoardLogicScript.DestroySquircleAtGridPos(_pos);
-            }
         }
         return foundPath;
+    }
 
-        /*
-        if(finalPathfind != null && finalPathfind.Count > 1)
+    void DetermineScoreFromScoreLine(List<int> _finalPathfind)
+    {
+        // When the bool flips, add 1 to mult instead of points
+        bool movingHoriz = true;
+        int points = 1;
+        int mult = 1;
+        Vector2Int prevPos = new Vector2Int(_finalPathfind[0] % BoardWidth, _finalPathfind[0] / BoardWidth);
+
+        for(int i = 1; i < _finalPathfind.Count; i++)
         {
-            SetGamePlayingState(false);
+            Vector2Int nextPos = new Vector2Int(_finalPathfind[i] % BoardWidth, _finalPathfind[i] / BoardWidth);
 
-            for (int i = 0; i < finalPathfind.Count; i++)
+            print(prevPos + ", " + nextPos);
+
+            // If the X position is NOT the same, moving Horizontal.
+            if(prevPos.x != nextPos.x)
             {
-                Vector2Int _pos = new Vector2Int();
-                _pos.x = finalPathfind[i] % BoardWidth;
-                _pos.y = finalPathfind[i] / BoardWidth;
-
-                if (BugTestConsoleOutput)
-                    print("Clearing: " + _pos);
-
-                SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-                BoardLogicScript.DestroySquircleAtGridPos(_pos);
+                if(movingHoriz)
+                {
+                    points++;
+                    print("[x] Adding to Points: " + points);
+                }
+                else
+                {
+                    mult++;
+                    print("[x] Adding to Mult: " + mult);
+                    movingHoriz = !movingHoriz;
+                }
+            }
+            // If the Y position is NOT the same, moving Vertical
+            else if(prevPos.y != nextPos.y)
+            {
+                if(!movingHoriz)
+                {
+                    points++;
+                    print("[y] Adding to Points: " + points);
+                }
+                else
+                {
+                    mult++;
+                    print("[y] Adding to Mult: " + mult);
+                    movingHoriz = !movingHoriz;
+                }
+            }
+            else
+            {
+                print("DETERMINE SCORE FROM SCORELINE: SHOULD NOT BE HERE: " + prevPos + ", " + nextPos);
             }
 
-            HardDrop();
-
-            SetGamePlayingState(true);
+            prevPos = nextPos;
         }
-        */
+
+        print("Total Scoreline Score: [" + points + " x " + mult + "] = " + (points * mult));
+    }
+
+    IEnumerator AnimateScoreLine(List<int> _finalPathfind)
+    {
+        for (int i = 0; i < _finalPathfind.Count; i++)
+        {
+            Vector2Int _pos = new Vector2Int();
+            _pos.x = _finalPathfind[i] % BoardWidth;
+            _pos.y = _finalPathfind[i] / BoardWidth;
+
+            if (BugTestConsoleOutput)
+                print("Clearing: " + _pos);
+
+            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+            BoardLogicScript.DestroySquircleAtGridPos(_pos);
+
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        // SetGamePlayingState(true);
+       
+
+        yield return true;
     }
 
     IEnumerator HardDropPathfindLoop()
