@@ -211,8 +211,8 @@ public class GameLogic : MonoBehaviour
         alphaPos.Add(new Vector2Int(2, 6));
         alphaPos.Add(new Vector2Int(3, 6));
         bravoPos.Add(new Vector2Int(4, 6));
-        alphaPos.Add(new Vector2Int(5, 6));
-        alphaPos.Add(new Vector2Int(6, 6));
+        bravoPos.Add(new Vector2Int(5, 6));
+        bravoPos.Add(new Vector2Int(6, 6));
 
         alphaPos.Add(new Vector2Int(1, 7));
         alphaPos.Add(new Vector2Int(2, 7));
