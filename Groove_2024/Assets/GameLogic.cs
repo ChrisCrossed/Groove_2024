@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
 
 public enum BoardObject
 {
@@ -527,6 +526,78 @@ public class GameLogic : MonoBehaviour
 
     IEnumerator HardDropPathfindLoop()
     {
+        /* Successful Timer Test
+        // Disable player action and Perform HardDrop once
+        SetGamePlayingState(false);
+        bool donePathfinding = false;
+
+        int pretendPathfindingCounter = 3;
+        
+        while(!donePathfinding)
+        {
+            // Run PathfindingLogic and store data
+
+            // If it was successful and the animation is complete, Perform HardDrop, re-run PathfindingLogic, and repeat Animation Loop.
+            if (pretendPathfindingCounter > 0)
+            {
+                pretendPathfindingCounter--;
+                
+                print("Running Pathfinding Process: " + pretendPathfindingCounter);
+
+                // If it's successful, start animation and wait until completion
+                yield return new WaitForSecondsRealtime(1.0f);
+
+                if (pretendPathfindingCounter == 0)
+                {
+                    donePathfinding = true;
+                }
+            }
+        }
+
+        // Wait until entire process is complete, and then Enable player action.
+        SetGamePlayingState(true);
+        */ // Successful Timer Test (END)
+
+
+        /*
+        SetGamePlayingState(false);
+        HardDrop();
+        ResetGhostBlocks();
+
+        // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
+        while (StartPathfindingLogic())
+        {
+            HardDrop();
+        }
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+
+        SetGamePlayingState(true);
+        */
+        
+        /*
+        List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic(Board, BoardWidth);
+        bool foundPath = false;
+
+        // print(finalPathfind == null);
+
+        if (finalPathfind != null && finalPathfind.Count > 1)
+        {
+            SetGamePlayingState(false);
+
+            if (BugTestConsoleOutput)
+                print("Clearing " + finalPathfind.Count + " Blocks");
+
+            DetermineScoreFromScoreLine(finalPathfind);
+
+            StartCoroutine(AnimateScoreLine(finalPathfind));
+
+            foundPath = true;
+        }
+        return foundPath;
+        */
         /*
         bool continuePathfindLoop = true;
 
@@ -1297,6 +1368,9 @@ public class GameLogic : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                StartCoroutine(HardDropPathfindLoop());
+
+                /*
                 SetGamePlayingState(false);
                 HardDrop();
                 ResetGhostBlocks();
@@ -1312,6 +1386,7 @@ public class GameLogic : MonoBehaviour
                 PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
                 
                 SetGamePlayingState(true);
+                */
             }
 
             /// 
