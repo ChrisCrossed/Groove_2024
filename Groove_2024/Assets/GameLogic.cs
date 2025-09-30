@@ -172,11 +172,11 @@ public class GameLogic : MonoBehaviour
         List<Vector2Int> alphaPos = new List<Vector2Int>();
         List<Vector2Int> bravoPos = new List<Vector2Int>();
 
+        bravoPos.Add(new Vector2Int(1, 1));
         bravoPos.Add(new Vector2Int(2, 1));
-        alphaPos.Add(new Vector2Int(1, 1));
-        alphaPos.Add(new Vector2Int(3, 1));
-        alphaPos.Add(new Vector2Int(4, 1));
-        alphaPos.Add(new Vector2Int(5, 1));
+        bravoPos.Add(new Vector2Int(3, 1));
+        bravoPos.Add(new Vector2Int(4, 1));
+        bravoPos.Add(new Vector2Int(5, 1));
         bravoPos.Add(new Vector2Int(6, 1));
 
         bravoPos.Add(new Vector2Int(1, 2));
