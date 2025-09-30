@@ -432,8 +432,6 @@ public class GameLogic : MonoBehaviour
 
         if(finalPathfind != null && finalPathfind.Count > 1)
         {
-            SetGamePlayingState(false);
-
             if (BugTestConsoleOutput)
                 print("Clearing " + finalPathfind.Count + " Blocks");
 
@@ -515,142 +513,57 @@ public class GameLogic : MonoBehaviour
             SetBoardObjectAtPosition(_pos, BoardObject.Empty);
             BoardLogicScript.DestroySquircleAtGridPos(_pos);
 
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds( 2.0f / _finalPathfind.Count );
         }
-
-        // SetGamePlayingState(true);
-       
 
         yield return true;
     }
 
     IEnumerator HardDropPathfindLoop()
     {
-        /* Successful Timer Test
         // Disable player action and Perform HardDrop once
         SetGamePlayingState(false);
+
+        ClearGhostBlockList();
+        HardDrop();
+        
         bool donePathfinding = false;
 
-        int pretendPathfindingCounter = 3;
-        
-        while(!donePathfinding)
+        while (!donePathfinding)
         {
-            // Run PathfindingLogic and store data
+            #region Run one PathfindingLogic loop and store data
+            List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic(Board, BoardWidth);
+            bool foundPath = false;
 
-            // If it was successful and the animation is complete, Perform HardDrop, re-run PathfindingLogic, and repeat Animation Loop.
-            if (pretendPathfindingCounter > 0)
+            if (finalPathfind != null && finalPathfind.Count > 1)
             {
-                pretendPathfindingCounter--;
-                
-                print("Running Pathfinding Process: " + pretendPathfindingCounter);
+                if (BugTestConsoleOutput)
+                    print("Clearing " + finalPathfind.Count + " Blocks");
+
+                DetermineScoreFromScoreLine(finalPathfind);
+
+                StartCoroutine(AnimateScoreLine(finalPathfind));
+
+                foundPath = true;
 
                 // If it's successful, start animation and wait until completion
-                yield return new WaitForSecondsRealtime(1.0f);
-
-                if (pretendPathfindingCounter == 0)
-                {
-                    donePathfinding = true;
-                }
+                yield return new WaitForSecondsRealtime(2.0f);
             }
+            else // If it was successful and the animation is complete, Perform HardDrop, re-run PathfindingLogic, and repeat Animation Loop.
+            {
+                donePathfinding = true;
+            }
+            #endregion Run one PathfindingLogic loop and store data
+
+            HardDrop();
         }
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
 
         // Wait until entire process is complete, and then Enable player action.
         SetGamePlayingState(true);
-        */ // Successful Timer Test (END)
-
-
-        /*
-        SetGamePlayingState(false);
-        HardDrop();
-        ResetGhostBlocks();
-
-        // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
-        while (StartPathfindingLogic())
-        {
-            HardDrop();
-        }
-
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-
-        SetGamePlayingState(true);
-        */
-        
-        /*
-        List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic(Board, BoardWidth);
-        bool foundPath = false;
-
-        // print(finalPathfind == null);
-
-        if (finalPathfind != null && finalPathfind.Count > 1)
-        {
-            SetGamePlayingState(false);
-
-            if (BugTestConsoleOutput)
-                print("Clearing " + finalPathfind.Count + " Blocks");
-
-            DetermineScoreFromScoreLine(finalPathfind);
-
-            StartCoroutine(AnimateScoreLine(finalPathfind));
-
-            foundPath = true;
-        }
-        return foundPath;
-        */
-        /*
-        bool continuePathfindLoop = true;
-
-        // print("HARD DROP PATHFIND LOOP");
-
-        // Reset the RepeatScorelineEvalLength
-        RepeatScorelineEvalLength = 999;
-
-        SetGamePlayingState(false);
-
-        while (continuePathfindLoop)
-        {
-            HardDrop();
-
-            // *IF* I choose to implement mid-field Ghost Blocks, this won't
-            // work prior to Pathfinding, since the mid-field Ghost Blocks
-            // won't allow scoring before being cleared.
-            ResetGhostBlocks();
-
-            // Current longest Alpha / Bravo length.
-            int maxLinePossibility = (BoardHeight - 2) / 2;
-            maxLinePossibility *= (BoardWidth - 4);
-            maxLinePossibility += 2;
-            maxLinePossibility += ((BoardHeight - 2) / 2) - 1;
-
-            if(RepeatScorelineEvalLength < maxLinePossibility)
-            {
-                maxLinePossibility = RepeatScorelineEvalLength;
-                maxLinePossibility += 2;
-                // print("RUNNING SHORTER PATHING: " + maxLinePossibility);
-            }
-
-            c_PathfindingLogic.BeginPathfinding(maxLinePossibility);
-
-            continuePathfindLoop = c_PathfindingLogic.FoundScoreline;
-
-            yield return new WaitForSecondsRealtime(0.25f);
-        }
-
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-
-        SetGamePlayingState(true);
-
-        if (BugTestConsoleOutput)
-        {
-            print("-----------");
-            print("-----------");
-            print("-----------");
-            Console_PrintBoard();
-        }
-        */
 
         yield return true;
     }
