@@ -948,7 +948,10 @@ public class GameLogic : MonoBehaviour
 
             // Reset Ghost Blocks in Left Column if necessary
             if (TileBottomLeftPosition.x == 0)
+            {
                 SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, BoardObject.Ghost);
+                print("Shifting");
+            }
         }
 
         // Set new TileBottomLeftPosition
@@ -1110,6 +1113,7 @@ public class GameLogic : MonoBehaviour
         }
 
         HardDrop(true);
+        ResetGhostBlocks();
     }
 
     void ShiftBoardRight()
@@ -1286,12 +1290,16 @@ public class GameLogic : MonoBehaviour
         foreach (Vector2Int pos in GhostBlockList)
         {
             BoardObject currBoardObject = GetBoardObjectAtPosition(pos);
+
+            // Runs this check for strictly Static blocks to not perform too many overwrites
             if(currBoardObject == BoardObject.Alpha_Static || currBoardObject == BoardObject.Bravo_Static)
             {
                 BoardLogicScript.DestroySquircleAtGridPos(pos);
             }
 
-            SetBoardObjectAtPosition(pos, BoardObject.Ghost);
+            // Ensures that, unless the block is Active, it's *always* reset to Ghost (Hence outside of the 'if' check)
+            if( !(currBoardObject == BoardObject.Alpha_Active || currBoardObject == BoardObject.Bravo_Active) )
+                SetBoardObjectAtPosition(pos, BoardObject.Ghost);
         }
     }
 
