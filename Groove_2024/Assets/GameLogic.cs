@@ -524,8 +524,8 @@ public class GameLogic : MonoBehaviour
         // Disable player action and Perform HardDrop once
         SetGamePlayingState(false);
 
-        ClearGhostBlockList();
         HardDrop();
+        ResetGhostBlocks();
         
         bool donePathfinding = false;
 
@@ -568,659 +568,7 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    /*
-    void BeginPathfinding(int repeatScorelineEvalLength)
-    {
-        bool alphaExists = true;
-        bool bravoExists = true;
-
-        AlphaPathfindList = new List<PathBoardObject>();
-        BravoPathfindList = new List<PathBoardObject>();
-
-        CurrentAlpha = repeatScorelineEvalLength;
-        CurrentBravo = repeatScorelineEvalLength;
-
-        // Number of currently running Alpha / Bravo threads.
-        AlphaThreads = 0;
-        BravoThreads = 0;
-
-        // Pre-load before running next phase
-        FoundScoreline = false;
-
-        // Most efficient Alpha / Bravo lists
-        SuccessfulPathfindList_Alpha = new List<PathBoardObject>();
-        SuccessfulPathfindList_Bravo = new List<PathBoardObject>();
-
-        
-
-        // Run horizontally to see if Static Alpha/Bravo pieces exist in at least each column
-        // TODO: THIS WILL NOT WORK Going forward. 'x < BoardWidth - 1' does not resolve properly for the right wall,
-        // because HardDrop needs to reset ghost blocks so the VertValidationCheck can properly evaluate the right wall.
-        /// for (int x = 0; x < BoardWidth; x++)
-        for (int x = 0; x < BoardWidth - 1; x++)
-        {
-            if(alphaExists)
-            {
-                // Idea: Grab each column '1' Alpha position and add to AlphaPathfindList?
-                // Reset if !tempAlpha?
-
-                // Run through the column looking for Alpha_Static
-                bool tempAlpha = VerticalValidationCheck(x, BoardObject.Alpha_Static);
-                
-                // Didn't find an appropriate piece. Don't continue searching for Static Alpha pieces.
-                if (!tempAlpha)
-                {
-                    // Sets to False without kicking out of loop to check for Bravo
-                    alphaExists = false;
-                }
-                // Only want to apply the following data if in the left playable column, AND we found a tempAlpha
-                else if(x == 1)
-                {
-                    string test = "Alpha: ";
-                    for(int num = 0; num < tempVertXPositions.Count; num++)
-                    {
-                        test += tempVertXPositions[num].ToString() + ", ";
-
-                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
-
-                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        AlphaPathfindList.Add(tempPathingBoardObject);
-                    }
-
-                    if (BugTestConsoleOutput)
-                        print(test);
-                }
-            }
-
-            if(bravoExists)
-            {
-                // Idea: Grab each column '1' Bravo position and add to BravoPathfindList?
-                // Reset if !tempBravo?
-
-                // Run through the column looking for Bravo_Static
-                bool tempBravo = VerticalValidationCheck(x, BoardObject.Bravo_Static);
-
-                if (!tempBravo)
-                {
-                    bravoExists = false;
-                }
-                else if( x == 1 )
-                {
-                    string test = "Bravo: ";
-                    for(int num = 0; num < tempVertXPositions.Count; num++)
-                    {
-                        test += tempVertXPositions[num].ToString() + ", ";
-
-                        PathBoardObject tempPathingBoardObject = new PathBoardObject(new Vector2Int(x, tempVertXPositions[num]), false, true, false, false);
-
-                        // Adds the (1, yPos) vector position to the Pathfind list, which will run the coroutine down below
-                        BravoPathfindList.Add(tempPathingBoardObject);
-                    }
-
-                    if (BugTestConsoleOutput)
-                        print(test);
-                }
-            }
-        }
-
-        if(BugTestConsoleOutput)
-        {
-            print("--------------------");
-            print("Alpha Vertical Test: " + alphaExists);
-            print("Bravo Vertical Test: " + bravoExists);
-            print("--------------------");
-        }
-        
-
-        // This *MUST* be run before moving to the PreloadPathfindBlock section
-        if(alphaExists)
-        {
-            for (int i = 0; i < AlphaPathfindList.Count; i++)
-                ThreadCounter(BoardObject.Alpha_Static, true);
-        }
-        if(bravoExists)
-        {
-            for (int j = 0; j < BravoPathfindList.Count; j++)
-                ThreadCounter(BoardObject.Bravo_Static, true);
-        }
-        
-
-        if (alphaExists)
-        {
-            for(int x = 0; x < AlphaPathfindList.Count; x++)
-            {
-                PreloadPathfindBlock(BoardObject.Alpha_Static, AlphaPathfindList[x]);
-            }
-        }
-
-        if(bravoExists)
-        {
-            for(int x = 0; x < BravoPathfindList.Count; x++)
-            {
-                PreloadPathfindBlock(BoardObject.Bravo_Static, BravoPathfindList[x]);
-            }
-        }
-
-        if(!alphaExists && !bravoExists)
-        {
-            SetGamePlayingState(true);
-        }
-    }
-
-    void PreloadPathfindBlock(BoardObject boardObjectType, PathBoardObject startBlock)
-    {
-        // Using start position & boardObjectType, preload a new List and begin the loop process
-        List<PathBoardObject> pathfindList = new List<PathBoardObject>();
-       
-        PathBoardObject compareBlock = new PathBoardObject();
-        compareBlock = startBlock;
-
-        // If checking to the left && left position is Left Valid Column, don't check it.
-        if (startBlock.LeftValid && startBlock.Position.x - 1 <= HORIZ_LEFT_WALL_XPos_Playable)
-            compareBlock.LeftValid = false;
-
-        if (startBlock.UpValid && startBlock.Position.y >= BoardHeight)
-            compareBlock.DownValid = false;
-
-        if (startBlock.DownValid && startBlock.Position.y == 0)
-            compareBlock.DownValid = false;
-
-        if (startBlock.Position.x == HORIZ_LEFT_WALL_XPos_Playable)
-        {
-            compareBlock.DownValid = false;
-            compareBlock.UpValid = false;
-        }
-
-        pathfindList.Add(compareBlock);
-
-        StartCoroutine(PathfindLogic(boardObjectType, pathfindList));
-    }
-
-    List<PathBoardObject> AlphaPathfindList;
-    List<PathBoardObject> BravoPathfindList;
-    IEnumerator PathfindLogic(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
-    {
-        ///
-        /// Run a 'While True' loop through the logic system. Break out when a successful path is found, OR no possible paths exist.
-        /// 
-
-        bool shouldContinue = true;
-
-        /// START WHILE TRUE
-        while(shouldContinue)
-        {
-            // In case a shorter path has already been found, this path is not good enough. End.
-            if(pathfindList.Count > CheckBestPathfindList(boardObjectType))
-            {
-                if (BugTestConsoleOutput)
-                    print("Path isn't short enough. Closing it off.");
-
-                ThreadCounter(boardObjectType, false);
-                shouldContinue = false;
-                continue;
-            }
-
-            List<PathBoardObject> validBoardObjects = new List<PathBoardObject>();
-
-            PathBoardObject tempBlock = pathfindList[pathfindList.Count - 1];
-            BoardObject evaluationBlock;
-            Vector2Int nextPos = tempBlock.Position;
-
-            // Create temporary positional list using pathfindList in order to compare through for already existing position
-            List<Vector2Int> arrayPositionsList = new List<Vector2Int>();
-            for(int i = 0; i < pathfindList.Count; i++)
-            {
-                arrayPositionsList.Add(pathfindList[i].Position);
-            }
-
-            ///
-            /// Begin comparing all four directions (where appropriate)
-            ///
-
-            
-
-            if (tempBlock.RightValid)
-            {
-                if(nextPos.x < HORIZ_RIGHT_WALL_XPos_Sidewall)
-                {
-                    // Evaluate based on the position to the right
-                    ++nextPos.x;
-
-                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                    // Compares this block to the one passed into the function
-                    if (evaluationBlock != boardObjectType)
-                    {
-                        tempBlock.RightValid = false;
-                    }
-
-                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Right Valid' value wasn't changed above
-                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                    if (arrayPositionsList.Contains(nextPos) && tempBlock.RightValid)
-                    {
-                        tempBlock.RightValid = false;
-                    }
-
-                    if (tempBlock.RightValid)
-                    {
-                        validBoardObjects.Add(new PathBoardObject(nextPos, false, true, true, true));
-
-                        // If this block to the right is valid AND is along the right-hand side of the board, SUCCESS
-                        if (nextPos.x == HORIZ_RIGHT_WALL_XPos_Playable)
-                        {
-                            // Ensure that, when all Threads in the Thread Counter have finished, we progress to ScoreLineLogic
-                            FoundScoreline = true;
-
-                            // pathfindList
-                            validBoardObjects = pathfindList;
-                            validBoardObjects.Add(new PathBoardObject(nextPos, false, false, false, false));
-
-                            SaveSuccessfulPathing(boardObjectType, validBoardObjects);
-                            ThreadCounter(boardObjectType, false);
-                            shouldContinue = false;
-                            continue;
-                        }
-                    }
-                }
-                else tempBlock.RightValid = false;
-            }
-
-            // Resets comparison
-            nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-
-            if (tempBlock.DownValid)
-            {
-                if(nextPos.y > 0)
-                {
-                    // Evaluate based on the position below
-                    --nextPos.y;
-
-                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                    // Compares this block to the one passed into the function
-                    if (evaluationBlock != boardObjectType)
-                    {
-                        tempBlock.DownValid = false;
-                    }
-
-                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Down Valid' value wasn't changed above
-                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                    if (arrayPositionsList.Contains(nextPos) && tempBlock.DownValid)
-                    {
-                        tempBlock.DownValid = false;
-                    }
-
-                    if (tempBlock.DownValid)
-                    {
-                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, false, true));
-                    }
-                }
-                else tempBlock.DownValid = false;
-            }
-
-            // Resets comparison
-            nextPos = pathfindList[pathfindList.Count - 1].Position;
-            
-            if (tempBlock.UpValid)
-            {
-                if (nextPos.y < BoardHeight)
-                {
-                    // Evaluate based on the position above
-                    ++nextPos.y;
-
-                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                    // Compares this block to the one passed into the function
-                    if (evaluationBlock != boardObjectType)
-                    {
-                        tempBlock.UpValid = false;
-                    }
-
-                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Up Valid' value wasn't changed above
-                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                    if (arrayPositionsList.Contains(nextPos) && tempBlock.UpValid)
-                    {
-                        tempBlock.UpValid = false;
-                    }
-
-                    if (tempBlock.UpValid)
-                    {
-                        validBoardObjects.Add(new PathBoardObject(nextPos, true, true, true, false));
-                    }
-                }
-                else tempBlock.UpValid = false;
-            }
-
-            // Resets comparison
-            nextPos = pathfindList[pathfindList.Count - 1].Position;
-
-
-            if (tempBlock.LeftValid)
-            {
-                if(nextPos.x > 0)
-                {
-                    // Evaluate based on the position to the left
-                    --nextPos.x;
-
-                    evaluationBlock = GetBoardObjectAtPosition(nextPos);
-
-                    // Compares this block to the one passed into the function
-                    if (evaluationBlock != boardObjectType)
-                    {
-                        tempBlock.LeftValid = false;
-                    }
-
-                    // Run check that the block being evaluated doesn't already exist in the list, AND ensures the 'Left Valid' value wasn't changed above
-                    // (This is run second under the understanding that .Contains() is expensive, and should not be run if necessary)
-                    if (arrayPositionsList.Contains(nextPos) && tempBlock.LeftValid)
-                    {
-                        tempBlock.LeftValid = false;
-                    }
-
-                    if (tempBlock.LeftValid)
-                    {
-                        validBoardObjects.Add(new PathBoardObject(nextPos, true, false, true, true));
-                    }
-                }
-                else tempBlock.LeftValid = false;
-            }
-
-            if (BugTestConsoleOutput)
-            {
-                print("Valid Positions remaining: " + validBoardObjects.Count);
-
-                if(validBoardObjects.Count > 0)
-                {
-                    print("Valid Positions: ");
-                    foreach (PathBoardObject boardObject in validBoardObjects) { print(boardObject.Position); }
-                }
-            }
-            
-            if(validBoardObjects.Count != 0)
-            {
-                if (validBoardObjects.Count > 1)
-                {
-                    ThreadCounter(boardObjectType, true);
-
-                    // Duplicate thread FIRST, add position[1] in list, and begin new thread
-                    if (BugTestConsoleOutput)
-                        print("Adding " + validBoardObjects[1].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
-                    
-                    List<PathBoardObject> firstNewThread = new List<PathBoardObject>();
-
-                    // This was necessary because the 'original' thread was still being accessed (with the direction change IT had), while ALSO adding the new direction.
-                    // This resolves that.
-                    for(int i = 0; i < pathfindList.Count; i++)
-                        firstNewThread.Add(pathfindList[i]);
-
-                    firstNewThread.Add(validBoardObjects[1]);
-
-                    if (BugTestConsoleOutput)
-                    {
-                        print("THREAD '1'");
-                        PrintAllPositionsInList(firstNewThread);
-                    }
-                    
-                    StartCoroutine(PathfindLogic(boardObjectType, firstNewThread));
-
-                    if(validBoardObjects.Count == 3)
-                    {
-                        ThreadCounter(boardObjectType, true);
-
-                        if (BugTestConsoleOutput)
-                            print("Adding " + validBoardObjects[2].Position + " position to list, AND duplicating " + (validBoardObjects.Count - 1) + " PathfindingLists for thread");
-
-                        List<PathBoardObject> secondNewThread = new List<PathBoardObject>();
-
-                        // This was necessary because the 'original' thread was still being accessed (with the direction change IT had), while ALSO adding the new direction.
-                        // This resolves that.
-                        for (int i = 0; i < pathfindList.Count; i++)
-                            secondNewThread.Add(pathfindList[i]);
-
-                        secondNewThread.Add(validBoardObjects[2]);
-
-                        if (BugTestConsoleOutput)
-                        {
-                            PrintAllPositionsInList(secondNewThread);
-                        }
-
-                        StartCoroutine(PathfindLogic(boardObjectType, secondNewThread));
-                    }
-                }
-
-                // Default for the first valid new block position
-                if (BugTestConsoleOutput)
-                {
-                    print("Adding " + validBoardObjects[0].Position + " position to list. Continuing this thread. Length: " + pathfindList.Count);
-                }
-                    
-                pathfindList.Add(validBoardObjects[0]);
-
-                if (BugTestConsoleOutput)
-                {
-                    PrintAllPositionsInList(pathfindList);
-                }
-
-            }
-            else
-            {
-                ThreadCounter(boardObjectType, false);
-
-                // Ends thread.
-                shouldContinue = false;
-            }
-        }
-
-        yield return false;
-    }
-
     
-
-    /// <summary>
-    /// Used to determine if every column has at least one valid piece
-    /// </summary>
-    /// <param name="_boardObject">The piece to compare against for validity</param>
-    /// <returns></returns>
-    List<int> tempVertXPositions;
-    int numEachColumn_Alpha;
-    int numEachColumn_Bravo;
-    bool VerticalValidationCheck(int _x, BoardObject _boardObject)
-    {
-        BoardObject tempObject;
-        bool validColumn = false;
-        tempVertXPositions = new List<int>();
-
-        numEachColumn_Alpha = 0;
-        numEachColumn_Bravo = 0;
-
-        // Run vertically. If a static (or Sidewall) exists, continue
-        for (int y = 0; y < BoardHeight; y++)
-        {
-            // If we haven't found a successful BoardObject yet, continue the check
-            tempObject = GetBoardObjectAtPosition(_x, y);
-
-            // If on the far sides of the board, AND is a Sidewall, keep searching
-            if (_x == 0 || _x == BoardWidth - 1)
-            {
-                if (tempObject == BoardObject.Ghost || tempObject == _boardObject)
-                {
-                    validColumn = true;
-
-                    // Force exit to next column to check
-                    y = BoardHeight;
-                }
-            }
-            // All other normal board positions. Check accordingly.
-            else
-            {
-                if (tempObject == _boardObject)
-                {
-                    validColumn = true;
-
-                    if(_x != 1)
-                    {
-                        // Force exit to next column to check
-                        y = BoardHeight;
-
-                        if(_boardObject == BoardObject.Alpha_Static)
-                            numEachColumn_Alpha++;
-                    }
-                    else
-                    {
-                        // If the 1st column, get all valid vertical positions (not just the first one) to populate into Pathfinding Check.
-                        tempVertXPositions.Add(y);
-
-                        // TODO: Only add 1 to each Alpha / Bravo count for the sake of future evaluation
-
-
-
-                        // NOTE: During pathfinding, compare blocks y+1 & y-1 in x == 1 coordinate when x+1 is NOT valid (Basically, check to see if L shape start happens, and remove the possibility)
-                        // 
-                        // [X] [_] [_] <- Remove from Pathfinding
-                        // [X] [X] [X]
-                        // [X] [_] [_] <- Remove from Pathfinding
-                    }
-                }
-            }
-        }
-
-        return validColumn;
-    }
-
-    /// <summary>
-    /// Used to determine if every column has at least one valid piece. Returns the best column for future evaluation.
-    /// </summary>
-    /// <param name="_boardObject">The piece to compare against for validity</param>
-    /// <returns></returns>
-    
-    List<PathBoardObject> SuccessfulPathfindList_Alpha;
-    List<PathBoardObject> SuccessfulPathfindList_Bravo;
-    void SaveSuccessfulPathing(BoardObject boardObjectType, List<PathBoardObject> pathfindList)
-    {
-        if (BugTestConsoleOutput)
-            print("Saving Successful Pathing: " + boardObjectType.ToString());
-
-        if(boardObjectType == BoardObject.Alpha_Static)
-        {
-            if(pathfindList.Count < CurrentAlpha)
-            {
-                SuccessfulPathfindList_Alpha = pathfindList;
-                CurrentAlpha = SuccessfulPathfindList_Alpha.Count;
-            }
-        }
-        else if(boardObjectType == BoardObject.Bravo_Static)
-        {
-            if (pathfindList.Count < CurrentBravo)
-            {
-                SuccessfulPathfindList_Bravo = pathfindList;
-                CurrentBravo = SuccessfulPathfindList_Bravo.Count;
-            }
-        }
-
-        if (BugTestConsoleOutput)
-        {
-            string output = "Saved: " + boardObjectType.ToString() + ": ";
-            for (int i = 0; i < pathfindList.Count; i++)
-            {
-                output += pathfindList[i].Position.ToString() + ", ";
-            }
-            print(output);
-        }
-    }
-
-    int CurrentAlpha = 99;
-    int CurrentBravo = 99;
-    int CheckBestPathfindList(BoardObject boardObjectType)
-    {
-        int returnNum = 99;
-
-        if (boardObjectType == BoardObject.Alpha_Static)
-            returnNum = CurrentAlpha;
-        else if (boardObjectType == BoardObject.Bravo_Static)
-            returnNum = CurrentBravo;
-
-        return returnNum;
-    }
-
-    int AlphaThreads = 0;
-    int BravoThreads = 0;
-    void ThreadCounter(BoardObject boardObjectType, bool increment)
-    {
-        if ( boardObjectType == BoardObject.Alpha_Static )
-        {
-            if (increment)
-                AlphaThreads++;
-            else AlphaThreads--;
-
-            if (BugTestConsoleOutput)
-                print("Thread Counter: " + boardObjectType.ToString() + " has " + AlphaThreads + " remaining");
-        }
-        else if (boardObjectType == BoardObject.Bravo_Static)
-        {
-            if (increment)
-                BravoThreads++;
-            else BravoThreads--;
-
-            if (BugTestConsoleOutput)
-                print("Thread Counter: " + boardObjectType.ToString() + " has " + BravoThreads + " remaining");
-        }
-
-        if (AlphaThreads == 0 && BravoThreads == 0)
-        {
-            // FoundScoreLine is enabled when 1+ successful lines have been found.
-            if (FoundScoreline)
-            {
-                ScoreLineLogic();
-
-                SetGamePlayingState(true);
-            }
-        }
-    }
-
-    bool FoundScoreline;
-    int RepeatScorelineEvalLength;
-    void ScoreLineLogic()
-    {
-        // Still determining if I want to score the longer of 2+ lines, or the one closer to the bottom.
-        // Logic exists for the 2+ lines, but gonna prioritize the closest to the bottom for now.
-
-        int alphaLine_YPos = -1;
-        int bravoLine_YPos = -1;
-
-        if(SuccessfulPathfindList_Alpha.Count > 0)
-            alphaLine_YPos = AlphaPathfindList[AlphaPathfindList.Count - 1].Position.y;
-
-        if(SuccessfulPathfindList_Bravo.Count > 0)
-            bravoLine_YPos = SuccessfulPathfindList_Bravo[SuccessfulPathfindList_Bravo.Count - 1].Position.y;
-
-        List<PathBoardObject> ChosenPathfindList = SuccessfulPathfindList_Alpha;
-        
-        // If a scoreline for each type exist, pick the one closer to the bottom.
-        if (bravoLine_YPos != -1)
-        {
-            if(bravoLine_YPos < alphaLine_YPos || alphaLine_YPos == -1)
-            ChosenPathfindList = SuccessfulPathfindList_Bravo;
-        }
-
-        for(int i = 0; i < ChosenPathfindList.Count; i++)
-        {
-            Vector2Int _pos = ChosenPathfindList[i].Position;
-
-            if (BugTestConsoleOutput)
-                print("Clearing: " + _pos);
-
-            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-            BoardLogicScript.DestroySquircleAtGridPos(_pos);
-        }
-
-        // In case a second evaluation is run, this count is used to limit Scoreline Check
-        // Hopefully stops infinite loops
-        RepeatScorelineEvalLength = ChosenPathfindList.Count;
-    }
-
-    */
-
     #endregion Pathfinding Logic
 
     // Update is called once per frame
@@ -1300,6 +648,11 @@ public class GameLogic : MonoBehaviour
                 
                 SetGamePlayingState(true);
                 */
+            }
+
+            if(Input.GetKeyDown(KeyCode.G))
+            {
+                ShiftBoardLeft();
             }
 
             /// 
@@ -1706,6 +1059,51 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+
+    void ShiftBoardLeft()
+    {
+        // TODO: Bug - When I shift the board with Active Blocks in the ghost columns, fake block models remain in the column
+
+        // In the future, I'm probably only going as high as 2 or 3 rows below the top.
+        for (int x = 1; x < BoardWidth_Maximum + 1; x++)
+        {
+            for(int y = 0; y < BoardHeight_Maximum; y++)
+            {
+                Vector2Int gridPos = new Vector2Int(x, y);
+                
+                Vector2Int nextPos = gridPos;
+                nextPos.x -= 1;
+                
+                print("Pos: " + gridPos);
+
+                BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
+                BoardObject nextBlockObj = GetBoardObjectAtPosition(nextPos);
+
+                if (blockToShift == BoardObject.Alpha_Active || blockToShift == BoardObject.Bravo_Active || blockToShift == BoardObject.Ghost)
+                    continue;
+
+                if (nextBlockObj == BoardObject.Alpha_Active || nextBlockObj == BoardObject.Bravo_Active)
+                    continue;
+
+                SetBoardObjectAtPosition(x - 1, y, blockToShift);
+                SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+
+                // Board Logic Squircle Object Manipulation
+                if(blockToShift != BoardObject.Empty)
+                {
+                    BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Left);
+                }
+            }
+        }
+
+        HardDrop(true);
+        ResetGhostBlocks();
+    }
+
+    void ShiftBoardRight()
+    {
+        // HardDrop StaticOnly (just in case)
+    }
 
     #endregion Block Manipulation
 
