@@ -892,6 +892,10 @@ public class GameLogic : MonoBehaviour
         for (int y = 0; y < height; y++)
         {
             SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, BoardObject.Empty);
+
+            // Reset Ghost Blocks in Right Column if necessary
+            if (TileBottomLeftPosition.x + width - 1 == HORIZ_RIGHT_WALL_XPos_Sidewall)
+                SetBoardObjectAtPosition(TileBottomLeftPosition.x + width - 1, TileBottomLeftPosition.y + y, BoardObject.Ghost);
         }
 
         // Set new TileBottomLeftPosition
@@ -941,6 +945,10 @@ public class GameLogic : MonoBehaviour
         for (int y = 0; y < height; y++)
         {
             SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, BoardObject.Empty);
+
+            // Reset Ghost Blocks in Left Column if necessary
+            if (TileBottomLeftPosition.x == 0)
+                SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + y, BoardObject.Ghost);
         }
 
         // Set new TileBottomLeftPosition
@@ -1076,16 +1084,14 @@ public class GameLogic : MonoBehaviour
             for(int y = 0; y < BoardHeight_Maximum; y++)
             {
                 Vector2Int gridPos = new Vector2Int(x, y);
-                
+
                 Vector2Int nextPos = gridPos;
                 nextPos.x -= 1;
-                
-                print("Pos: " + gridPos);
 
                 BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
                 BoardObject nextBlockObj = GetBoardObjectAtPosition(nextPos);
 
-                if (blockToShift == BoardObject.Alpha_Active || blockToShift == BoardObject.Bravo_Active || blockToShift == BoardObject.Ghost)
+                if (blockToShift == BoardObject.Alpha_Active || blockToShift == BoardObject.Bravo_Active)
                     continue;
 
                 if (nextBlockObj == BoardObject.Alpha_Active || nextBlockObj == BoardObject.Bravo_Active)
@@ -1095,15 +1101,15 @@ public class GameLogic : MonoBehaviour
                 SetBoardObjectAtPosition(x, y, BoardObject.Empty);
 
                 // Board Logic Squircle Object Manipulation
-                if(blockToShift != BoardObject.Empty)
+                if (blockToShift != BoardObject.Empty)
                 {
+                    print(gridPos);
                     BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Left);
                 }
             }
         }
 
         HardDrop(true);
-        ResetGhostBlocks();
     }
 
     void ShiftBoardRight()
