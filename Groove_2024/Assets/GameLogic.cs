@@ -519,12 +519,12 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    IEnumerator HardDropPathfindLoop()
+    IEnumerator HardDropPathfindLoop(bool _forBoardResizing = false)
     {
         // Disable player action and Perform HardDrop once
         SetGamePlayingState(false);
 
-        HardDrop();
+        HardDrop(_forBoardResizing);
         ResetGhostBlocks();
         
         bool donePathfinding = false;
@@ -555,13 +555,16 @@ public class GameLogic : MonoBehaviour
             }
             #endregion Run one PathfindingLogic loop and store data
 
-            HardDrop();
+            HardDrop(_forBoardResizing);
         }
 
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-
+        if(!_forBoardResizing)
+        {
+            BlockSize nextBlockSize = NextBlockListSize[0];
+            List<BoardObject> nextBlock = GetNextBlock(true);
+            PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+        }
+        
         // Wait until entire process is complete, and then Enable player action.
         SetGamePlayingState(true);
 
@@ -669,11 +672,13 @@ public class GameLogic : MonoBehaviour
             {
                 ChangeBoardSize(BoardWidth - 2);
 
+                StartCoroutine( HardDropPathfindLoop(true) );
+                /*
                 while (StartPathfindingLogic())
                 {
                     HardDrop(true);
                 }
-                // BoardLogicScript.ReconstructBackdropArray();
+                */
             }
 
             if(Input.GetKeyDown(KeyCode.M))
@@ -1065,7 +1070,8 @@ public class GameLogic : MonoBehaviour
         // TODO: Bug - When I shift the board with Active Blocks in the ghost columns, fake block models remain in the column
 
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
-        for (int x = 1; x < BoardWidth_Maximum + 1; x++)
+        // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
+        for (int x = 1; x < HORIZ_RIGHT_WALL_XPos_Sidewall; x++)
         {
             for(int y = 0; y < BoardHeight_Maximum; y++)
             {
