@@ -633,59 +633,34 @@ public class GameLogic : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 StartCoroutine(HardDropPathfindLoop());
-
-                /*
-                SetGamePlayingState(false);
-                HardDrop();
-                ResetGhostBlocks();
-
-                // StartCoroutine(PerformTimedAction(StartPathfindingLogic));
-                while(StartPathfindingLogic())
-                {
-                    HardDrop();
-                }
-
-                BlockSize nextBlockSize = NextBlockListSize[0];
-                List<BoardObject> nextBlock = GetNextBlock(true);
-                PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
-                
-                SetGamePlayingState(true);
-                */
             }
 
             if(Input.GetKeyDown(KeyCode.G))
             {
                 ShiftBoardLeft();
             }
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                ShiftBoardRight();
+            }
 
             /// 
             /// TESTING
             ///
 
-            if(Input.GetKeyDown(KeyCode.K))
+            if (Input.GetKeyDown(KeyCode.K))
             {
                 ChangeBoardSize(BoardWidth + 2);
-                // BoardLogicScript.ReconstructBackdropArray();
             }
 
             if(Input.GetKeyDown(KeyCode.L))
             {
                 ChangeBoardSize(BoardWidth - 2);
-
-                StartCoroutine( HardDropPathfindLoop(true) );
-                /*
-                while (StartPathfindingLogic())
-                {
-                    HardDrop(true);
-                }
-                */
             }
 
             if(Input.GetKeyDown(KeyCode.M))
             {
                 TEST_PresetBoard();
-
-                // StartCoroutine(HardDropPathfindLoop());
             }
 
             if(Input.GetKeyDown(KeyCode.O))
@@ -1078,8 +1053,6 @@ public class GameLogic : MonoBehaviour
 
     void ShiftBoardLeft()
     {
-        // TODO: Bug - When I shift the board with Active Blocks in the ghost columns, fake block models remain in the column
-
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
         for (int x = 1; x < HORIZ_RIGHT_WALL_XPos_Sidewall; x++)
@@ -1118,7 +1091,40 @@ public class GameLogic : MonoBehaviour
 
     void ShiftBoardRight()
     {
-        // HardDrop StaticOnly (just in case)
+        // In the future, I'm probably only going as high as 2 or 3 rows below the top.
+        // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
+        for (int x = HORIZ_RIGHT_WALL_XPos_Sidewall - 1; x > 0; x--)
+        {
+            for (int y = 0; y < BoardHeight_Maximum; y++)
+            {
+                Vector2Int gridPos = new Vector2Int(x, y);
+
+                Vector2Int nextPos = gridPos;
+                nextPos.x += 1;
+
+                BoardObject blockToShift = GetBoardObjectAtPosition(gridPos);
+                BoardObject nextBlockObj = GetBoardObjectAtPosition(nextPos);
+
+                if (blockToShift == BoardObject.Alpha_Active || blockToShift == BoardObject.Bravo_Active)
+                    continue;
+
+                if (nextBlockObj == BoardObject.Alpha_Active || nextBlockObj == BoardObject.Bravo_Active)
+                    continue;
+
+                SetBoardObjectAtPosition(x + 1, y, blockToShift);
+                SetBoardObjectAtPosition(x, y, BoardObject.Empty);
+
+                // Board Logic Squircle Object Manipulation
+                if (blockToShift != BoardObject.Empty)
+                {
+                    print(gridPos);
+                    BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Right);
+                }
+            }
+        }
+
+        HardDrop(true);
+        ResetGhostBlocks();
     }
 
     #endregion Block Manipulation
@@ -1175,20 +1181,22 @@ public class GameLogic : MonoBehaviour
         int oldHeight = BoardHeight;
 
         int widthDiff = _newBoardWidth - oldWidth;
+        bool boardExpands = false;
         
         if (widthDiff == 0)
-        {
             return;
-        }
+        else if(Math.Sign(widthDiff) == 1)
+            boardExpands = true;
 
-        ClearGhostBlockList();
+
+            ClearGhostBlockList();
 
         List<BoardObject> tempBoard = new List<BoardObject>();
 
         int blocksChangePerSide = widthDiff / 2;
 
 
-        if (Mathf.Sign(widthDiff) == 1)
+        if (boardExpands)
         {
             #region Expansion Logic
             for (int y = 0; y < BoardHeight; y++)
@@ -1258,7 +1266,7 @@ public class GameLogic : MonoBehaviour
         // Change the TileBottomLeftPosition afterward so it doesn't get modified by the Y-pos loop
         for(int i = 0; i < Math.Abs(blocksChangePerSide); i++)
         {
-            if(Math.Sign(widthDiff) == 1)
+            if(boardExpands)
             {
                 TileBottomLeftPosition.x++;
             }
@@ -1282,6 +1290,12 @@ public class GameLogic : MonoBehaviour
         {
             SetGhostBlock(0, y);
             SetGhostBlock(BoardWidth - 1, y);
+        }
+
+        // Board Contracts, run a Pathfinding Loop
+        if(!boardExpands)
+        {
+            StartCoroutine(HardDropPathfindLoop(true));
         }
     }
 
