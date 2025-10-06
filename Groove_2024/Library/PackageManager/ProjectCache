@@ -5,29 +5,29 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638881530785357428
-    m_Hash: 4040761066
+      ticks: 638953065688876903
+    m_Hash: 1741527401
   m_LockFileStatus:
     m_FilePath: D:/GIT_FILES/Groove_2024/Groove_2024/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638881530785357428
-    m_Hash: 470092588
+      ticks: 638953066050458151
+    m_Hash: 2263902610
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
 m_ProjectPath: D:/GIT_FILES/Groove_2024/Groove_2024/Packages
-m_EditorVersion: 2022.3.23f1 (dbb3f7c5b5c6)
+m_EditorVersion: 2022.3.62f2 (7670c08855a9)
 m_ResolvedPackages:
-- packageId: com.unity.collab-proxy@2.3.1
+- packageId: com.unity.collab-proxy@2.7.1
   testable: 0
   isDirectDependency: 1
-  version: 2.3.1
+  version: 2.7.1
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.collab-proxy@2.3.1
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.collab-proxy@2.7.1
   assetPath: Packages/com.unity.collab-proxy
   name: com.unity.collab-proxy
   displayName: Version Control
@@ -36,7 +36,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: Editor
-  type: assets
+  type: 
   description: The package gives you the ability to use Unity Version Control in
     the Unity editor. To use Unity Version Control, a subscription is required. Learn
     more about how you can get started for free by visiting https://unity.com/solutions/version-control
@@ -127,19 +127,13 @@ m_ResolvedPackages:
     - 2.9.2
     - 2.9.3
     compatible:
-    - 2.3.1
-    - 2.4.3
-    - 2.4.4
-    - 2.5.1
-    - 2.5.2
-    - 2.6.0
     - 2.7.1
     - 2.8.1
     - 2.8.2
     - 2.9.1
     - 2.9.2
     - 2.9.3
-    recommended: 2.3.1
+    recommended: 2.7.1
     deprecated: []
   dependencies: []
   resolvedDependencies: []
@@ -158,6 +152,7 @@ m_ResolvedPackages:
   - teams
   - version
   - vcs
+  - uvcs
   registry:
     id: main
     name: 
@@ -168,22 +163,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638448201880000000
-  documentationUrl: https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.3/manual/index.html
+  datePublishedTicks: 638751271186710000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.7/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.cloud.collaborate.git
-    revision: 613362ccb4468f55ee42e0a35809fb9a61f3f8f1
+    revision: cf9c21f84be18cbe2d6a93ec7cfbeb01b4310bbe
     path: 
   unityLifecycle:
-    version: 2.3.1
+    version: 2.7.1
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.feature.development@1.0.1
   testable: 0
   isDirectDependency: 1
@@ -239,17 +235,17 @@ m_ResolvedPackages:
   - name: com.unity.modules.jsonserialize
     version: 1.0.0
   - name: com.unity.ide.rider
-    version: 3.0.28
+    version: 3.0.36
   - name: com.unity.ide.vscode
     version: 1.2.5
   - name: com.unity.editorcoroutines
     version: 1.0.0
   - name: com.unity.performance.profile-analyzer
-    version: 1.2.2
+    version: 1.2.3
   - name: com.unity.testtools.codecoverage
-    version: 1.2.5
+    version: 1.2.6
   - name: com.unity.settings-manager
-    version: 2.0.1
+    version: 2.1.0
   keywords: []
   registry:
     id: main
@@ -277,6 +273,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.probuilder@5.2.4
   testable: 0
   isDirectDependency: 1
@@ -364,8 +361,6 @@ m_ResolvedPackages:
     - 6.0.6
     - 6.0.7
     compatible:
-    - 5.2.2
-    - 5.2.3
     - 5.2.4
     recommended: 5.2.4
     deprecated: []
@@ -382,7 +377,7 @@ m_ResolvedPackages:
   - name: com.unity.modules.physics
     version: 1.0.0
   - name: com.unity.settings-manager
-    version: 2.0.1
+    version: 2.1.0
   keywords:
   - 3d
   - model
@@ -423,19 +418,20 @@ m_ResolvedPackages:
     revision: 69b6a742acb6d7698c33f4f0a4d55ad39e17f096
     path: 
   unityLifecycle:
-    version: 5.2.2
+    version: 5.2.4
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.textmeshpro@3.0.6
+  fingerprint: 
+- packageId: com.unity.textmeshpro@3.0.7
   testable: 0
   isDirectDependency: 1
-  version: 3.0.6
+  version: 3.0.7
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.textmeshpro@3.0.6
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.textmeshpro@3.0.7
   assetPath: Packages/com.unity.textmeshpro
   name: com.unity.textmeshpro
   displayName: TextMeshPro
@@ -444,7 +440,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: Text Rendering
-  type: asset
+  type: assets
   description: 'TextMeshPro is the ultimate text solution for Unity. It''s the perfect
     replacement for Unity''s UI Text and the legacy Text Mesh.
 
@@ -568,7 +564,6 @@ m_ResolvedPackages:
     - 4.0.0-pre.1
     - 4.0.0-pre.2
     compatible:
-    - 3.0.6
     - 3.0.7
     - 3.0.8
     - 3.0.9
@@ -615,28 +610,29 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 637547111200000000
-  documentationUrl: 
+  datePublishedTicks: 638410382150000000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.textmeshpro@3.0/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.textmeshpro.git
-    revision: 01e57e3b7de18af9dfe9baaa0a0ff5cc4765c899
+    revision: 5c364f204e10eaec84fcbff640ad4d833774c1ed
     path: 
   unityLifecycle:
-    version: 3.0.6
+    version: 3.0.7
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.timeline@1.7.6
+  fingerprint: 
+- packageId: com.unity.timeline@1.7.7
   testable: 0
   isDirectDependency: 1
-  version: 1.7.6
+  version: 1.7.7
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.timeline@1.7.6
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.timeline@1.7.7
   assetPath: Packages/com.unity.timeline
   name: com.unity.timeline
   displayName: Timeline
@@ -645,7 +641,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: assets
+  type: 
   description: Use Unity Timeline to create cinematic content, game-play sequences,
     audio sequences, and complex particle effects.
   status: 0
@@ -742,7 +738,6 @@ m_ResolvedPackages:
     - 1.8.8
     - 1.8.9
     compatible:
-    - 1.7.6
     - 1.7.7
     - 1.8.0
     - 1.8.1
@@ -790,22 +785,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638326112840000000
+  datePublishedTicks: 638767785867400000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.timeline@1.7/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.timeline.git
-    revision: 02f49ada64a9f88044207cf42ba407dc634ef8e6
+    revision: 36c3480685dcb744f098f1a1efe0623247ffab49
     path: 
   unityLifecycle:
-    version: 1.7.6
+    version: 1.7.7
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.ugui@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -881,12 +877,13 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.visualscripting@1.9.2
+  fingerprint: 
+- packageId: com.unity.visualscripting@1.9.4
   testable: 0
   isDirectDependency: 1
-  version: 1.9.2
+  version: 1.9.4
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.visualscripting@1.9.2
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.visualscripting@1.9.4
   assetPath: Packages/com.unity.visualscripting
   name: com.unity.visualscripting
   displayName: Visual Scripting
@@ -938,7 +935,6 @@ m_ResolvedPackages:
     - 1.9.7
     - 1.9.8
     compatible:
-    - 1.9.2
     - 1.9.4
     - 1.9.5
     - 1.9.6
@@ -972,22 +968,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638452551610000000
+  datePublishedTicks: 638488567680000000
   documentationUrl: 
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.visualscripting.git
-    revision: 0dd874ef58a75ee4b4df6a81e65230e2602096a3
+    revision: 41aac2b7038c2b1259c546329890d3736ce2394e
     path: 
   unityLifecycle:
-    version: 1.9.2
+    version: 1.9.4
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.ai@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1043,6 +1040,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.androidjni@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1097,6 +1095,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.animation@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1152,6 +1151,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.assetbundle@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1207,6 +1207,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.audio@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1262,6 +1263,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.cloth@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1321,6 +1323,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.director@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1384,6 +1387,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.imageconversion@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1440,6 +1444,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.imgui@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1495,6 +1500,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.jsonserialize@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1550,6 +1556,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.particlesystem@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1605,6 +1612,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.physics@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1660,6 +1668,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.physics2d@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1715,6 +1724,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.screencapture@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1774,6 +1784,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.terrain@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1829,6 +1840,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.terrainphysics@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1892,6 +1904,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.tilemap@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -1950,6 +1963,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.ui@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2005,6 +2019,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.uielements@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2072,6 +2087,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.umbra@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2127,6 +2143,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unityanalytics@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2190,6 +2207,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unitywebrequest@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2245,6 +2263,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unitywebrequestassetbundle@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2308,6 +2327,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unitywebrequestaudio@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2371,6 +2391,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unitywebrequesttexture@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2434,6 +2455,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.unitywebrequestwww@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2513,6 +2535,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.vehicles@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2572,6 +2595,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.video@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2639,6 +2663,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.vr@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2708,6 +2733,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.wind@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2763,6 +2789,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.xr@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -2830,6 +2857,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.modules.subsystems@1.0.0
   testable: 0
   isDirectDependency: 0
@@ -2889,12 +2917,13 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.settings-manager@2.0.1
+  fingerprint: 
+- packageId: com.unity.settings-manager@2.1.0
   testable: 0
   isDirectDependency: 0
-  version: 2.0.1
+  version: 2.1.0
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.settings-manager@2.0.1
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.settings-manager@2.1.0
   assetPath: Packages/com.unity.settings-manager
   name: com.unity.settings-manager
   displayName: Settings Manager
@@ -2903,7 +2932,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: asset
+  type: 
   description: A framework for making any serializable field a setting, complete
     with a pre-built settings interface.
   status: 0
@@ -2920,9 +2949,8 @@ m_ResolvedPackages:
     - 2.0.1
     - 2.1.0
     compatible:
-    - 2.0.1
     - 2.1.0
-    recommended: 2.0.1
+    recommended: 2.1.0
     deprecated: []
   dependencies: []
   resolvedDependencies: []
@@ -2937,22 +2965,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 637744099390000000
-  documentationUrl: 
+  datePublishedTicks: 638792046006940000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.settings-manager@2.1/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.com/Unity-Technologies/com.unity.settings-manager.git
-    revision: 9b7c12d04ef880168151c127fd6b37b5931197dc
+    revision: 6eb5ed85eaf3276cc09f0cc4fc3311c72f0fc196
     path: 
   unityLifecycle:
-    version: 2.0.1
+    version: 2.1.0
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.ide.visualstudio@2.0.22
   testable: 0
   isDirectDependency: 0
@@ -3044,12 +3073,13 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.ide.rider@3.0.28
+  fingerprint: 
+- packageId: com.unity.ide.rider@3.0.36
   testable: 0
   isDirectDependency: 0
-  version: 3.0.28
+  version: 3.0.36
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.ide.rider@3.0.28
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.ide.rider@3.0.36
   assetPath: Packages/com.unity.ide.rider
   name: com.unity.ide.rider
   displayName: JetBrains Rider Editor
@@ -3058,7 +3088,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: assets
+  type: 
   description: The JetBrains Rider Editor package provides an integration for using
     the JetBrains Rider IDE as a code editor for Unity. It adds support for generating
     .csproj files for code completion and auto-discovery of installations.
@@ -3115,10 +3145,6 @@ m_ResolvedPackages:
     - 3.0.37
     - 3.0.38
     compatible:
-    - 3.0.28
-    - 3.0.31
-    - 3.0.34
-    - 3.0.35
     - 3.0.36
     - 3.0.37
     - 3.0.38
@@ -3142,22 +3168,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638447139880000000
+  datePublishedTicks: 638799562419060000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.ide.rider@3.0/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.ide.rider.git
-    revision: f4880c72477e9bbd7321c0dbda4428fa10d916df
+    revision: b5315083ab3861d21f6ab2ed0d9514daf04bf208
     path: 
   unityLifecycle:
-    version: 3.0.28
+    version: 3.0.36
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.ide.vscode@1.2.5
   testable: 0
   isDirectDependency: 0
@@ -3226,6 +3253,7 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.editorcoroutines@1.0.0
   testable: 0
   isDirectDependency: 0
@@ -3293,12 +3321,13 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.performance.profile-analyzer@1.2.2
+  fingerprint: 
+- packageId: com.unity.performance.profile-analyzer@1.2.3
   testable: 0
   isDirectDependency: 0
-  version: 1.2.2
+  version: 1.2.3
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.performance.profile-analyzer@1.2.2
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.performance.profile-analyzer@1.2.3
   assetPath: Packages/com.unity.performance.profile-analyzer
   name: com.unity.performance.profile-analyzer
   displayName: Profile Analyzer
@@ -3307,7 +3336,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: asset
+  type: 
   description: "The Profile Analyzer tool supports the standard Unity Profiler. You
     can use it to analyze multiple frames and multiple data sets of the CPU data
     in the Profiler.\n\nMain features: \n\u25AA Multi-frame analysis of a single
@@ -3333,7 +3362,6 @@ m_ResolvedPackages:
     - 1.2.2
     - 1.2.3
     compatible:
-    - 1.2.2
     - 1.2.3
     recommended: 1.2.3
     deprecated: []
@@ -3350,22 +3378,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638108624620000000
+  datePublishedTicks: 638699545898200000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.performance.profile-analyzer@1.2/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.performance.profile-analyzer.git
-    revision: 2c63f931588caa60a1fef33b1b250b20d952dc58
+    revision: 835e61d94bd201d0dea5763dff75e86b6b61de29
     path: 
   unityLifecycle:
-    version: 1.2.2
+    version: 1.2.3
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.test-framework@1.1.33
   testable: 0
   isDirectDependency: 0
@@ -3507,12 +3536,13 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
-- packageId: com.unity.testtools.codecoverage@1.2.5
+  fingerprint: 
+- packageId: com.unity.testtools.codecoverage@1.2.6
   testable: 0
   isDirectDependency: 0
-  version: 1.2.5
+  version: 1.2.6
   source: 1
-  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.testtools.codecoverage@1.2.5
+  resolvedPath: D:\GIT_FILES\Groove_2024\Groove_2024\Library\PackageCache\com.unity.testtools.codecoverage@1.2.6
   assetPath: Packages/com.unity.testtools.codecoverage
   name: com.unity.testtools.codecoverage
   displayName: Code Coverage
@@ -3564,7 +3594,6 @@ m_ResolvedPackages:
     - 1.2.6
     - 1.2.7
     compatible:
-    - 1.2.5
     - 1.2.6
     - 1.2.7
     recommended: 1.2.7
@@ -3584,7 +3613,7 @@ m_ResolvedPackages:
   - name: com.unity.modules.jsonserialize
     version: 1.0.0
   - name: com.unity.settings-manager
-    version: 2.0.1
+    version: 2.1.0
   keywords:
   - test
   - coverage
@@ -3600,22 +3629,23 @@ m_ResolvedPackages:
     configSource: 0
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 638386640140000000
+  datePublishedTicks: 638575857900000000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.testtools.codecoverage.git
-    revision: afeb9febf6597fcc31c99ca116d6a82b1e97b9f5
+    revision: 959db8ff97eedf9b211ad5cf320b87ac01f1e90f
     path: 
   unityLifecycle:
-    version: 1.2.5
+    version: 1.2.6
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.ext.nunit@1.0.6
   testable: 0
   isDirectDependency: 0
@@ -3687,3 +3717,5 @@ m_ResolvedPackages:
     deprecationMessage: 
   isDeprecated: 0
   deprecationMessage: 
+  fingerprint: 
+m_BuiltInPackagesHash: 589add9c3ae0bc06545f5c61253b1928f3e64fad
