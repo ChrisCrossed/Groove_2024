@@ -78,6 +78,8 @@ public class GameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+
         Init_InputAction();
 
         Init_Random();
@@ -102,6 +104,8 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    
+
     void Init_InputAction()
     {
         InputManager = new InputManager();
@@ -109,6 +113,8 @@ public class GameLogic : MonoBehaviour
 
         InputManager.Start();
         InputManager_OLD.Start();
+
+        StartCoroutine( PlayerInputUpdate() );
     }
 
     int PreviousRandomSeed;
@@ -585,14 +591,65 @@ public class GameLogic : MonoBehaviour
         yield return true;
     }
 
-    
+
     #endregion Pathfinding Logic
+
+    IEnumerator PlayerInputUpdate()
+    {
+        // Worlds fastest Tetris button input is around 30 presses per second. 
+        float inputDelayInMilliseconds = 30f / 1000f;
+
+        while (true)
+        {
+            if(IsGamePlaying)
+            {
+                InputManager.GameLogicUpdate();
+
+                if (InputManager.PlayerInput.Left && !InputManager_OLD.PlayerInput.Left)
+                {
+                    ShiftLeft();
+
+                    if (BugTestConsoleOutput)
+                    {
+                        Console_PrintBoard();
+                    }
+                }
+
+                if (InputManager.PlayerInput.Right && !InputManager_OLD.PlayerInput.Right)
+                {
+                    ShiftRight();
+
+                    if (BugTestConsoleOutput)
+                    {
+                        Console_PrintBoard();
+                    }
+                }
+
+                if (InputManager.PlayerInput.Down && !InputManager_OLD.PlayerInput.Down)
+                {
+                    SoftDrop();
+
+                    if (BugTestConsoleOutput)
+                    {
+                        Console_PrintBoard();
+                    }
+                }
+
+                print(Time.frameCount);
+                InputManager_OLD.GameLogicUpdate();
+            }
+            
+            yield return new WaitForSecondsRealtime(inputDelayInMilliseconds);
+        }
+
+        yield return true;
+    }
 
     // Update is called once per frame
     float EscapeTime;
     void Update()
     {
-        InputManager.GameLogicUpdate();
+        
 
         /*
         print("-----");
@@ -611,35 +668,7 @@ public class GameLogic : MonoBehaviour
 
         if (IsGamePlaying)
         {
-            if(InputManager.PlayerInput.Left && !InputManager_OLD.PlayerInput.Left)
-            {
-                ShiftLeft();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
-
-            if (InputManager.PlayerInput.Right && !InputManager_OLD.PlayerInput.Right)
-            {
-                ShiftRight();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
-
-            if (InputManager.PlayerInput.Down && !InputManager_OLD.PlayerInput.Down)
-            {
-                SoftDrop();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
+            
 
 
             /*
@@ -754,7 +783,7 @@ public class GameLogic : MonoBehaviour
             }
         }
 
-        InputManager_OLD.GameLogicUpdate();
+        
     }
     bool BlockSizeFlip;
     bool TwoByTwoFlip;
