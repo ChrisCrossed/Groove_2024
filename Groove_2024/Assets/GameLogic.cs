@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public enum BoardObject
@@ -34,7 +35,6 @@ public enum PathfindDirection
     Left,
     None
 }
-
 
 
 public class GameLogic : MonoBehaviour
@@ -69,10 +69,17 @@ public class GameLogic : MonoBehaviour
     GameObject GO_BoardArray;
     c_BoardLogic BoardLogicScript;
 
+    #region Input System
+    InputManager InputManager;
+    InputManager InputManager_OLD;
+    #endregion
+
     #region Initialization
     // Start is called before the first frame update
     void Start()
     {
+        Init_InputAction();
+
         Init_Random();
 
         Init_Board();
@@ -93,6 +100,15 @@ public class GameLogic : MonoBehaviour
         {
             Console_PrintBoard();
         }
+    }
+
+    void Init_InputAction()
+    {
+        InputManager = new InputManager();
+        InputManager_OLD = new InputManager();
+
+        InputManager.Start();
+        InputManager_OLD.Start();
     }
 
     int PreviousRandomSeed;
@@ -576,8 +592,57 @@ public class GameLogic : MonoBehaviour
     float EscapeTime;
     void Update()
     {
-        if(IsGamePlaying)
+        InputManager.GameLogicUpdate();
+
+        /*
+        print("-----");
+        print("Down: " + InputManager.PlayerInput.Down);
+        print("Left: " + InputManager.PlayerInput.Left);
+        print("Right: " + InputManager.PlayerInput.Right);
+        print("-----");
+
+        print("-----");
+        print("- OLD -");
+        print("Down: " + InputManager_OLD.PlayerInput.Down);
+        print("Left: " + InputManager_OLD.PlayerInput.Left);
+        print("Right: " + InputManager_OLD.PlayerInput.Right);
+        print("-----");
+        */
+
+        if (IsGamePlaying)
         {
+            if(InputManager.PlayerInput.Left && !InputManager_OLD.PlayerInput.Left)
+            {
+                ShiftLeft();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
+            }
+
+            if (InputManager.PlayerInput.Right && !InputManager_OLD.PlayerInput.Right)
+            {
+                ShiftRight();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
+            }
+
+            if (InputManager.PlayerInput.Down && !InputManager_OLD.PlayerInput.Down)
+            {
+                SoftDrop();
+
+                if (BugTestConsoleOutput)
+                {
+                    Console_PrintBoard();
+                }
+            }
+
+
+            /*
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 RotateCounterClockwise();
@@ -632,8 +697,9 @@ public class GameLogic : MonoBehaviour
             {
                 StartCoroutine(HardDropPathfindLoop());
             }
+            */
 
-            if(Input.GetKeyDown(KeyCode.G))
+            if (Input.GetKeyDown(KeyCode.G))
             {
                 ShiftBoardLeft();
             }
@@ -687,6 +753,8 @@ public class GameLogic : MonoBehaviour
                 EscapeTime = Time.time;
             }
         }
+
+        InputManager_OLD.GameLogicUpdate();
     }
     bool BlockSizeFlip;
     bool TwoByTwoFlip;

@@ -18,7 +18,6 @@ public class GrooveThemes : MonoBehaviour
 
         goBack.ThemeAudioSource.clip.LoadAudioData();
 
-        print(goBack.ThemeAudioSource.clip.name);
         transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);
     }
 }
