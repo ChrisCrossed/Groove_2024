@@ -598,44 +598,89 @@ public class GameLogic : MonoBehaviour
     {
         // Worlds fastest Tetris button input is around 30 presses per second. 
         float inputDelayInMilliseconds = 30f / 1000f;
+        bool actionWasTaken;
 
         while (true)
         {
-            if(IsGamePlaying)
+            actionWasTaken = false;
+
+            if (IsGamePlaying)
             {
                 InputManager.GameLogicUpdate();
 
+                #region Directional Movement
                 if (InputManager.PlayerInput.Left && !InputManager_OLD.PlayerInput.Left)
                 {
                     ShiftLeft();
 
+                    actionWasTaken = true;
+
                     if (BugTestConsoleOutput)
                     {
                         Console_PrintBoard();
                     }
                 }
 
-                if (InputManager.PlayerInput.Right && !InputManager_OLD.PlayerInput.Right)
+                else if (InputManager.PlayerInput.Right && !InputManager_OLD.PlayerInput.Right)
                 {
                     ShiftRight();
 
+                    actionWasTaken = true;
+
                     if (BugTestConsoleOutput)
                     {
                         Console_PrintBoard();
                     }
                 }
 
-                if (InputManager.PlayerInput.Down && !InputManager_OLD.PlayerInput.Down)
+                else if (InputManager.PlayerInput.Down && !InputManager_OLD.PlayerInput.Down)
                 {
                     SoftDrop();
 
+                    actionWasTaken = true;
+
                     if (BugTestConsoleOutput)
                     {
                         Console_PrintBoard();
                     }
                 }
+                #endregion Directional Movement
 
-                print(Time.frameCount);
+                // Need to not allow more than one action per 'tick', but also need to run InputManager_OLD.GameLogicUpdate();
+                if (!actionWasTaken)
+                {
+                    #region Block Rotation
+                    if (InputManager.PlayerInput.RotateLeft && !InputManager_OLD.PlayerInput.RotateLeft)
+                    {
+                        RotateCounterClockwise();
+
+                        actionWasTaken = true;
+
+                        if (BugTestConsoleOutput)
+                        {
+                            Console_PrintBoard();
+                        }
+                    }
+                    else if (InputManager.PlayerInput.RotateRight && !InputManager_OLD.PlayerInput.RotateRight)
+                    {
+                        RotateClockwise();
+
+                        actionWasTaken = true;
+
+                        if (BugTestConsoleOutput)
+                        {
+                            Console_PrintBoard();
+                        }
+                    }
+                    #endregion Block Rotation
+                }
+
+                if(!actionWasTaken)
+                {
+                    if (InputManager.PlayerInput.HardDrop && !InputManager_OLD.PlayerInput.HardDrop)
+                        StartCoroutine(HardDropPathfindLoop());
+                }
+
                 InputManager_OLD.GameLogicUpdate();
             }
             

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.Rendering;
 
 public struct PlayerInput
@@ -53,19 +54,19 @@ public struct PlayerInput
     public bool RotateLeft
     {
         get => _rotateLeftPressed;
-        private set => _rotateLeftPressed = value;
+        internal set => _rotateLeftPressed = value;
     }
 
     public bool RotateRight
     {
         get => _rotateRightPressed;
-        private set => _rotateRightPressed = value;
+        internal set => _rotateRightPressed = value;
     }
 
     public bool HardDrop
     {
         get => _hardDropPressed;
-        private set => _hardDropPressed = value;
+        internal set => _hardDropPressed = value;
     }
 
 }
@@ -73,16 +74,21 @@ public struct PlayerInput
 public class InputManager : MonoBehaviour
 {
     #region Input System
+    InputActionAsset inputActions;
+
     InputAction moveAction;
-    InputAction rotateAction;
+    InputAction rotateAction_CCW;
+    InputAction rotateAction_CW;
+    InputAction hardDrop;
     #endregion
 
+    // Accessed in GameLogic for player input
     public PlayerInput PlayerInput;
 
-    #region Keyboard Mouse Inputs
-    float km_Horiz;
-    float km_Vert;
-    #endregion Keyboard Mouse Inputs
+    private void OnEnable()
+    {
+        inputActions.FindActionMap("Gameplay").Enable();
+    }
 
     public void Start()
     {
@@ -92,6 +98,9 @@ public class InputManager : MonoBehaviour
     void Init_InputAction()
     {
         moveAction = InputSystem.actions.FindAction("Move");
+        rotateAction_CCW = InputSystem.actions.FindAction("RotateCounterClock");
+        rotateAction_CW = InputSystem.actions.FindAction("RotateClockwise");
+        hardDrop = InputSystem.actions.FindAction("HardDrop");
     }
 
     public void GameLogicUpdate()
@@ -102,7 +111,7 @@ public class InputManager : MonoBehaviour
 
         RotateButtons();
 
-
+        HardDropButtons();
 
     }
 
@@ -136,6 +145,12 @@ public class InputManager : MonoBehaviour
 
     void RotateButtons()
     {
+        PlayerInput.RotateLeft = rotateAction_CCW.IsPressed();
+        PlayerInput.RotateRight = rotateAction_CW.IsPressed();
+    }
 
+    void HardDropButtons()
+    {
+        PlayerInput.HardDrop = hardDrop.IsPressed();
     }
 }
