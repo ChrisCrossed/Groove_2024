@@ -1088,7 +1088,7 @@ public class GameLogic : MonoBehaviour
         // We don't immediately go to HardDrop if y = 1 because we want to allow rotation on the bottom row before HardDrop
         if( TileBottomLeftPosition.y == 0 )
         {
-            HardDrop();
+            StartCoroutine(HardDropPathfindLoop());
             return;
         }
 
@@ -1098,7 +1098,7 @@ public class GameLogic : MonoBehaviour
 
             if (! (blockCheck == BoardObject.Empty || blockCheck == BoardObject.Ghost) )
             {
-                HardDrop();
+                StartCoroutine(HardDropPathfindLoop());
                 return;
             }
         }
