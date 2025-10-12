@@ -1191,7 +1191,7 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    void ShiftBoardLeft()
+    public void ShiftBoardLeft()
     {
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
@@ -1229,7 +1229,7 @@ public class GameLogic : MonoBehaviour
         ResetGhostBlocks();
     }
 
-    void ShiftBoardRight()
+    public void ShiftBoardRight()
     {
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
