@@ -71,7 +71,7 @@ public struct PlayerInput
 
 }
 
-public class InputManager : MonoBehaviour
+public struct InputManager
 {
     #region Input System
     InputActionAsset inputActions;
