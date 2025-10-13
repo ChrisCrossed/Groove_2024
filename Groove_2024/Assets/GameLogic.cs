@@ -694,7 +694,7 @@ public class GameLogic : MonoBehaviour
     float EscapeTime;
     void Update()
     {
-        
+        CheatEnabledSystem();
 
         /*
         print("-----");
@@ -713,9 +713,6 @@ public class GameLogic : MonoBehaviour
 
         if (IsGamePlaying)
         {
-            
-
-
             /*
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -773,48 +770,48 @@ public class GameLogic : MonoBehaviour
             }
             */
 
-            if (Input.GetKeyDown(KeyCode.G))
+            #region Testing
+            if (CheatsEnabled)
             {
-                ShiftBoardLeft();
+                if (Input.GetKeyDown(KeyCode.G))
+                {
+                    ShiftBoardLeft();
+                }
+                if (Input.GetKeyDown(KeyCode.H))
+                {
+                    ShiftBoardRight();
+                }
+
+                if (Input.GetKeyDown(KeyCode.K))
+                {
+                    ChangeBoardSize(BoardWidth + 2);
+                }
+
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    ChangeBoardSize(BoardWidth - 2);
+                }
+
+                if (Input.GetKeyDown(KeyCode.M))
+                {
+                    TEST_PresetBoard();
+                }
+
+                if (Input.GetKeyDown(KeyCode.O))
+                {
+                    BlockSizeFlip = !BlockSizeFlip;
+
+                    SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
+                }
+
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    TwoByTwoFlip = !TwoByTwoFlip;
+
+                    SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
+                }
             }
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                ShiftBoardRight();
-            }
-
-            /// 
-            /// TESTING
-            ///
-
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                ChangeBoardSize(BoardWidth + 2);
-            }
-
-            if(Input.GetKeyDown(KeyCode.L))
-            {
-                ChangeBoardSize(BoardWidth - 2);
-            }
-
-            if(Input.GetKeyDown(KeyCode.M))
-            {
-                TEST_PresetBoard();
-            }
-
-            if(Input.GetKeyDown(KeyCode.O))
-            {
-                BlockSizeFlip = !BlockSizeFlip;
-
-                SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
-            }
-
-            if(Input.GetKeyDown(KeyCode.P))
-            {
-                TwoByTwoFlip = !TwoByTwoFlip;
-
-                SetValidActiveBlockTypes(BlockSizeFlip, BlockSizeFlip, TwoByTwoFlip);
-            }
-
+            #endregion Testing
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -1558,6 +1555,40 @@ public class GameLogic : MonoBehaviour
     }
 
     #endregion Console Output
+
+    int CheatCounter = 0;
+    float CheatTimer = 0f;
+    bool CheatsEnabled = false;
+    void CheatEnabledSystem()
+    {
+        if (CheatsEnabled)
+            return;
+
+        if(CheatTimer > 0f)
+        {
+            CheatTimer -= Time.deltaTime;
+
+            if(CheatTimer < 0f)
+            {
+                CheatCounter = 0;
+                CheatTimer = 0f;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            print("C Pressed");
+            CheatCounter++;
+
+            if (CheatCounter > 2)
+            {
+                CheatsEnabled = true;
+                print("Cheats Enabled");
+            }
+
+            CheatTimer = 0.2f;
+        }
+    }
 
     bool timedOut;
     CancellationToken ct;

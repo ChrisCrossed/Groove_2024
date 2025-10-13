@@ -118,8 +118,12 @@ public class ThemeManagerLogic : MonoBehaviour
 
         yield return new WaitForSecondsRealtime( musicLength );
 
+        print("Song Ended: " + Time.fixedTime);
+
         currTheme.ThemeAudioSource.clip.UnloadAudioData();
         currTheme.ThemeAudioSource = null;
+
+        print("Song Unloaded: " + Time.fixedTime);
 
         yield return null;
     }
