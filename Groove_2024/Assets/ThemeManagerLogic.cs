@@ -12,18 +12,17 @@ public struct ThemeTimerAction
     }
 
     public ThemeTimerActionType ThemeType;
-    public float[] TimerActions;
+    public List<float> TimerActions;
 
     public ThemeTimerAction(ThemeTimerActionType _actionType, float _actionLoopTime)
     {
         ThemeType = _actionType;
 
-        float[] timerAction = new float[1];
-        timerAction[0] = _actionLoopTime;
-        TimerActions = timerAction;
+        TimerActions = new List<float>();
+        TimerActions.Add(_actionLoopTime);
     }
 
-    public ThemeTimerAction(ThemeTimerActionType _actionType, float[] _timerActionTiming)
+    public ThemeTimerAction(ThemeTimerActionType _actionType, List<float> _timerActionTiming)
     {
         ThemeType = _actionType;
         TimerActions = _timerActionTiming;
@@ -85,23 +84,44 @@ public class ThemeManagerLogic : MonoBehaviour
             currTheme = GrooveThemeList[0];
             GrooveThemeList.RemoveAt(0);
 
-            currTheme.ThemeAudioSource = transform.GetComponent<AudioSource>();
-
-            currTheme.ThemeAudioSource.clip.LoadAudioData();
-
-            foreach(ThemeTimerAction themeAction in currTheme.ThemeActions)
-            {
-                if(themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.Loop)
-                    StartCoroutine( RunThemeTimerAction_Loop(themeAction) );
-                else if(themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.SpecificTiming)
-                    StartCoroutine( RunThemeTimerAction_SpecificTiming(themeAction) );
-            }
-            
-            print(currTheme.ThemeAudioSource.clip.name);
-
-            // Apply Settings and Start Provess
-            currTheme.ThemeAudioSource.Play();
+            // Apply Settings and Start Process
+            StartCoroutine( Thread_AudioClip(currTheme.ThemeAudioSource) );
         }
+    }
+
+
+    IEnumerator Thread_AudioClip(AudioSource _audioSource)
+    {
+        float musicLength = _audioSource.clip.length;
+
+        currTheme.ThemeAudioSource = transform.GetComponent<AudioSource>();
+        _audioSource.clip.LoadAudioData();
+
+        while(_audioSource.clip.loadState != AudioDataLoadState.Loaded)
+            yield return new WaitForEndOfFrame();
+
+        print("PLAYING: " + currTheme.ThemeAudioSource.clip.name);
+
+        currTheme.ThemeAudioSource.Play();
+
+        print("Starting Theme Action Timers");
+
+        foreach (ThemeTimerAction themeAction in currTheme.ThemeActions)
+        {
+            if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.Loop)
+                StartCoroutine(RunThemeTimerAction_Loop(themeAction));
+            else if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.SpecificTiming)
+                StartCoroutine( RunThemeTimerAction_SpecificTiming(themeAction) );
+        }
+
+        print("Waiting until song ends");
+
+        yield return new WaitForSecondsRealtime( musicLength );
+
+        currTheme.ThemeAudioSource.clip.UnloadAudioData();
+        currTheme.ThemeAudioSource = null;
+
+        yield return null;
     }
 
     public void LoadThemeToList(GrooveTheme _grooveTheme)
@@ -112,6 +132,12 @@ public class ThemeManagerLogic : MonoBehaviour
         StartNextTheme();
     }
 
+    /// <summary>
+    /// A single timing that is looped. For example, 3.0f seconds of a repeated loop until the song completes.
+    /// ALL timing is in Milliseconds
+    /// </summary>
+    /// <param name="themeTimerAction"></param>
+    /// <returns></returns>
     IEnumerator RunThemeTimerAction_Loop(ThemeTimerAction themeTimerAction)
     {
         bool stillRunning = true;
@@ -138,13 +164,32 @@ public class ThemeManagerLogic : MonoBehaviour
         yield return null;
     }
 
+    /// <summary>
+    /// A long list of specific timed actions. Used if beats are inconsistent or more precise timing is desired.
+    /// ALL timing is in Milliseconds
+    /// </summary>
+    /// <param name="themeTimerAction"></param>
+    /// <returns></returns>
     IEnumerator RunThemeTimerAction_SpecificTiming(ThemeTimerAction themeTimerAction)
     {
+        print("Starting Theme Timer Action - Specific Timing");
+        print("Count: " + themeTimerAction.TimerActions.Count);
+
         bool stillRunning = true;
+
+        GameObject gameLogic = GameObject.Find("GameLogic");
+        GameLogic gameLogicScript = gameLogic.GetComponent<GameLogic>();
 
         while (stillRunning)
         {
-            yield return new WaitForSecondsRealtime(themeTimerAction.TimerActions[0]);
+            foreach (float themeTimer in themeTimerAction.TimerActions)
+            {
+                yield return new WaitForSecondsRealtime(themeTimer);
+
+                gameLogicScript.ShiftBoardLeft();
+            }
+
+            stillRunning = false;
         }
 
         yield return null;
