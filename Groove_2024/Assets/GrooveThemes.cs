@@ -14,21 +14,26 @@ public class GrooveThemes : MonoBehaviour
     [SerializeField] bool threeWide;
     [SerializeField] bool threeTall;
 
+    [SerializeField] int boardWidth;
+
     private void Start()
     {
         GrooveTheme goBack = new GrooveTheme();
         goBack.ThemeAudioSource = transform.GetComponent<AudioSource>();
         goBack.ThemeAudioSource.clip = audioClip;
 
+        goBack.BoardWidth = boardWidth;
+
         goBack.ThemeAudioSource.clip.LoadAudioData();
 
+        #region Action Timers
         // Create a list to populate
         List<ThemeTimerAction> allThemeTimerActions = new List<ThemeTimerAction>();
 
         // Create new groups of each ThemeTimerAction that I want to have exist
         List<float> themeTiming = new List<float>();
 
-        // Purple
+        // Purple (The colors used in Sony Vegas to find the timing, in groups for ease of use)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(7, 4));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
@@ -111,9 +116,11 @@ public class GrooveThemes : MonoBehaviour
 
         ThemeTimerAction themeAction_A = new ThemeTimerAction(ThemeTimerAction.ThemeTimerActionType.SpecificTiming, themeTiming);
         allThemeTimerActions.Add(themeAction_A);
-        
+
         // Apply the list to the GrooveTheme object
         goBack.ThemeActions = allThemeTimerActions;
+
+        #endregion Action Timers
 
         // Load the theme
         transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);

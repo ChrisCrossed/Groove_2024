@@ -382,6 +382,7 @@ MonoBehaviour:
   twoByTwo: 1
   threeWide: 0
   threeTall: 0
+  boardWidth: 10
 --- !u!82 &955137916
 AudioSource:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -696,79 +697,17 @@ public class GameLogic : MonoBehaviour
     {
         CheatEnabledSystem();
 
-        /*
-        print("-----");
-        print("Down: " + InputManager.PlayerInput.Down);
-        print("Left: " + InputManager.PlayerInput.Left);
-        print("Right: " + InputManager.PlayerInput.Right);
-        print("-----");
-
-        print("-----");
-        print("- OLD -");
-        print("Down: " + InputManager_OLD.PlayerInput.Down);
-        print("Left: " + InputManager_OLD.PlayerInput.Left);
-        print("Right: " + InputManager_OLD.PlayerInput.Right);
-        print("-----");
-        */
-
         if (IsGamePlaying)
         {
-            /*
-            if (Input.GetKeyDown(KeyCode.Q))
+            if(Input.GetKeyDown(KeyCode.P))
             {
-                RotateCounterClockwise();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
+                StartCoroutine( SetNewBoardWidthForTheme(6) );
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if(Input.GetKeyDown(KeyCode.O))
             {
-                RotateClockwise();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
+                StartCoroutine( SetNewBoardWidthForTheme(10) );
             }
-
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                ShiftLeft();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                ShiftRight();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                SoftDrop();
-
-                if (BugTestConsoleOutput)
-                {
-                    Console_PrintBoard();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                StartCoroutine(HardDropPathfindLoop());
-            }
-            */
 
             #region Testing
             if (CheatsEnabled)
@@ -824,9 +763,8 @@ public class GameLogic : MonoBehaviour
                 EscapeTime = Time.time;
             }
         }
-
-        
     }
+
     bool BlockSizeFlip;
     bool TwoByTwoFlip;
 
@@ -1326,7 +1264,7 @@ public class GameLogic : MonoBehaviour
             boardExpands = true;
 
 
-            ClearGhostBlockList();
+        ClearGhostBlockList();
 
         List<BoardObject> tempBoard = new List<BoardObject>();
 
@@ -1434,6 +1372,43 @@ public class GameLogic : MonoBehaviour
         {
             StartCoroutine(HardDropPathfindLoop(true));
         }
+    }
+
+    public IEnumerator SetNewBoardWidthForTheme(int _newBoardWidth)
+    {
+        if (_newBoardWidth < 6)
+            _newBoardWidth = 6;
+        else if(_newBoardWidth > 12)
+            _newBoardWidth = 12;
+
+        if (_newBoardWidth % 2 == 1)
+            _newBoardWidth += 1;
+
+        if (_newBoardWidth == BoardWidth)
+            yield return null;
+
+        SetGamePlayingState(false);
+
+        bool boardExpands = true;
+        if(_newBoardWidth < BoardWidth)
+            boardExpands = false;
+
+        while(BoardWidth != _newBoardWidth)
+        {
+            if(boardExpands)
+                ChangeBoardSize(BoardWidth + 2);
+            else
+                ChangeBoardSize(BoardWidth - 2);
+
+            // Performed again since ChangeBoardSize enables the gameplay in certain circumstances
+            SetGamePlayingState(false);
+
+            yield return new WaitForSecondsRealtime(0.3f);
+        }
+
+        SetGamePlayingState(true);
+
+        // yield return null;
     }
 
     void ResetGhostBlocks()

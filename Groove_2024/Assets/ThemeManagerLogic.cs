@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public struct ThemeTimerAction
@@ -34,6 +36,7 @@ public struct GrooveTheme
     // Chosen Randomized Seed
     // [SerializeField]
     int ThemeSeed;
+    public int BoardWidth;
 
     // Theme Music
     public AudioSource ThemeAudioSource;
@@ -41,7 +44,7 @@ public struct GrooveTheme
 
     public List<ThemeTimerAction> ThemeActions;
 
-    public GrooveTheme(AudioClip _themeMusic, List<ThemeTimerAction> _themeActions, int _playerSeed = -1, int _themeSeed = -1)
+    public GrooveTheme(AudioClip _themeMusic, List<ThemeTimerAction> _themeActions, int _boardWidth = 10, int _playerSeed = -1, int _themeSeed = -1)
     {
         #region Apply Random or Applied Seed
         // (If no other Seed exists, randomize one)
@@ -57,6 +60,10 @@ public struct GrooveTheme
         if (_playerSeed != -1)
             ThemeSeed = _playerSeed;
         #endregion
+
+        #region Gameplay Settings
+        BoardWidth = _boardWidth;
+        #endregion Gameplay Settings
 
         #region Theme Music
         ThemeAudioSource = new AudioSource();
@@ -77,6 +84,15 @@ public class ThemeManagerLogic : MonoBehaviour
     List<GrooveTheme> GrooveThemeList = new List<GrooveTheme>();
     GrooveTheme currTheme;
 
+    GameObject GO_GameLogic;
+    GameLogic GameLogic;
+
+    private void Start()
+    {
+        GO_GameLogic = GameObject.Find("GameLogic");
+        GameLogic = GO_GameLogic.GetComponent<GameLogic>();
+    }
+
     void StartNextTheme()
     {
         if (GrooveThemeList.Count > 0)
@@ -84,11 +100,20 @@ public class ThemeManagerLogic : MonoBehaviour
             currTheme = GrooveThemeList[0];
             GrooveThemeList.RemoveAt(0);
 
+            // Resize board and wait (somehow...) until completion
+            print("Setting Board Width: " + currTheme.BoardWidth);
+            StartCoroutine( GameLogic.SetNewBoardWidthForTheme(currTheme.BoardWidth) );
+
             // Apply Settings and Start Process
             StartCoroutine( Thread_AudioClip(currTheme.ThemeAudioSource) );
         }
     }
 
+    // Tells the GameLogic to change the BoardWidth and waits patiently until it's done
+    IEnumerator Thread_ResizeBoard()
+    {
+        yield return true;
+    }
 
     IEnumerator Thread_AudioClip(AudioSource _audioSource)
     {
@@ -198,4 +223,44 @@ public class ThemeManagerLogic : MonoBehaviour
 
         yield return null;
     }
+
+    #region Helper Functions
+
+
+
+    bool timedOut;
+    CancellationToken ct;
+    private IEnumerator PerformTimedAction(System.Action action, int timeout = 1)
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+        ct = cts.Token;
+
+        Coroutine timeoutCoroutine = StartCoroutine(TimeoutChecker(timeout));
+        var t = Task.Run(action, ct);
+        yield return new WaitWhile(() => t.Status != TaskStatus.RanToCompletion && !timedOut);
+
+        if (timedOut)
+        {
+            cts.Cancel();
+            Debug.Log("Task Timed Out");
+        }
+        else
+        {
+            StopCoroutine(timeoutCoroutine);
+            Debug.Log("Task successfully completed");
+        }
+    }
+
+    private IEnumerator TimeoutChecker(float timeout)
+    {
+        timedOut = false;
+        while (timeout > 0)
+        {
+            timeout -= Time.deltaTime;
+            yield return null;
+        }
+        timedOut = true;
+    }
+
+    #endregion Helper Functions
 }
