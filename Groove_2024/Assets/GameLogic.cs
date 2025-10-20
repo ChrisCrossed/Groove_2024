@@ -77,17 +77,15 @@ public class GameLogic : MonoBehaviour
 
     #region Initialization
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
-
         Init_InputAction();
 
         Init_Random();
 
         Init_Board();
 
-        SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
+        // SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
 
         PopulateNextFourBlocksList();
 
@@ -139,7 +137,7 @@ public class GameLogic : MonoBehaviour
 
         // Sets whether 3 wide and 3 tall Active blocks are allowed.
         // Technically calls it's own values, but is safe.
-        SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
+        // SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
 
         // Extend width of board by 2 to include the Sidewalls
         if (BoardWidth_Maximum % 2 == 1)
@@ -304,8 +302,10 @@ public class GameLogic : MonoBehaviour
         return nextBlocks;
     }
 
-    void SetValidActiveBlockTypes(bool threeWide_, bool threeTall_, bool twoByTwo_ = true)
+    public void SetValidActiveBlockTypes(bool threeWide_, bool threeTall_, bool twoByTwo_ = true)
     {
+        print("CALLED");
+
         BlockObject_Active_TwoByTwo = twoByTwo_;
         BlockObject_Active_ThreeWide = threeWide_;
         BlockObject_Active_ThreeTall = threeTall_;
@@ -443,27 +443,6 @@ public class GameLogic : MonoBehaviour
     #endregion Block Placement
 
     #region Pathfinding Logic
-
-    bool StartPathfindingLogic()
-    {
-        List<int> finalPathfind = c_PathfindingLogic.StartPathfindingLogic( Board, BoardWidth );
-        bool foundPath = false;
-
-        // print(finalPathfind == null);
-
-        if(finalPathfind != null && finalPathfind.Count > 1)
-        {
-            if (BugTestConsoleOutput)
-                print("Clearing " + finalPathfind.Count + " Blocks");
-
-            DetermineScoreFromScoreLine(finalPathfind);
-
-            StartCoroutine(AnimateScoreLine(finalPathfind));
-
-            foundPath = true;
-        }
-        return foundPath;
-    }
 
     void DetermineScoreFromScoreLine(List<int> _finalPathfind)
     {
@@ -1408,7 +1387,7 @@ public class GameLogic : MonoBehaviour
 
         SetGamePlayingState(true);
 
-        // yield return null;
+        GameObject.Find("ThemeManager").GetComponent<ThemeManagerLogic>().BoardWidthResizeCompleted();
     }
 
     void ResetGhostBlocks()

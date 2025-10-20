@@ -24,6 +24,10 @@ public class GrooveThemes : MonoBehaviour
 
         goBack.BoardWidth = boardWidth;
 
+        goBack.ThreeWide = threeWide;
+        goBack.ThreeTall = threeTall;
+        goBack.TwoByTwo = twoByTwo;
+
         goBack.ThemeAudioSource.clip.LoadAudioData();
 
         #region Action Timers

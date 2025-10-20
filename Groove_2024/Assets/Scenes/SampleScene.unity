@@ -151,7 +151,7 @@ MonoBehaviour:
   BugTestConsoleOutput: 0
   BoardWidth_Maximum: 14
   BoardHeight_Maximum: 10
-  BlockObject_Active_TwoByTwo: 1
+  BlockObject_Active_TwoByTwo: 0
   BlockObject_Active_ThreeWide: 0
   BlockObject_Active_ThreeTall: 0
 --- !u!4 &197332790
@@ -379,8 +379,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
   themeName: GoBack
   audioClip: {fileID: 8300000, guid: 4baec539b45e2124aad61c99c5bdb608, type: 3}
-  twoByTwo: 1
-  threeWide: 0
+  twoByTwo: 0
+  threeWide: 1
   threeTall: 0
   boardWidth: 10
 --- !u!82 &955137916

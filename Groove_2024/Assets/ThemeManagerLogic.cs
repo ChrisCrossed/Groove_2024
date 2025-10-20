@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+
+
 public struct ThemeTimerAction
 {
     public enum ThemeTimerActionType
@@ -38,13 +40,17 @@ public struct GrooveTheme
     int ThemeSeed;
     public int BoardWidth;
 
+    public bool ThreeWide;
+    public bool ThreeTall;
+    public bool TwoByTwo;
+
     // Theme Music
     public AudioSource ThemeAudioSource;
     public AudioClip ThemeAudioClip;
 
     public List<ThemeTimerAction> ThemeActions;
 
-    public GrooveTheme(AudioClip _themeMusic, List<ThemeTimerAction> _themeActions, int _boardWidth = 10, int _playerSeed = -1, int _themeSeed = -1)
+    public GrooveTheme(AudioClip _themeMusic, List<ThemeTimerAction> _themeActions, bool _threeWide, bool _threeTall, bool _twoByTwo, int _boardWidth = 10, int _playerSeed = -1, int _themeSeed = -1)
     {
         #region Apply Random or Applied Seed
         // (If no other Seed exists, randomize one)
@@ -63,6 +69,10 @@ public struct GrooveTheme
 
         #region Gameplay Settings
         BoardWidth = _boardWidth;
+
+        ThreeWide = _threeWide;
+        ThreeTall = _threeTall;
+        TwoByTwo = _twoByTwo;
         #endregion Gameplay Settings
 
         #region Theme Music
@@ -93,20 +103,37 @@ public class ThemeManagerLogic : MonoBehaviour
         GameLogic = GO_GameLogic.GetComponent<GameLogic>();
     }
 
-    void StartNextTheme()
+    
+    IEnumerator StartNextTheme()
     {
         if (GrooveThemeList.Count > 0)
         {
             currTheme = GrooveThemeList[0];
             GrooveThemeList.RemoveAt(0);
 
-            // Resize board and wait (somehow...) until completion
-            print("Setting Board Width: " + currTheme.BoardWidth);
-            StartCoroutine( GameLogic.SetNewBoardWidthForTheme(currTheme.BoardWidth) );
+            BoardWidthResizeComplete = false;
+            SoundClipLoadedToMemory = false;
+
+            print(currTheme.ThreeWide + " " + currTheme.ThreeTall + " " + currTheme.TwoByTwo);
+
+            GameLogic.SetValidActiveBlockTypes(currTheme.ThreeWide, currTheme.ThreeTall, currTheme.TwoByTwo);
+
+            // Resize board and wait until completion
+            print( "Setting Board Width: " + currTheme.BoardWidth );
+            StartCoroutine( GameLogic.SetNewBoardWidthForTheme( currTheme.BoardWidth ) );
+
+            print( "Loading SoundClip to Memory..." );
+            StartCoroutine( LoadSoundClip(currTheme.ThemeAudioSource) );
+
+            // Update this with all necessary wait scenarios to ensure the board & game is ready before continuing.
+            while ( !(BoardWidthResizeComplete && SoundClipLoadedToMemory) )
+                yield return new WaitForSeconds(0.05f);
 
             // Apply Settings and Start Process
             StartCoroutine( Thread_AudioClip(currTheme.ThemeAudioSource) );
         }
+
+        yield return null;
     }
 
     // Tells the GameLogic to change the BoardWidth and waits patiently until it's done
@@ -118,12 +145,6 @@ public class ThemeManagerLogic : MonoBehaviour
     IEnumerator Thread_AudioClip(AudioSource _audioSource)
     {
         float musicLength = _audioSource.clip.length;
-
-        currTheme.ThemeAudioSource = transform.GetComponent<AudioSource>();
-        _audioSource.clip.LoadAudioData();
-
-        while(_audioSource.clip.loadState != AudioDataLoadState.Loaded)
-            yield return new WaitForEndOfFrame();
 
         print("PLAYING: " + currTheme.ThemeAudioSource.clip.name);
 
@@ -158,7 +179,7 @@ public class ThemeManagerLogic : MonoBehaviour
         GrooveThemeList.Add(_grooveTheme);
 
         // TODO: Change when appropriate
-        StartNextTheme();
+        StartCoroutine( StartNextTheme() );
     }
 
     /// <summary>
@@ -224,9 +245,26 @@ public class ThemeManagerLogic : MonoBehaviour
         yield return null;
     }
 
+    bool BoardWidthResizeComplete;
+    public void BoardWidthResizeCompleted()
+    {
+        BoardWidthResizeComplete = true;
+    }
+
+    bool SoundClipLoadedToMemory;
+    private IEnumerator LoadSoundClip(AudioSource audioSource)
+    {
+        audioSource.clip.LoadAudioData();
+
+        while (audioSource.clip.loadState != AudioDataLoadState.Loaded)
+            yield return new WaitForEndOfFrame();
+
+        SoundClipLoadedToMemory = true;
+
+        yield return null;
+    }
+
     #region Helper Functions
-
-
 
     bool timedOut;
     CancellationToken ct;
