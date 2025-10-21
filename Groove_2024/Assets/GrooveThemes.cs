@@ -71,21 +71,14 @@ public class GrooveThemes : MonoBehaviour
     {
         List<Vector2Int> outputList = new List<Vector2Int>();
 
-        StreamReader strReader = new StreamReader("D:\\GIT_FILES\\Groove_2024\\Groove_2024\\Assets\\Themes\\TimingActions\\GoBack\\ShiftBoardLeft.csv");
+        TextAsset strReader = Resources.Load<TextAsset>("Themes/TimingActions/GoBack/ShiftBoardLeft");
+        //StreamReader strReader = new StreamReader(Application.dataPath + "\\Resources\\Themes\\TimingActions\\GoBack\\ShiftBoardLeft.csv");
 
-        bool endOfFile = false;
+        string[] splitLine = strReader.text.Split('\n');
 
-        while(!endOfFile)
+        foreach(string line in splitLine)
         {
-            string dataString = strReader.ReadLine();
-
-            if(dataString == null)
-            {
-                endOfFile = true;
-                break;
-            }
-
-            var dataValues = dataString.Split(',');
+            string[] dataValues = line.Split(',');
 
             int x = int.Parse(dataValues[0]);
             int y = int.Parse(dataValues[1]);
