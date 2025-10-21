@@ -1163,7 +1163,6 @@ public class GameLogic : MonoBehaviour
                 // Board Logic Squircle Object Manipulation
                 if (blockToShift != BoardObject.Empty)
                 {
-                    print(gridPos);
                     BoardLogicScript.MoveSquircleAtPosTowardDirection(gridPos, PathfindDirection.Left);
                 }
             }

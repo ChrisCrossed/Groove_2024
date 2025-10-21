@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 955137915}
   - component: {fileID: 955137914}
   - component: {fileID: 955137916}
+  - component: {fileID: 955137917}
   m_Layer: 0
   m_Name: ThemeManager
   m_TagString: Untagged
@@ -383,6 +384,72 @@ MonoBehaviour:
   threeWide: 1
   threeTall: 0
   boardWidth: 10
+  ThemeTimingValues:
+  - {x: 7, y: 4}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 13}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 13}
+  - {x: 3, y: 18}
+  - {x: 3, y: 13}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 18}
+  - {x: 3, y: 14}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 6}
+  - {x: 3, y: 6}
+  - {x: 3, y: 4}
+  - {x: 3, y: 1}
+  - {x: 2, y: 27}
+  - {x: 2, y: 28}
+  - {x: 2, y: 25}
+  - {x: 2, y: 24}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 24}
+  - {x: 2, y: 23}
+  - {x: 2, y: 20}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
 --- !u!82 &955137916
 AudioSource:
   m_ObjectHideFlags: 0
@@ -480,6 +547,90 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &955137917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955137912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 229ccd80242b10d47b86674122628fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
+  themeName: GoBack
+  audioClip: {fileID: 8300000, guid: 4baec539b45e2124aad61c99c5bdb608, type: 3}
+  twoByTwo: 0
+  threeWide: 1
+  threeTall: 0
+  boardWidth: 10
+  ThemeTimingValues:
+  - {x: 7, y: 4}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 13}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 17}
+  - {x: 3, y: 16}
+  - {x: 3, y: 13}
+  - {x: 3, y: 18}
+  - {x: 3, y: 13}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 17}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 15}
+  - {x: 3, y: 18}
+  - {x: 3, y: 14}
+  - {x: 3, y: 16}
+  - {x: 3, y: 16}
+  - {x: 3, y: 6}
+  - {x: 3, y: 6}
+  - {x: 3, y: 4}
+  - {x: 3, y: 1}
+  - {x: 2, y: 27}
+  - {x: 2, y: 28}
+  - {x: 2, y: 25}
+  - {x: 2, y: 24}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 22}
+  - {x: 2, y: 24}
+  - {x: 2, y: 23}
+  - {x: 2, y: 20}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
+  - {x: 2, y: 22}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 23}
+  - {x: 2, y: 24}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

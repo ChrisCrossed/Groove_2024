@@ -16,6 +16,8 @@ public class GrooveThemes : MonoBehaviour
 
     [SerializeField] int boardWidth;
 
+    [SerializeField] List<Vector2Int> ThemeTimingValues;
+
     private void Start()
     {
         GrooveTheme goBack = new GrooveTheme();
@@ -37,6 +39,10 @@ public class GrooveThemes : MonoBehaviour
         // Create new groups of each ThemeTimerAction that I want to have exist
         List<float> themeTiming = new List<float>();
 
+        foreach (Vector2Int timingValue in ThemeTimingValues)
+            themeTiming.Add(ReturnTimeWithFrameRateConversion(timingValue));
+
+        /*
         // Purple (The colors used in Sony Vegas to find the timing, in groups for ease of use)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(7, 4));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
@@ -47,7 +53,7 @@ public class GrooveThemes : MonoBehaviour
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
 
-        // Strawberry
+        // Strawberry (8 - 15)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 13));
@@ -57,7 +63,7 @@ public class GrooveThemes : MonoBehaviour
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
 
-        // Red
+        // Red (16 - 23)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
@@ -67,7 +73,7 @@ public class GrooveThemes : MonoBehaviour
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
 
-        // Orange
+        // Orange (24 - 31)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
@@ -77,7 +83,7 @@ public class GrooveThemes : MonoBehaviour
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
 
-        // Lellow
+        // Lellow (32 - 39)
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 6));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 6));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 4));
@@ -117,6 +123,7 @@ public class GrooveThemes : MonoBehaviour
         themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
         themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
+        */
 
         ThemeTimerAction themeAction_A = new ThemeTimerAction(ThemeTimerAction.ThemeTimerActionType.SpecificTiming, themeTiming);
         allThemeTimerActions.Add(themeAction_A);
@@ -128,6 +135,11 @@ public class GrooveThemes : MonoBehaviour
 
         // Load the theme
         transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);
+    }
+
+    float ReturnTimeWithFrameRateConversion(Vector2Int timing, float framerate = 30f)
+    {
+        return ReturnTimeWithFrameRateConversion((float)timing.x, (float)timing.y, framerate);
     }
 
     float ReturnTimeWithFrameRateConversion(float seconds, float milliseconds, float framerate = 30f)
