@@ -77,25 +77,17 @@ public class GameLogic : MonoBehaviour
 
     #region Initialization
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
+        FirstThemeLoaded = false;
+
         Init_InputAction();
 
         Init_Random();
 
         Init_Board();
 
-        // SetValidActiveBlockTypes(BlockObject_Active_ThreeWide, BlockObject_Active_ThreeTall, BlockObject_Active_TwoByTwo);
-
-        PopulateNextFourBlocksList();
-
-        SetGamePlayingState(true);
-
-        
-
-        BlockSize nextBlockSize = NextBlockListSize[0];
-        List<BoardObject> nextBlock = GetNextBlock(true);
-        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+        StartCoroutine( Init_FirstThemeLoadProcess() );
 
         if(BugTestConsoleOutput)
         {
@@ -103,7 +95,27 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    
+    bool FirstThemeLoaded;
+    private IEnumerator Init_FirstThemeLoadProcess()
+    {
+        while(!FirstThemeLoaded)
+            yield return new WaitForEndOfFrame();
+
+        PopulateNextFourBlocksList();
+
+        SetGamePlayingState(true);
+
+        BlockSize nextBlockSize = NextBlockListSize[0];
+        List<BoardObject> nextBlock = GetNextBlock(true);
+        PlaceNewSquircleGroupOfType(nextBlockSize, nextBlock);
+
+        yield return null;
+    }
+
+    public void ThemeLoaded()
+    {
+        FirstThemeLoaded = true;
+    }
 
     void Init_InputAction()
     {
@@ -782,6 +794,9 @@ public class GameLogic : MonoBehaviour
 
     void RotateClockwise()
     {
+        if (!FirstThemeLoaded)
+            return;
+
         // Store bottom left of active block list
         BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
@@ -826,6 +841,9 @@ public class GameLogic : MonoBehaviour
 
     void RotateCounterClockwise()
     {
+        if (!FirstThemeLoaded)
+            return;
+
         // Store bottom left of active block list
         BoardObject tempBlock = GetBoardObjectAtPosition(TileBottomLeftPosition);
 
@@ -880,6 +898,9 @@ public class GameLogic : MonoBehaviour
 
     void ShiftLeft()
     {
+        if (!FirstThemeLoaded)
+            return;
+
         int width = 2;
         if (CurrBlockSize == BlockSize.ThreeWide)
             width = 3;
@@ -933,6 +954,9 @@ public class GameLogic : MonoBehaviour
 
     void ShiftRight()
     {
+        if (!FirstThemeLoaded)
+            return;
+
         int width = 2;
         if (CurrBlockSize == BlockSize.ThreeWide)
             width = 3;
@@ -989,6 +1013,9 @@ public class GameLogic : MonoBehaviour
 
     void SoftDrop()
     {
+        if (!FirstThemeLoaded)
+            return;
+
         // Starting from the active Bottom Left corner,
         // 
         int height = 2;
@@ -1049,11 +1076,14 @@ public class GameLogic : MonoBehaviour
 
     void HardDrop(bool staticOnly = false)
     {
+        if (!FirstThemeLoaded)
+            return;
+
         // print("HARD DROP");
 
         // In case I only want blocks that are already 'Static' to move, not Active blocks the player has control over.
         // This will most likely be used for mid-round board size changes, or static-block horizontal shifts.
-        if(!staticOnly)
+        if (!staticOnly)
         {
             AllBlocksStatic();
         }

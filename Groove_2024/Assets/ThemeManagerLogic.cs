@@ -116,6 +116,7 @@ public class ThemeManagerLogic : MonoBehaviour
 
             print(currTheme.ThreeWide + " " + currTheme.ThreeTall + " " + currTheme.TwoByTwo);
 
+            // TODO: Determine when to override future Block List.
             GameLogic.SetValidActiveBlockTypes(currTheme.ThreeWide, currTheme.ThreeTall, currTheme.TwoByTwo);
 
             // Resize board and wait until completion
@@ -128,6 +129,8 @@ public class ThemeManagerLogic : MonoBehaviour
             // Update this with all necessary wait scenarios to ensure the board & game is ready before continuing.
             while ( !(BoardWidthResizeComplete && SoundClipLoadedToMemory) )
                 yield return new WaitForSeconds(0.05f);
+
+            GameLogic.ThemeLoaded();
 
             // Apply Settings and Start Process
             StartCoroutine( Thread_AudioClip(currTheme.ThemeAudioSource) );
