@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using UnityEditor;
+using System.IO;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class GrooveThemes : MonoBehaviour
 {
@@ -16,10 +15,10 @@ public class GrooveThemes : MonoBehaviour
 
     [SerializeField] int boardWidth;
 
-    [SerializeField] List<Vector2Int> ThemeTimingValues;
-
     private void Start()
     {
+        ReadDataFromFile();
+
         GrooveTheme goBack = new GrooveTheme();
         goBack.ThemeAudioSource = transform.GetComponent<AudioSource>();
         goBack.ThemeAudioSource.clip = audioClip;
@@ -39,91 +38,11 @@ public class GrooveThemes : MonoBehaviour
         // Create new groups of each ThemeTimerAction that I want to have exist
         List<float> themeTiming = new List<float>();
 
-        foreach (Vector2Int timingValue in ThemeTimingValues)
+        List<Vector2Int> themeTimingValues = ReadDataFromFile();
+
+        foreach (Vector2Int timingValue in themeTimingValues)
             themeTiming.Add(ReturnTimeWithFrameRateConversion(timingValue));
 
-        /*
-        // Purple (The colors used in Sony Vegas to find the timing, in groups for ease of use)
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(7, 4));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 13));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
-
-        // Strawberry (8 - 15)
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 13));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 18));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 13));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-
-        // Red (16 - 23)
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 17));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
-
-        // Orange (24 - 31)
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 15));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 18));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 14));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 16));
-
-        // Lellow (32 - 39)
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 6));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 6));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 4));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(3, 1));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 27));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 28));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 25));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
-
-        // Grrveen
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        
-        // Blue
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
-
-        // Other Blue
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 20));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 22));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 23));
-        themeTiming.Add(ReturnTimeWithFrameRateConversion(2, 24));
-        */
 
         ThemeTimerAction themeAction_A = new ThemeTimerAction(ThemeTimerAction.ThemeTimerActionType.SpecificTiming, themeTiming);
         allThemeTimerActions.Add(themeAction_A);
@@ -135,6 +54,35 @@ public class GrooveThemes : MonoBehaviour
 
         // Load the theme
         transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);
+    }
+
+    List<Vector2Int> ReadDataFromFile()
+    {
+        List<Vector2Int> outputList = new List<Vector2Int>();
+
+        StreamReader strReader = new StreamReader("D:\\GIT_FILES\\Groove_2024\\Groove_2024\\Assets\\Themes\\TimingActions\\GoBack\\ShiftBoardLeft.csv");
+
+        bool endOfFile = false;
+
+        while(!endOfFile)
+        {
+            string dataString = strReader.ReadLine();
+
+            if(dataString == null)
+            {
+                endOfFile = true;
+                break;
+            }
+
+            var dataValues = dataString.Split(',');
+
+            int x = int.Parse(dataValues[0]);
+            int y = int.Parse(dataValues[1]);
+
+            outputList.Add(new Vector2Int(x, y));
+        }
+
+        return outputList;
     }
 
     float ReturnTimeWithFrameRateConversion(Vector2Int timing, float framerate = 30f)
