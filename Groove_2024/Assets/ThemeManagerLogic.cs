@@ -123,12 +123,14 @@ public class ThemeManagerLogic : MonoBehaviour
             print( "Setting Board Width: " + currTheme.BoardWidth );
             StartCoroutine( GameLogic.SetNewBoardWidthForTheme( currTheme.BoardWidth ) );
 
-            print( "Loading SoundClip to Memory..." );
-            StartCoroutine( LoadSoundClip(currTheme.ThemeAudioSource) );
+            print( "Loading SoundClip to Memory...");
+            StartCoroutine( LoadSoundClip(currTheme.ThemeAudioSource, currTheme.ThemeAudioClip) );
 
             // Update this with all necessary wait scenarios to ensure the board & game is ready before continuing.
             while ( !(BoardWidthResizeComplete && SoundClipLoadedToMemory) )
                 yield return new WaitForSeconds(0.05f);
+
+            
 
             GameLogic.ThemeLoaded();
 
@@ -180,15 +182,26 @@ public class ThemeManagerLogic : MonoBehaviour
 
         print("Song Unloaded: " + Time.fixedTime);
 
+        yield return new WaitForSecondsRealtime(1.0f);
+
+        StartCoroutine( StartNextTheme() );
+
         yield return null;
     }
 
+    bool firstTheme = true;
     public void LoadThemeToList(GrooveTheme _grooveTheme)
     {
+        // print("Loading Theme: " + _grooveTheme.ThemeAudioClip.name);
+
         GrooveThemeList.Add(_grooveTheme);
 
         // TODO: Change when appropriate
-        StartCoroutine( StartNextTheme() );
+        if(firstTheme)
+        {
+            firstTheme = false;
+            StartCoroutine( StartNextTheme() );
+        }
     }
 
     /// <summary>
@@ -261,8 +274,10 @@ public class ThemeManagerLogic : MonoBehaviour
     }
 
     bool SoundClipLoadedToMemory;
-    private IEnumerator LoadSoundClip(AudioSource audioSource)
+    private IEnumerator LoadSoundClip(AudioSource audioSource, AudioClip audioClip)
     {
+        audioSource.clip = audioClip;
+
         audioSource.clip.LoadAudioData();
 
         while (audioSource.clip.loadState != AudioDataLoadState.Loaded)

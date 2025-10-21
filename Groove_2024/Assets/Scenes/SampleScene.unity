@@ -328,8 +328,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 955137913}
-  - component: {fileID: 955137917}
   - component: {fileID: 955137915}
+  - component: {fileID: 955137917}
   - component: {fileID: 955137914}
   - component: {fileID: 955137916}
   m_Layer: 0
@@ -373,17 +373,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955137912}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 229ccd80242b10d47b86674122628fef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
   themeName: GoBack
+  songName: Go Back (ft. Julia Church)
+  artistName: John Summit & Sub Focus
+  albumName: 
   audioClip: {fileID: 8300000, guid: 4baec539b45e2124aad61c99c5bdb608, type: 3}
   twoByTwo: 0
   threeWide: 1
   threeTall: 0
-  boardWidth: 10
+  boardWidth: 8
 --- !u!82 &955137916
 AudioSource:
   m_ObjectHideFlags: 0
@@ -494,6 +497,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
   themeName: Escape
+  songName: "Escape (L\xF6Kii Remix) [feat. Hayla]"
+  artistName: "Kx5, deadmau5, Kaskade, HAYLA, L\xF6Kii"
+  albumName: 
   audioClip: {fileID: 8300000, guid: d8b3c604d430e7646bacc847c3b6cdd6, type: 3}
   twoByTwo: 1
   threeWide: 1

@@ -7,6 +7,11 @@ public class GrooveThemes : MonoBehaviour
     static float MoveTimer_MAX = 0.03f;
 
     [SerializeField] string themeName;
+    [SerializeField] string songName;
+    [SerializeField] string artistName;
+    [SerializeField] string albumName;
+
+
     [SerializeField] AudioClip audioClip;
 
     [SerializeField] bool twoByTwo;
@@ -21,7 +26,7 @@ public class GrooveThemes : MonoBehaviour
 
         GrooveTheme goBack = new GrooveTheme();
         goBack.ThemeAudioSource = transform.GetComponent<AudioSource>();
-        goBack.ThemeAudioSource.clip = audioClip;
+        
 
         goBack.BoardWidth = boardWidth;
 
@@ -29,7 +34,9 @@ public class GrooveThemes : MonoBehaviour
         goBack.ThreeTall = threeTall;
         goBack.TwoByTwo = twoByTwo;
 
-        goBack.ThemeAudioSource.clip.LoadAudioData();
+        goBack.ThemeAudioClip = audioClip;
+
+        // goBack.ThemeAudioSource.clip.LoadAudioData();
 
         if(themeName == "GoBack")
         {

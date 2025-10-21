@@ -180,7 +180,7 @@ public class c_BoardLogic : MonoBehaviour
 
                         tempSquircleArray[ newArrayPosition ] = SquircleArray[ oldArrayPosition ];
 
-                        print("New Coords: " + tempSquircleArray[ newArrayPosition ].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
+                        // print("New Coords: " + tempSquircleArray[ newArrayPosition ].gameObject.GetComponent<c_SquircleLogic>().GridCoords);
                     }
                 }
                 #endregion Center Pre-Existing Region
