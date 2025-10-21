@@ -31,26 +31,30 @@ public class GrooveThemes : MonoBehaviour
 
         goBack.ThemeAudioSource.clip.LoadAudioData();
 
-        #region Action Timers
-        // Create a list to populate
-        List<ThemeTimerAction> allThemeTimerActions = new List<ThemeTimerAction>();
+        if(themeName == "GoBack")
+        {
+            #region Action Timers
+            // Create a list to populate
+            List<ThemeTimerAction> allThemeTimerActions = new List<ThemeTimerAction>();
 
-        // Create new groups of each ThemeTimerAction that I want to have exist
-        List<float> themeTiming = new List<float>();
+            // Create new groups of each ThemeTimerAction that I want to have exist
+            List<float> themeTiming = new List<float>();
 
-        List<Vector2Int> themeTimingValues = ReadDataFromFile();
+            List<Vector2Int> themeTimingValues = ReadDataFromFile();
 
-        foreach (Vector2Int timingValue in themeTimingValues)
-            themeTiming.Add(ReturnTimeWithFrameRateConversion(timingValue));
+            foreach (Vector2Int timingValue in themeTimingValues)
+                themeTiming.Add(ReturnTimeWithFrameRateConversion(timingValue));
 
+            if(themeTiming.Count > 0)
+            {
+                ThemeTimerAction themeAction_A = new ThemeTimerAction(ThemeTimerAction.ThemeTimerActionType.SpecificTiming, themeTiming);
+                allThemeTimerActions.Add(themeAction_A);
 
-        ThemeTimerAction themeAction_A = new ThemeTimerAction(ThemeTimerAction.ThemeTimerActionType.SpecificTiming, themeTiming);
-        allThemeTimerActions.Add(themeAction_A);
-
-        // Apply the list to the GrooveTheme object
-        goBack.ThemeActions = allThemeTimerActions;
-
-        #endregion Action Timers
+                // Apply the list to the GrooveTheme object
+                goBack.ThemeActions = allThemeTimerActions;
+            }
+            #endregion Action Timers
+        }
 
         // Load the theme
         transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);

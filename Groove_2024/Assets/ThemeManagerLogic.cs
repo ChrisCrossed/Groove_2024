@@ -155,14 +155,20 @@ public class ThemeManagerLogic : MonoBehaviour
 
         print("Starting Theme Action Timers");
 
-        foreach (ThemeTimerAction themeAction in currTheme.ThemeActions)
-        {
-            if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.Loop)
-                StartCoroutine(RunThemeTimerAction_Loop(themeAction));
-            else if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.SpecificTiming)
-                StartCoroutine( RunThemeTimerAction_SpecificTiming(themeAction) );
-        }
+        if (currTheme.ThemeActions == null)
+            print("Is Null");
 
+        if (currTheme.ThemeActions != null)
+        {
+            foreach (ThemeTimerAction themeAction in currTheme.ThemeActions)
+            {
+                if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.Loop)
+                    StartCoroutine(RunThemeTimerAction_Loop(themeAction));
+                else if (themeAction.ThemeType == ThemeTimerAction.ThemeTimerActionType.SpecificTiming)
+                    StartCoroutine(RunThemeTimerAction_SpecificTiming(themeAction));
+            }
+        }
+        
         print("Waiting until song ends");
 
         yield return new WaitForSecondsRealtime( musicLength );
