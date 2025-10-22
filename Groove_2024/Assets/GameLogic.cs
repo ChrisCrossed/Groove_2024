@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using static UnityEditor.Rendering.CameraUI;
 
 public enum BoardObject
 {
@@ -516,8 +517,11 @@ public class GameLogic : MonoBehaviour
     {
         runningAnimatedScoreline = true;
 
+        List<int> pathfindList = new List<int>();
+        pathfindList.Add(_finalPathfind[0]);
+
         List<List<int>> finalPathfind = new List<List<int>>();
-        finalPathfind.Add(new List<int>());
+
         /*
         finalPathfind.Add(new List<int>());
         finalPathfind.Add(new List<int>());
@@ -526,17 +530,25 @@ public class GameLogic : MonoBehaviour
         finalPathfind[finalPathfind.Count - 1].Add(8);
         */
 
-        // print("Outer: " + finalPathfind.Count + ", Inner: " + finalPathfind[finalPathfind.Count - 1].Count);
+        string printPathfind = "";
+        foreach(int num in _finalPathfind)
+        {
+            printPathfind += num + ", ";
+        }
+        print(printPathfind);
 
         bool movingHoriz = true;
 
         Vector2Int prevPos = new Vector2Int(_finalPathfind[0] % BoardWidth, _finalPathfind[0] / BoardWidth);
 
-        for (int i = 0; i < _finalPathfind.Count; i++)
+        for (int i = 1; i < _finalPathfind.Count; i++)
         {
+            // Used later for clearing specific block positions from the game board
+            /*
             Vector2Int _pos = new Vector2Int();
             _pos.x = _finalPathfind[i] % BoardWidth;
             _pos.y = _finalPathfind[i] / BoardWidth;
+            */
 
             Vector2Int nextPos = new Vector2Int(_finalPathfind[i] % BoardWidth, _finalPathfind[i] / BoardWidth);
 
@@ -545,52 +557,51 @@ public class GameLogic : MonoBehaviour
             {
                 if(!movingHoriz)
                 {
-                    finalPathfind.Add(new List<int>());
+                    finalPathfind.Add(pathfindList);
+
+                    pathfindList = new List<int>();
+                    pathfindList.Add(_finalPathfind[i - 1]);
+
                     movingHoriz = !movingHoriz;
                 }
 
-                finalPathfind[finalPathfind.Count - 1].Add(_finalPathfind[i]);
+                pathfindList.Add(_finalPathfind[i]);
             }
             // If the Y position is NOT the same, moving Vertical
             else if (prevPos.y != nextPos.y)
             {
                 if(movingHoriz)
                 {
-                    finalPathfind.Add(new List<int>());
+                    finalPathfind.Add(pathfindList);
+                    
+                    pathfindList = new List<int>();
+                    pathfindList.Add(_finalPathfind[i - 1]);
+
                     movingHoriz = !movingHoriz;
                 }
 
-                finalPathfind[finalPathfind.Count - 1].Add(_finalPathfind[i]);
+                pathfindList.Add(_finalPathfind[i]);
             }
+
+            prevPos = nextPos;
         }
 
-
-
-        print("Outer: " + finalPathfind.Count + ", Inner: " + finalPathfind[finalPathfind.Count - 1].Count);
+        finalPathfind.Add(pathfindList);
 
         for (int j = 0; j < finalPathfind.Count; j++)
         {
-            string output = "[" + j + "]: ";
+            yield return new WaitForSeconds(0.25f);
 
             for (int k = 0; k < finalPathfind[j].Count; k++)
             {
-                output += finalPathfind[j][k] + ", ";
+                SetBoardObjectAtPosition(finalPathfind[j][k], BoardObject.Empty);
+                BoardLogicScript.DestroySquircleAtGridPos(finalPathfind[j][k]);
+
+                // print("Destroying: " + finalPathfind[j][k]);
             }
-            print(output);
+
+            // print("---");
         }
-
-        // if Y is same value, we're moving Horizontal
-        // if X is same value, we're moving Vertical
-
-        /*
-        if (BugTestConsoleOutput)
-            print("Clearing: " + _pos);
-
-        SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-        BoardLogicScript.DestroySquircleAtGridPos(_pos);
-
-        yield return new WaitForSeconds(2.0f / _finalPathfind.Count);
-        */
 
         runningAnimatedScoreline = false;
 
@@ -1210,7 +1221,7 @@ public class GameLogic : MonoBehaviour
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
         for (int x = 1; x < HORIZ_RIGHT_WALL_XPos_Sidewall; x++)
         {
-            for(int y = 0; y < BoardHeight_Maximum; y++)
+            for(int y = 0; y < BoardHeight_Maximum - 3; y++)
             {
                 Vector2Int gridPos = new Vector2Int(x, y);
 
@@ -1250,7 +1261,7 @@ public class GameLogic : MonoBehaviour
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
         for (int x = HORIZ_RIGHT_WALL_XPos_Sidewall - 1; x > 0; x--)
         {
-            for (int y = 0; y < BoardHeight_Maximum; y++)
+            for (int y = 0; y < BoardHeight_Maximum - 3; y++)
             {
                 Vector2Int gridPos = new Vector2Int(x, y);
 
@@ -1304,6 +1315,11 @@ public class GameLogic : MonoBehaviour
     BoardObject SetBoardObjectAtPosition(Vector2Int _position, BoardObject _boardObject)
     {
         return SetBoardObjectAtPosition(_position.x, _position.y, _boardObject);
+    }
+
+    BoardObject SetBoardObjectAtPosition(int _position, BoardObject _boardObject)
+    {
+        return SetBoardObjectAtPosition(_position % BoardWidth, _position / BoardWidth, _boardObject);
     }
 
     public Vector2Int GetBoardSize()

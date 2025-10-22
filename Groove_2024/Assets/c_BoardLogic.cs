@@ -580,11 +580,17 @@ public class c_BoardLogic : MonoBehaviour
     {
         GameObject tempSquircle = GetObjAtPosition(_gridPos, true);
 
-        // print("Destroying: " + tempSquircle.name);
+        if (tempSquircle != null)
+        {
+            tempSquircle.GetComponent<c_SquircleLogic>().DestroySquircle();
 
-        tempSquircle.GetComponent<c_SquircleLogic>().DestroySquircle();
+            SquircleArray[_gridPos.y * BoardWidth + _gridPos.x] = null;
+        }
+    }
 
-        SquircleArray[_gridPos.y * BoardWidth + _gridPos.x] = null;
+    public void DestroySquircleAtGridPos(int _gridPos)
+    {
+        DestroySquircleAtGridPos( new Vector2Int(_gridPos % BoardWidth, _gridPos / BoardWidth) );
     }
 
     // Update is called once per frame
