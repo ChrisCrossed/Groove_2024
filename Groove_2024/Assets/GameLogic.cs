@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using static UnityEditor.Rendering.CameraUI;
 
 public enum BoardObject
 {
@@ -71,6 +70,8 @@ public class GameLogic : MonoBehaviour
     GameObject GO_BoardArray;
     c_BoardLogic BoardLogicScript;
 
+    int playerScore;
+
     #region Input System
     InputManager InputManager;
     InputManager InputManager_OLD;
@@ -80,6 +81,8 @@ public class GameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerScore = 0;
+
         FirstThemeLoaded = false;
 
         Init_InputAction();
@@ -510,6 +513,16 @@ public class GameLogic : MonoBehaviour
         }
 
         print("Total Scoreline Score: [" + points + " x " + mult + "] = " + (points * mult));
+
+        playerScore += (points * mult);
+
+        GameObject canvas = GameObject.Find("Canvas").gameObject;
+        TempScoreUI tempScoreUI = canvas.GetComponent<TempScoreUI>();
+        tempScoreUI.ApplyNewScore(playerScore, points, mult);
+
+        print(tempScoreUI.gameObject.name);
+
+        // canvas.GetComponent<TempScoreUI>().ApplyNewScore(playerScore, points, mult);
     }
 
     bool runningAnimatedScoreline;
