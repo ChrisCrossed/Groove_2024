@@ -511,22 +511,88 @@ public class GameLogic : MonoBehaviour
         print("Total Scoreline Score: [" + points + " x " + mult + "] = " + (points * mult));
     }
 
+    bool runningAnimatedScoreline;
     IEnumerator AnimateScoreLine(List<int> _finalPathfind)
     {
+        runningAnimatedScoreline = true;
+
+        List<List<int>> finalPathfind = new List<List<int>>();
+        finalPathfind.Add(new List<int>());
+        /*
+        finalPathfind.Add(new List<int>());
+        finalPathfind.Add(new List<int>());
+        finalPathfind[finalPathfind.Count - 1].Add(10);
+        finalPathfind[finalPathfind.Count - 1].Add(9);
+        finalPathfind[finalPathfind.Count - 1].Add(8);
+        */
+
+        // print("Outer: " + finalPathfind.Count + ", Inner: " + finalPathfind[finalPathfind.Count - 1].Count);
+
+        bool movingHoriz = true;
+
+        Vector2Int prevPos = new Vector2Int(_finalPathfind[0] % BoardWidth, _finalPathfind[0] / BoardWidth);
+
         for (int i = 0; i < _finalPathfind.Count; i++)
         {
             Vector2Int _pos = new Vector2Int();
             _pos.x = _finalPathfind[i] % BoardWidth;
             _pos.y = _finalPathfind[i] / BoardWidth;
 
-            if (BugTestConsoleOutput)
-                print("Clearing: " + _pos);
+            Vector2Int nextPos = new Vector2Int(_finalPathfind[i] % BoardWidth, _finalPathfind[i] / BoardWidth);
 
-            SetBoardObjectAtPosition(_pos, BoardObject.Empty);
-            BoardLogicScript.DestroySquircleAtGridPos(_pos);
+            // If the X position is NOT the same, moving Horizontal.
+            if (prevPos.x != nextPos.x)
+            {
+                if(!movingHoriz)
+                {
+                    finalPathfind.Add(new List<int>());
+                    movingHoriz = !movingHoriz;
+                }
 
-            yield return new WaitForSeconds( 2.0f / _finalPathfind.Count );
+                finalPathfind[finalPathfind.Count - 1].Add(_finalPathfind[i]);
+            }
+            // If the Y position is NOT the same, moving Vertical
+            else if (prevPos.y != nextPos.y)
+            {
+                if(movingHoriz)
+                {
+                    finalPathfind.Add(new List<int>());
+                    movingHoriz = !movingHoriz;
+                }
+
+                finalPathfind[finalPathfind.Count - 1].Add(_finalPathfind[i]);
+            }
         }
+
+
+
+        print("Outer: " + finalPathfind.Count + ", Inner: " + finalPathfind[finalPathfind.Count - 1].Count);
+
+        for (int j = 0; j < finalPathfind.Count; j++)
+        {
+            string output = "[" + j + "]: ";
+
+            for (int k = 0; k < finalPathfind[j].Count; k++)
+            {
+                output += finalPathfind[j][k] + ", ";
+            }
+            print(output);
+        }
+
+        // if Y is same value, we're moving Horizontal
+        // if X is same value, we're moving Vertical
+
+        /*
+        if (BugTestConsoleOutput)
+            print("Clearing: " + _pos);
+
+        SetBoardObjectAtPosition(_pos, BoardObject.Empty);
+        BoardLogicScript.DestroySquircleAtGridPos(_pos);
+
+        yield return new WaitForSeconds(2.0f / _finalPathfind.Count);
+        */
+
+        runningAnimatedScoreline = false;
 
         yield return true;
     }
@@ -554,7 +620,7 @@ public class GameLogic : MonoBehaviour
 
                 DetermineScoreFromScoreLine(finalPathfind);
 
-                StartCoroutine(AnimateScoreLine(finalPathfind));
+                StartCoroutine( AnimateScoreLine(finalPathfind) );
 
                 foundPath = true;
 
@@ -1137,6 +1203,9 @@ public class GameLogic : MonoBehaviour
 
     public void ShiftBoardLeft()
     {
+        if (runningAnimatedScoreline)
+            return;
+
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
         for (int x = 1; x < HORIZ_RIGHT_WALL_XPos_Sidewall; x++)
@@ -1174,6 +1243,9 @@ public class GameLogic : MonoBehaviour
 
     public void ShiftBoardRight()
     {
+        if (runningAnimatedScoreline)
+            return;
+
         // In the future, I'm probably only going as high as 2 or 3 rows below the top.
         // for (int x = 1; x < BoardWidth_Maximum + 1; x++)
         for (int x = HORIZ_RIGHT_WALL_XPos_Sidewall - 1; x > 0; x--)
