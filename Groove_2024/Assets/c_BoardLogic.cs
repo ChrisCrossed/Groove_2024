@@ -23,6 +23,10 @@ public class c_BoardLogic : MonoBehaviour
     [SerializeField] private Material Mat_BravoBackdrop;
     [SerializeField] private Material Mat_EmptyBackdrop;
 
+    [SerializeField] private GameObject ScorelineVisualizer;
+    [SerializeField] private Material Mat_ScoreLineVis_Alpha;
+    [SerializeField] private Material Mat_ScoreLineVis_Bravo;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -593,6 +597,43 @@ public class c_BoardLogic : MonoBehaviour
         DestroySquircleAtGridPos( new Vector2Int(_gridPos % BoardWidth, _gridPos / BoardWidth) );
     }
 
+    public IEnumerator CreateScorelineVisualizers(List<List<int>> _scorelineGridPositions, BoardObject _boardObject, float _timeBetweenLines = 0.25f)
+    {
+        GameObject[] ScorelineVisualisers = new GameObject[_scorelineGridPositions.Count];
+
+        for(int i = 0; i < ScorelineVisualisers.Length; i++)
+        {
+            GameObject tempObj = GameObject.Instantiate(ScorelineVisualizer);
+
+            tempObj.GetComponent<MeshRenderer>().enabled = false;
+
+            tempObj.GetComponent<MeshRenderer>().material = Mat_ScoreLineVis_Alpha;
+            if (_boardObject == BoardObject.Bravo_Static)
+                tempObj.GetComponent<MeshRenderer>().material = Mat_ScoreLineVis_Bravo;
+
+            ScorelineVisualisers[i] = tempObj;
+        }
+
+        // TODO: Need to get each GO in the array and place/scale in it's respective group.
+        foreach (List<int> scorelineGroup in _scorelineGridPositions)
+        {
+            int startGridPos = scorelineGroup[0];
+            int endGridPos = scorelineGroup[scorelineGroup.Count - 1];
+
+            Vector2 visualizerPos = (GetWorldPosition(startGridPos) + GetWorldPosition(endGridPos)) / 2;
+        }
+
+        // GetWorldPosition
+        // Get world position of first block in list, and last block in list.
+        // Instantiate GO, position in center of two positions, and scale appropriately.
+
+        // Wait 'timeBetweenLines', and move to next List.
+
+        // After last batch is created, wait for 'timeBetweenLines', and delete all GO's.
+
+        yield return null;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -616,5 +657,10 @@ public class c_BoardLogic : MonoBehaviour
         }
         
         return tempPos;
+    }
+
+    Vector3 GetWorldPosition(int _arrayPos, bool _isSquircle = false)
+    {
+        return GetWorldPosition(new Vector2Int(_arrayPos %  BoardWidth, _arrayPos / BoardWidth), _isSquircle);
     }
 }

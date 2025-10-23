@@ -601,19 +601,21 @@ public class GameLogic : MonoBehaviour
 
         finalPathfind.Add(pathfindList);
 
+        float timeBetweenClear = 0.25f;
+
+        BoardObject boardObjectType = GetBoardObjectAtPosition(_finalPathfind[0] % BoardWidth, _finalPathfind[0] / BoardWidth);
+
+        StartCoroutine( BoardLogicScript.CreateScorelineVisualizers(finalPathfind, boardObjectType, timeBetweenClear) );
+
         for (int j = 0; j < finalPathfind.Count; j++)
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(timeBetweenClear);
 
             for (int k = 0; k < finalPathfind[j].Count; k++)
             {
                 SetBoardObjectAtPosition(finalPathfind[j][k], BoardObject.Empty);
                 BoardLogicScript.DestroySquircleAtGridPos(finalPathfind[j][k]);
-
-                // print("Destroying: " + finalPathfind[j][k]);
             }
-
-            // print("---");
         }
 
         runningAnimatedScoreline = false;

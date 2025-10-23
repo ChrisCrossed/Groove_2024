@@ -337,6 +337,9 @@ MonoBehaviour:
   Mat_AlphaBackdrop: {fileID: 2100000, guid: 1c7e2203e03937a40aea8848b4f3aad5, type: 2}
   Mat_BravoBackdrop: {fileID: 2100000, guid: 64072d21210c3394ca8908421bf8d8c7, type: 2}
   Mat_EmptyBackdrop: {fileID: 0}
+  ScorelineVisualizer: {fileID: 565242555091961241, guid: 75eadd7aff4c39c469c77d644a4f8318, type: 3}
+  Mat_ScoreLineVis_Alpha: {fileID: 2100000, guid: dfe127d7f81c40141922e2b95a1f334d, type: 2}
+  Mat_ScoreLineVis_Bravo: {fileID: 2100000, guid: 13a4cfbd217172a4eb0be1db065eda9d, type: 2}
   SquirclePrefab: {fileID: 1291348948472564437, guid: 6d365cebee360e743845e604c040f4eb, type: 3}
   BackdropPrefab: {fileID: 3987517861236040984, guid: 8160060321e7f15458f276ad9aeed012, type: 3}
   CameraObject: {fileID: 963194225}
