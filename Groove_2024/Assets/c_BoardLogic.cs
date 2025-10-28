@@ -59,12 +59,11 @@ public class c_BoardLogic : MonoBehaviour
     List<GameObject> BackdropObjects;
     int leftWidth;
     int rightWidth;
+    float SquircleScaleSize = 0.7f;
     void InitializeBackdrop()
     {
         // Reset Squircle Array
         SquircleArray = new GameObject[BoardWidth * BoardHeight];
-
-        defaultLeftPos = BoardWidth / 2f * -1f;
 
         // Reset backdrop objects list
         BackdropObjects = new List<GameObject>();
@@ -294,10 +293,6 @@ public class c_BoardLogic : MonoBehaviour
         }
 
         // Get Relative BackDrop Array Position
-        /*
-        int index = ((_gridPos.y * BoardWidth) + _gridPos.x);
-        Vector3 worldPos = BackdropArray[index].gameObject.transform.position;
-        */
         Vector3 worldPos = GetWorldPosition(_gridPos, true);
 
 
@@ -308,8 +303,8 @@ public class c_BoardLogic : MonoBehaviour
             tempSquircle.name = "Bravo_Squircle";
         }
 
-        float squircleScaleSize = 0.7f;
-        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos, squircleScaleSize);
+        
+        tempSquircle.GetComponent<c_SquircleLogic>().InitializeSquircle(_boardObjectType, _gridPos, SquircleScaleSize);
 
         tempSquircle.transform.SetParent(BoardArrayObject.transform);
 
@@ -615,13 +610,52 @@ public class c_BoardLogic : MonoBehaviour
         }
 
         // TODO: Need to get each GO in the array and place/scale in it's respective group.
-        foreach (List<int> scorelineGroup in _scorelineGridPositions)
+        for(int j = 0; j < _scorelineGridPositions.Count; j++)
         {
-            int startGridPos = scorelineGroup[0];
-            int endGridPos = scorelineGroup[scorelineGroup.Count - 1];
+            int arrayLength = _scorelineGridPositions[j].Count;
 
-            Vector2 visualizerPos = (GetWorldPosition(startGridPos) + GetWorldPosition(endGridPos)) / 2;
+            int startGridPos = _scorelineGridPositions[j][0];
+            int endGridPos = _scorelineGridPositions[j][arrayLength - 1];
+
+            Vector2 v2_StartGridPos = GetWorldPosition(startGridPos, true);
+            Vector2 v2_EndGridPos = GetWorldPosition(endGridPos, true);
+
+            Vector2 visualizerPos = (v2_StartGridPos + v2_EndGridPos) / 2;
+
+            ScorelineVisualisers[j].transform.position = visualizerPos;
+
+            // -90 = Downward
+            Vector3 eulerRot = new Vector3();
+            // Vector3 eulerRot = new Vector3(0, 0, -90f);
+
+            if(startGridPos / BoardWidth > endGridPos / BoardWidth)
+                eulerRot = new Vector3(0, 0, -90f);
+
+            // Line moves upward
+            else if (startGridPos / BoardWidth < endGridPos / BoardWidth)
+                eulerRot = new Vector3(0, 0, 90f);
+
+            // Line moves to the Left
+            else if (startGridPos % BoardWidth > endGridPos % BoardWidth)
+                eulerRot = new Vector3(0f, 0f, 180f);
+
+            ScorelineVisualisers[j].transform.eulerAngles = eulerRot;
+
+            // TODO: I don't know how 1.125f became the right value as the scale for each block is 0.7f.
+            float goScale = _scorelineGridPositions[j].Count * 1.125f;
+            print("goScale " + goScale);
+            goScale = Mathf.Abs(goScale);
+
+            // Vector3 scale = new Vector3( Vector2.Distance(v2_StartGridPos, v2_EndGridPos) / 0.75f, 1, 1);
+            ScorelineVisualisers[j].transform.localScale = new Vector3(goScale, 1, 1);
+
+            ScorelineVisualisers[j].GetComponent<MeshRenderer>().enabled = true;
+
+            yield return new WaitForSecondsRealtime(_timeBetweenLines);
         }
+
+        foreach(GameObject go_ScorelineVisualizer in ScorelineVisualisers)
+            GameObject.Destroy(go_ScorelineVisualizer);
 
         // GetWorldPosition
         // Get world position of first block in list, and last block in list.
@@ -640,10 +674,14 @@ public class c_BoardLogic : MonoBehaviour
 
     }
 
-    float defaultLeftPos;
+    /// <summary>
+    /// GetWorldPosition returns the world position based on either the Squircle game object position or not
+    /// </summary>
+    /// <param name="_gridCoords"></param> Either the V2Int or Array Position of the grid
+    /// <param name="_isSquircle"></param> If you want the GameObject world position.
+    /// <returns></returns>
     Vector3 GetWorldPosition(Vector2Int _gridCoords, bool _isSquircle = false)
     {
-        // Vector3 tempPos = new Vector3(defaultLeftPos, -1.25f, 0);
         Vector3 tempPos = new Vector3();
 
         tempPos.x = (1.25f) * _gridCoords.x;
@@ -661,6 +699,6 @@ public class c_BoardLogic : MonoBehaviour
 
     Vector3 GetWorldPosition(int _arrayPos, bool _isSquircle = false)
     {
-        return GetWorldPosition(new Vector2Int(_arrayPos %  BoardWidth, _arrayPos / BoardWidth), _isSquircle);
+        return GetWorldPosition(new Vector2Int(_arrayPos % BoardWidth, _arrayPos / BoardWidth), _isSquircle);
     }
 }
