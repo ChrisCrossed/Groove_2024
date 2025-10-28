@@ -80,6 +80,8 @@ public struct InputManager
     InputAction rotateAction_CCW;
     InputAction rotateAction_CW;
     InputAction hardDrop;
+
+    InputAction mouseWheel;
     #endregion
 
     // Accessed in GameLogic for player input
@@ -93,6 +95,8 @@ public struct InputManager
     public void Start()
     {
         Init_InputAction();
+
+
     }
 
     void Init_InputAction()
@@ -101,6 +105,8 @@ public struct InputManager
         rotateAction_CCW = InputSystem.actions.FindAction("RotateCounterClock");
         rotateAction_CW = InputSystem.actions.FindAction("RotateClockwise");
         hardDrop = InputSystem.actions.FindAction("HardDrop");
+
+        mouseWheel = InputSystem.actions.FindAction("MouseWheel");
     }
 
     public void GameLogicUpdate()
@@ -113,6 +119,7 @@ public struct InputManager
 
         HardDropButtons();
 
+        MouseWheelAxis();
     }
 
     void MovementButtons()
@@ -152,5 +159,13 @@ public struct InputManager
     void HardDropButtons()
     {
         PlayerInput.HardDrop = hardDrop.IsPressed();
+    }
+
+    float mouseWheelValue;
+    void MouseWheelAxis()
+    {
+        mouseWheelValue += mouseWheel.ReadValue<float>() * 1000f;
+
+        Debug.Log(mouseWheelValue.ToString("0.000000000000"));
     }
 }
