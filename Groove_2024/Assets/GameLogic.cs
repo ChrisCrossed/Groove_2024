@@ -683,6 +683,7 @@ public class GameLogic : MonoBehaviour
         // Worlds fastest Tetris button input is around 30 presses per second. 
         float inputDelayInMilliseconds = 30f / 1000f;
         bool actionWasTaken;
+        float mouseWheelThreshhold = 0f;
 
         while (true)
         {
@@ -756,6 +757,24 @@ public class GameLogic : MonoBehaviour
                             Console_PrintBoard();
                         }
                     }
+
+                    // mouseWheelThreshhold += InputManager.PlayerInput.MouseWheel;
+                    mouseWheelThreshhold += Input.GetAxisRaw("Mouse ScrollWheel");
+
+                    if (mouseWheelThreshhold > 0.07f)
+                    {
+                        RotateClockwise();
+                        
+                        actionWasTaken = true;
+                    }
+                    else if (mouseWheelThreshhold < -0.07f)
+                    {
+                        RotateCounterClockwise();
+
+                        actionWasTaken = true;
+                    }
+
+                    mouseWheelThreshhold = 0f;
                     #endregion Block Rotation
                 }
 
@@ -776,6 +795,7 @@ public class GameLogic : MonoBehaviour
 
     // Update is called once per frame
     float EscapeTime;
+    float MouseWheelTime;
     void Update()
     {
         CheatEnabledSystem();

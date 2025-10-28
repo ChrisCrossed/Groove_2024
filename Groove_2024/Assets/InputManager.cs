@@ -18,6 +18,9 @@ public struct PlayerInput
 
     private bool _hardDropPressed;
 
+    private float _mouseWheel;
+    private float _mouseWheel_MAX;
+
     /*
     public PlayerInput()
     {
@@ -69,6 +72,12 @@ public struct PlayerInput
         internal set => _hardDropPressed = value;
     }
 
+    public float MouseWheel
+    {
+        get => _mouseWheel;
+        internal set => _mouseWheel = value;
+    }
+
 }
 
 public struct InputManager
@@ -81,7 +90,7 @@ public struct InputManager
     InputAction rotateAction_CW;
     InputAction hardDrop;
 
-    InputAction mouseWheel;
+    // InputAction mouseWheel;
     #endregion
 
     // Accessed in GameLogic for player input
@@ -106,7 +115,7 @@ public struct InputManager
         rotateAction_CW = InputSystem.actions.FindAction("RotateClockwise");
         hardDrop = InputSystem.actions.FindAction("HardDrop");
 
-        mouseWheel = InputSystem.actions.FindAction("MouseWheel");
+        // mouseWheel = InputSystem.actions.FindAction("MouseWheel");
     }
 
     public void GameLogicUpdate()
@@ -161,11 +170,13 @@ public struct InputManager
         PlayerInput.HardDrop = hardDrop.IsPressed();
     }
 
-    float mouseWheelValue;
     void MouseWheelAxis()
     {
-        mouseWheelValue += mouseWheel.ReadValue<float>() * 1000f;
+        // mouseWheelValue += mouseWheel.ReadValue<float>() * 1000f;
 
-        Debug.Log(mouseWheelValue.ToString("0.000000000000"));
+        float mouseWheel = Input.GetAxisRaw("Mouse ScrollWheel");
+        PlayerInput.MouseWheel += mouseWheel;
+
+        // Debug.Log(PlayerInput.MouseWheel);
     }
 }
