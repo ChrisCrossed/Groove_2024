@@ -20,6 +20,8 @@ public class GrooveThemes : MonoBehaviour
 
     [SerializeField] int boardWidth;
 
+    [SerializeField] bool IsTutorial = false;
+
     private void Start()
     {
         ReadDataFromFile();

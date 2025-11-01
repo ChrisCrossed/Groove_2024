@@ -449,8 +449,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 955137913}
-  - component: {fileID: 955137915}
+  - component: {fileID: 955137918}
   - component: {fileID: 955137917}
+  - component: {fileID: 955137915}
   - component: {fileID: 955137914}
   - component: {fileID: 955137916}
   m_Layer: 0
@@ -508,6 +509,7 @@ MonoBehaviour:
   threeWide: 1
   threeTall: 0
   boardWidth: 8
+  IsTutorial: 0
 --- !u!82 &955137916
 AudioSource:
   m_ObjectHideFlags: 0
@@ -626,6 +628,29 @@ MonoBehaviour:
   threeWide: 1
   threeTall: 0
   boardWidth: 12
+  IsTutorial: 0
+--- !u!114 &955137918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955137912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 229ccd80242b10d47b86674122628fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
+  themeName: Escape
+  songName: "Escape (L\xF6Kii Remix) [feat. Hayla]"
+  artistName: "Kx5, deadmau5, Kaskade, HAYLA, L\xF6Kii"
+  albumName: 
+  audioClip: {fileID: 8300000, guid: d8b3c604d430e7646bacc847c3b6cdd6, type: 3}
+  twoByTwo: 1
+  threeWide: 1
+  threeTall: 0
+  boardWidth: 12
+  IsTutorial: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
