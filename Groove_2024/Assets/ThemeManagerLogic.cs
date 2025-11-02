@@ -37,7 +37,7 @@ public struct GrooveTheme
 {
     // Chosen Randomized Seed
     // [SerializeField]
-    int ThemeSeed;
+    public int ThemeSeed;
     public int BoardWidth;
 
     public bool ThreeWide;

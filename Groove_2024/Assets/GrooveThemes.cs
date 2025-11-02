@@ -5,12 +5,11 @@ using UnityEngine;
 public class GrooveThemes : MonoBehaviour
 {
     static float MoveTimer_MAX = 0.03f;
-
+    
     [SerializeField] string themeName;
     [SerializeField] string songName;
     [SerializeField] string artistName;
     [SerializeField] string albumName;
-
 
     [SerializeField] AudioClip audioClip;
 
@@ -20,27 +19,36 @@ public class GrooveThemes : MonoBehaviour
 
     [SerializeField] int boardWidth;
 
-    [SerializeField] bool IsTutorial = false;
+    [SerializeField] string SeedName;
 
     private void Start()
     {
         ReadDataFromFile();
 
-        GrooveTheme goBack = new GrooveTheme();
-        goBack.ThemeAudioSource = transform.GetComponent<AudioSource>();
+        GrooveTheme grooveTheme = new GrooveTheme();
+        grooveTheme.ThemeAudioSource = transform.GetComponent<AudioSource>();
         
 
-        goBack.BoardWidth = boardWidth;
+        grooveTheme.BoardWidth = boardWidth;
 
-        goBack.ThreeWide = threeWide;
-        goBack.ThreeTall = threeTall;
-        goBack.TwoByTwo = twoByTwo;
+        grooveTheme.ThreeWide = threeWide;
+        grooveTheme.ThreeTall = threeTall;
+        grooveTheme.TwoByTwo = twoByTwo;
 
-        goBack.ThemeAudioClip = audioClip;
+        grooveTheme.ThemeAudioClip = audioClip;
+
+        int testSeedValue;
+        if (int.TryParse(SeedName, out testSeedValue))
+        {
+            print(SeedName + ": " + testSeedValue);
+
+            grooveTheme.ThemeSeed = testSeedValue;
+        }
+        
 
         // goBack.ThemeAudioSource.clip.LoadAudioData();
 
-        if(themeName == "GoBack")
+        if (themeName == "GoBack")
         {
             #region Action Timers
             // Create a list to populate
@@ -60,13 +68,13 @@ public class GrooveThemes : MonoBehaviour
                 allThemeTimerActions.Add(themeAction_A);
 
                 // Apply the list to the GrooveTheme object
-                goBack.ThemeActions = allThemeTimerActions;
+                grooveTheme.ThemeActions = allThemeTimerActions;
             }
             #endregion Action Timers
         }
 
         // Load the theme
-        transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(goBack);
+        transform.GetComponent<ThemeManagerLogic>().LoadThemeToList(grooveTheme);
     }
 
     List<Vector2Int> ReadDataFromFile()
@@ -74,7 +82,6 @@ public class GrooveThemes : MonoBehaviour
         List<Vector2Int> outputList = new List<Vector2Int>();
 
         TextAsset strReader = Resources.Load<TextAsset>("Themes/TimingActions/GoBack/ShiftBoardLeft");
-        //StreamReader strReader = new StreamReader(Application.dataPath + "\\Resources\\Themes\\TimingActions\\GoBack\\ShiftBoardLeft.csv");
 
         string[] splitLine = strReader.text.Split('\n');
 

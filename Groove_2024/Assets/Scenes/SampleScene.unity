@@ -509,7 +509,7 @@ MonoBehaviour:
   threeWide: 1
   threeTall: 0
   boardWidth: 8
-  IsTutorial: 0
+  SeedName: 
 --- !u!82 &955137916
 AudioSource:
   m_ObjectHideFlags: 0
@@ -628,7 +628,7 @@ MonoBehaviour:
   threeWide: 1
   threeTall: 0
   boardWidth: 12
-  IsTutorial: 0
+  SeedName: 
 --- !u!114 &955137918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,16 +641,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 229ccd80242b10d47b86674122628fef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrooveThemes
-  themeName: Escape
+  themeName: TUTORIAL
   songName: "Escape (L\xF6Kii Remix) [feat. Hayla]"
-  artistName: "Kx5, deadmau5, Kaskade, HAYLA, L\xF6Kii"
+  artistName: 
   albumName: 
   audioClip: {fileID: 8300000, guid: d8b3c604d430e7646bacc847c3b6cdd6, type: 3}
   twoByTwo: 1
   threeWide: 1
   threeTall: 0
   boardWidth: 12
-  IsTutorial: 1
+  SeedName: TUTORIAL
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
