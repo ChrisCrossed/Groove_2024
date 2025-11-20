@@ -388,6 +388,8 @@ public class GameLogic : MonoBehaviour
 
         TileBottomLeftPosition = boardPos;
         CurrBlockSize = _size;
+
+        BlockDropGuideLocation();
     }
 
     List<List<BoardObject>> NextBlockList;
@@ -455,6 +457,36 @@ public class GameLogic : MonoBehaviour
         return boardObject;
     }
 
+    void BlockDropGuideLocation()
+    {
+        print("Block Drop Visual Guide:");
+
+        
+
+        int width = 2;
+        if (CurrBlockSize == BlockSize.ThreeWide)
+            width = 3;
+
+        int height = 2;
+        if (CurrBlockSize == BlockSize.ThreeTall)
+            height = 3;
+
+        for(int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                // Get block type at position
+                Vector2Int v2_Pos = TileBottomLeftPosition + new Vector2Int(x, y);
+
+                BoardObject tempBlock = GetBoardObjectAtPosition(v2_Pos);
+
+                print(tempBlock + " at " + v2_Pos);
+            }
+        }
+
+        
+        print("---");
+    }
 
     #endregion Block Placement
 
@@ -949,6 +981,8 @@ public class GameLogic : MonoBehaviour
         }
 
         SetBoardObjectAtPosition(TileBottomLeftPosition.x, TileBottomLeftPosition.y + 1, tempBlock);
+
+        BlockDropGuideLocation();
     }
 
     void RotateCounterClockwise()
@@ -1006,6 +1040,8 @@ public class GameLogic : MonoBehaviour
 
         // Grid Array Manipulation
         SetBoardObjectAtPosition(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y, tempBlock);
+
+        BlockDropGuideLocation();
     }
 
     void ShiftLeft()
@@ -1062,6 +1098,8 @@ public class GameLogic : MonoBehaviour
 
         // Set new TileBottomLeftPosition
         TileBottomLeftPosition = new Vector2Int(TileBottomLeftPosition.x - 1, TileBottomLeftPosition.y);
+
+        BlockDropGuideLocation();
     }
 
     void ShiftRight()
@@ -1121,6 +1159,8 @@ public class GameLogic : MonoBehaviour
 
         // Set new TileBottomLeftPosition
         TileBottomLeftPosition = new Vector2Int(TileBottomLeftPosition.x + 1, TileBottomLeftPosition.y);
+
+        BlockDropGuideLocation();
     }
 
     void SoftDrop()
@@ -1184,6 +1224,8 @@ public class GameLogic : MonoBehaviour
 
         if (BugTestConsoleOutput)
             Console_PrintBoard();
+
+        BlockDropGuideLocation();
     }
 
     void HardDrop(bool staticOnly = false)
